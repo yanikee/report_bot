@@ -5,11 +5,11 @@ import logging
 
 
 
-cog_list = ["cogs.report"]
+cog_list = ["cogs.report", "cogs.reply_to_reply", "cogs.reply", "cogs.config"]
 
 intents = discord.Intents.default()
 bot = commands.Bot(command_prefix="!!!!!", intents=intents)
-TOKEN = os.environ['report_bot_TOKEN']
+TOKEN = ""
 guild_id = int(os.environ['Guild_id'])
 yapibotcha_id = int(os.environ['yapibotcha_id'])
 

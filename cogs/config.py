@@ -2,6 +2,7 @@ from discord.ext import commands
 from discord import app_commands
 import discord
 import os
+import json
 
 
 class Config(commands.GroupCog, group_name='report'):
@@ -9,14 +10,14 @@ class Config(commands.GroupCog, group_name='report'):
     self.bot = bot
 
   @app_commands.checks.has_permissions(manage_channels=True)
-  @app_commands.commands(name="config", description='このチャンネルに"report"を送信します。')
+  @app_commands.command(name="config", description='このチャンネルに"report"を送信します。')
   async def report(self, interaction:discord.Interaction, channel:discord.TextChannel=None):
     if not channel:
       channel = interaction.channel
 
     # 保存
-    report_dict = {"channel": channel.id}
-    path = f"data/report/guilds/{guild.id}.json"
+    report_dict = {"report_send_channel": channel.id}
+    path = f"data/report/guilds/{interaction.guild.id}.json"
     with open(path, mode="w") as f:
       json.dump(report_dict, f, indent=2, ensure_ascii=False)
 
