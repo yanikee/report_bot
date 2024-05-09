@@ -5,7 +5,7 @@ import logging
 
 
 
-cog_list = ["cogs.report", "cogs.reply_to_reply", "cogs.reply", "cogs.config"]
+cog_list = ["cogs.report", "cogs.reply_to_reply", "cogs.reply", "cogs.config", "cogs.help"]
 
 intents = discord.Intents.default()
 bot = commands.Bot(command_prefix="!!!!!", intents=intents)
