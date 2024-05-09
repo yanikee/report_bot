@@ -15,6 +15,10 @@ class Config(commands.GroupCog, group_name='report'):
     if not channel:
       channel = interaction.channel
 
+    if channel.type != discord.ChannelType.text:
+      await interaction.response.send_message("テキストチャンネルのみ設定可能です。", ephemeral=True)
+      return
+
     # 保存
     report_dict = {"report_send_channel": channel.id}
     path = f"data/report/guilds/{interaction.guild.id}.json"
