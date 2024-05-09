@@ -44,8 +44,11 @@ class ReplyToReply(commands.Cog):
     view.add_item(button_2)
     await cha.send("【返信内容】\n下のボタンから編集してください。", view=view)
 
-    # ありがとうメッセージ
-    await message.channel.send("返信ありがとうございました。")
+    try:
+      await message.channel.add_reaction("✅")
+    except Exception as e:
+      print(f"[ERROR]\n{e}")
+      await message.channel.send("[ERROR]\n返信できませんでした。\nサポートサーバーまでお問い合わせください。")
 
 
 
