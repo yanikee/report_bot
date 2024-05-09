@@ -140,7 +140,7 @@ class ReportReasonModal(discord.ui.Modal):
     embeds.append(embed)
     await self.msg.edit(embeds=embeds)
 
-    await interaction.response.send_message("報告が完了しました。\nありがとうございました。", ephemeral=True)
+    await interaction.response.send_message("報告が完了しました。\nありがとうございました。\n\nサーバー管理者からこのbotを通じて返信が届くことがあります。\n### このbotからDMを受け取れるように設定しておいてください。", ephemeral=True)
     return
 
 

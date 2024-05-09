@@ -60,10 +60,18 @@ class Reply(commands.Cog):
                     "- あなたの情報(ユーザー名, idなど)が外部に漏れることは一切ありません。\n"
                     f"- __**このメッセージに返信**__(右クリック→返信)すると、{interaction.guild.name}の管理者に届きます。",
       )
-      await reporter.send(embed=embed)
+      try:
+        await reporter.send(embed=embed)
+        # view削除
+        await interaction.message.edit(view=None)
+        await interaction.message.add_reaction("✅")
 
-      # view削除
-      await interaction.message.edit(view=None)
+      except discord.error.Forbidden:
+        await interaction.response.send_message("報告者がDMを受け付けてないため、送信されませんでした。")
+      except Exception as e:
+        await interaction.response.send_message("不明なエラーが発生しました。サポートサーバーに問い合わせてください。")
+        print(f"[ERROR]\n{e}")
+
 
     elif custom_id == "report_cancel":
       await interaction.message.delete()
