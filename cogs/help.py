@@ -13,15 +13,15 @@ class Help(commands.Cog):
   @app_commands.checks.has_permissions(manage_channels=True)
   @app_commands.command(name="help", description='helpコマンドです。')
   async def report(self, interaction:discord.Interaction):
-    description = ("## setting"
-            "- `報告を受け取りたいチャンネルで/config`を実行"
-            "## 使い方"
-            "1. 報告したいメッセージを右クリック(長押し)"
-            "2. 「アプリ」をクリック(タップ)"
+    description = ("## setting\n"
+            "- `報告を受け取りたいチャンネルで/config`を実行\n"
+            "## 使い方\n"
+            "1. 報告したいメッセージを右クリック(長押し)\n"
+            "2. 「アプリ」をクリック(タップ)\n"
             "3. 【サーバー管理者に報告】をクリック(タップ)")
     embed=discord.Embed(
       description=description,
-      color=None
+      color=0xF4BD44,
     )
     await interaction.response.send_message(embed=embed)
 

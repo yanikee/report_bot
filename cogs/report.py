@@ -35,7 +35,7 @@ class Report(commands.Cog):
     button = ReportButton(interaction, message)
     embed=discord.Embed(
       description="通常報告：報告者名がサーバー管理者に伝わる\n匿名報告：報告者名は誰にも伝わらない",
-      color=0x51FF91,
+      color=0xF4BD44,
     )
     await interaction.response.send_message(embed=embed, view=button, ephemeral=True)
 
@@ -64,7 +64,8 @@ class ReportButton(discord.ui.View):
     # embedの定義
     embed=discord.Embed(
       title="報告",
-      description=message.content
+      description=message.content,
+      color=0xF4BD44,
     )
     embed.set_image(url=message.attachments[0].url if message.attachments else None)
     embed.set_author(
@@ -131,6 +132,7 @@ class ReportReasonModal(discord.ui.Modal):
     embed=discord.Embed(
       title="報告の理由",
       description=self.report_reason.value,
+      color=0xF4BD44,
     )
     embed.set_footer(
       text=self.reporter.display_name if self.reporter else "報告者：匿名",

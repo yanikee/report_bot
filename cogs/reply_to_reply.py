@@ -32,7 +32,7 @@ class ReplyToReply(commands.Cog):
 
     # threadを取得し、送信
     cha = await self.bot.fetch_channel(int(msg.embeds[0].url.split('/')[-1]))
-    await cha.send(f"【報告者からの返信】\n{message.content}")
+    await cha.send(f"【報告者からの返信】\n{message.content}\n--------------------------------")
 
     # 返信用のbuttonを設置
     view = discord.ui.View()
@@ -45,7 +45,7 @@ class ReplyToReply(commands.Cog):
     await cha.send("【返信内容】\n下のボタンから編集してください。", view=view)
 
     try:
-      await message.channel.add_reaction("✅")
+      await message.add_reaction("✅")
     except Exception as e:
       print(f"[ERROR]\n{e}")
       await message.channel.send("[ERROR]\n返信できませんでした。\nサポートサーバーまでお問い合わせください。")

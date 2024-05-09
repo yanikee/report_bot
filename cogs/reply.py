@@ -25,6 +25,8 @@ class Reply(commands.Cog):
         return
 
     if custom_id == "report_reply":
+      # buttonの削除
+      await interaction.message.edit(view=None)
       # thread作成, 送信
       thread = await interaction.message.create_thread(name="匿名報告への返信")
 
@@ -59,6 +61,7 @@ class Reply(commands.Cog):
                     "### --------------------------------\n"
                     "- あなたの情報(ユーザー名, idなど)が外部に漏れることは一切ありません。\n"
                     f"- __**このメッセージに返信**__(右クリック→返信)すると、{interaction.guild.name}の管理者に届きます。",
+      color=0xF4BD44,
       )
       try:
         await reporter.send(embed=embed)

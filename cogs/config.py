@@ -26,7 +26,8 @@ class Config(commands.GroupCog, group_name='report'):
       json.dump(report_dict, f, indent=2, ensure_ascii=False)
 
     embed = discord.Embed(
-      description=f'"report"を{channel.mention}に送信します。'
+      description=f'"report"を{channel.mention}に送信します。',
+      color=0xF4BD44,
     )
     await interaction.response.send_message(embed=embed)
 
