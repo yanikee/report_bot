@@ -10,7 +10,7 @@ class Report(commands.Cog):
   def __init__(self, bot: commands.Bot):
     self.bot = bot
     self.ctx_menu = app_commands.ContextMenu(
-      name="!【運営に報告】",
+      name="!【サーバー管理者に報告】",
       callback=self.report,
     )
     self.bot.tree.add_command(self.ctx_menu)
@@ -22,19 +22,19 @@ class Report(commands.Cog):
     # jsonファイルがなかった場合 -> return
     path = f"data/report/guilds/{interaction.guild.id}.json"
     if not os.path.exists(path):
-      await interaction.response.send_message("サーバーの運営の方に、configコマンドを実行してもらってください。", ephemeral=True)
+      await interaction.response.send_message("サーバー管理者に、configコマンドを実行してもらってください。", ephemeral=True)
       return
 
     # report送信チャンネルがなかった場合 -> return
     with open(path, encoding='utf-8', mode="r") as f:
       report_dict = json.load(f)
     if not "report_send_channel" in report_dict:
-      await interaction.response.send_message("サーバーの運営の方に、configコマンドを実行してもらってください。", ephemeral=True)
+      await interaction.response.send_message("サーバー管理者に、configコマンドを実行してもらってください。", ephemeral=True)
       return
 
     button = ReportButton(interaction, message)
     embed=discord.Embed(
-      description="通常報告：報告者名が運営に伝わる\n匿名報告：報告者名は誰にも伝わらない",
+      description="通常報告：報告者名がサーバー管理者に伝わる\n匿名報告：報告者名は誰にも伝わらない",
       color=0x51FF91,
     )
     await interaction.response.send_message(embed=embed, view=button, ephemeral=True)

@@ -53,7 +53,7 @@ class Reply(commands.Cog):
       reporter = await interaction.guild.fetch_member(reporter_id)
       embed = discord.Embed(
         url = interaction.channel.jump_url,
-        description=f"あなたの報告に関して、 {interaction.guild.name} の運営チームから返信が届きました。\n"
+        description=f"あなたの報告に関して、 {interaction.guild.name} の管理者から返信が届きました。\n"
                     "### ------------返信内容------------\n"
                     f"{interaction.message.content.replace('【返信内容】','')}\n"
                     "### --------------------------------\n"
