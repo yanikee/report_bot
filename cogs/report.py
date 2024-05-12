@@ -86,13 +86,6 @@ class ReportButton(discord.ui.View):
 
     msg = await cha.send(f"<@{1237001692977827920}>\n{message.jump_url}", embeds=message.embeds)
 
-    # 返信ボタンを設置
-    view = discord.ui.View()
-    button_0 = discord.ui.Button(label="報告に返信", custom_id=f"report_reply", style=discord.ButtonStyle.primary)
-    view.add_item(button_0)
-
-    await msg.edit(view=view)
-
 
     # 匿名reportの場合 -> 報告者idを保存
     if not reporter:
@@ -107,6 +100,13 @@ class ReportButton(discord.ui.View):
 
       with open(path, mode="w") as f:
         json.dump(private_dict, f, indent=2, ensure_ascii=False)
+
+      # 返信ボタンを設置
+      view = discord.ui.View()
+      button_0 = discord.ui.Button(label="報告に返信", custom_id=f"report_reply", style=discord.ButtonStyle.primary)
+      view.add_item(button_0)
+
+      await msg.edit(view=view)
 
 
     # report理由記入modal
@@ -142,9 +142,10 @@ class ReportReasonModal(discord.ui.Modal):
     embeds.append(embed)
     await self.msg.edit(embeds=embeds)
 
-    await interaction.response.send_message("報告が完了しました。\nありがとうございました。\n\nサーバー管理者からこのbotを通じて返信が届くことがあります。\n### このbotからDMを受け取れるように設定しておいてください。", ephemeral=True)
-    return
-
+    if self.reporter:
+      await interaction.response.send_message("報告が完了しました。\nありがとうございました。\n\nサーバー管理者から直接話を伺うことがあります。", ephemeral=True)
+    else:
+      await interaction.response.send_message("報告が完了しました。\nありがとうございました。\n\nサーバー管理者からこのbotを通じて返信が届くことがあります。\n### このbotからDMを受け取れるように設定しておいてください。", ephemeral=True)
 
 async def setup(bot):
   await bot.add_cog(Report(bot))
