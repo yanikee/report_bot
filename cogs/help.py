@@ -1,8 +1,6 @@
 from discord.ext import commands
 from discord import app_commands
 import discord
-import os
-import json
 
 
 
@@ -13,7 +11,7 @@ class Help(commands.Cog):
   @app_commands.command(name="help", description='helpコマンドです。')
   async def report(self, interaction:discord.Interaction):
     description = ("## setting\n"
-            "- 報告を受け取りたいチャンネルで`/config`を実行\n"
+            "- 報告を受け取りたいチャンネルで`/config`を実行（サーバー管理者専用コマンド）\n"
             "## 使い方\n"
             "1. 報告したいメッセージを右クリック(長押し)\n"
             "2. 「アプリ」をクリック(タップ)\n"
