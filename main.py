@@ -25,5 +25,11 @@ async def on_ready():
   channel = guild.get_channel(yapibotcha_id)
   await channel.send(f"{bot.user.mention} がオンラインになったよう。")
 
+  path = "data/bot_version"
+  with open(path, mode="r") as f:
+    version = f.read()
+  custom_activity = discord.Game(f"/help | ver{version}")
+  await bot.change_presence(status=discord.Status.online,activity=custom_activity)
+
 
 bot.run(TOKEN, log_level = logging.WARNING)
