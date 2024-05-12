@@ -2,7 +2,6 @@ import os
 from discord.ext import commands
 from discord import app_commands
 import discord
-import check
 import cog_list
 from typing import List
 

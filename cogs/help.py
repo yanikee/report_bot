@@ -10,11 +10,10 @@ class Help(commands.Cog):
   def __init__(self, bot: commands.Bot):
     self.bot = bot
 
-  @app_commands.checks.has_permissions(manage_channels=True)
   @app_commands.command(name="help", description='helpコマンドです。')
   async def report(self, interaction:discord.Interaction):
     description = ("## setting\n"
-            "- `報告を受け取りたいチャンネルで/config`を実行\n"
+            "- 報告を受け取りたいチャンネルで`/config`を実行\n"
             "## 使い方\n"
             "1. 報告したいメッセージを右クリック(長押し)\n"
             "2. 「アプリ」をクリック(タップ)\n"
@@ -23,7 +22,7 @@ class Help(commands.Cog):
       description=description,
       color=0xF4BD44,
     )
-    await interaction.response.send_message(embed=embed)
+    await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
 async def setup(bot):

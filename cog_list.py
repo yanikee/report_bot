@@ -9,4 +9,4 @@ for file in files:
   elif file == "reload":
     pass
   else:
-    cog_list.append(f"cogs.{file[-3]}")
+    cog_list.append(f"cogs.{file[:-3]}")
