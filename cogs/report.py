@@ -47,13 +47,16 @@ class ReportButton(discord.ui.View):
     self.interaction = interaction
     self.message = message
 
-    button_0 = discord.ui.Button(label='通常報告', custom_id='public_report', style=discord.ButtonStyle.primary)
-    button_1 = discord.ui.Button(label='匿名報告', custom_id='private_report', style=discord.ButtonStyle.green)
+    self.button_0 = discord.ui.Button(label='通常報告', custom_id='public_report', style=discord.ButtonStyle.primary)
+    self.button_1 = discord.ui.Button(label='匿名報告', custom_id='private_report', style=discord.ButtonStyle.green)
 
-    self.add_item(button_0)
-    self.add_item(button_1)
+    self.add_item(self.button_0)
+    self.add_item(self.button_1)
 
   async def interaction_check(self, interaction: discord.Interaction):
+    self.button_0.disabled = True
+    self.button_1.disabled = True
+
     if interaction.data['custom_id'] == "public_report":
       await self.do_report(interaction, self.message, interaction.user)
     elif interaction.data['custom_id'] == "private_report":
@@ -112,6 +115,8 @@ class ReportButton(discord.ui.View):
     # report理由記入modal
     modal = ReportReasonModal(reporter, msg)
     await interaction.response.send_modal(modal)
+
+    await interaction.followup.edit_message(interaction.message.id, view=self)
 
 
 class ReportReasonModal(discord.ui.Modal):
