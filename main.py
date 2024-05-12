@@ -2,10 +2,10 @@ from discord.ext import commands
 import discord
 import os
 import logging
+import cog_list
 
 
-
-cog_list = ["cogs.report", "cogs.reply_to_reply", "cogs.reply", "cogs.config", "cogs.help"]
+cog_list = cog_list.cog_list
 
 intents = discord.Intents.default()
 bot = commands.Bot(command_prefix="!!!!!", intents=intents)
