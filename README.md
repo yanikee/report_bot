@@ -20,5 +20,7 @@
 ---
 
 ### bot導入リンク
+https://discord.com/oauth2/authorize?client_id=1237001692977827920&permissions=326417583168&scope=bot
 
 ### サポートサーバー
+https://discord.gg/zU8FnMGHg3
