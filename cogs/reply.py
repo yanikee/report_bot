@@ -27,15 +27,30 @@ class Reply(commands.Cog):
     if custom_id == "report_reply":
       # buttonの削除
       await interaction.message.edit(view=None)
+
+      # reply_numを定義
+      path = f"data/report/guilds/{interaction.guild.id}.json"
+      with open(path, encoding='utf-8', mode="r") as f:
+        report_dict = json.load(f)
+      report_dict["reply_num"] += 1
+      with open(path, mode="w") as f:
+        json.dump(report_dict, f, indent=2, ensure_ascii=False)
+
       # thread作成, 送信
-      thread = await interaction.message.create_thread(name="匿名報告への返信")
+      thread = await interaction.message.create_thread(name=f"report_reply-{str(report_dict['reply_num']).zfill(4)}")
 
       view = discord.ui.View()
       button_0 = discord.ui.Button(label="返信内容を編集", custom_id=f"report_edit_reply", style=discord.ButtonStyle.primary)
       button_1 = discord.ui.Button(label="送信する", custom_id=f"report_send", style=discord.ButtonStyle.red)
       view.add_item(button_0)
       view.add_item(button_1)
-      await thread.send("【返信内容】\n下のボタンから編集してください。", view=view)
+
+      embed=discord.Embed(
+        title="返信内容",
+        description="下のボタンから編集してください。",
+        color=0x8BFF85,
+      )
+      await thread.send(embed=embed, view=view)
 
       await interaction.response.send_message("こちらのスレッドから返信を行えます。", ephemeral=True)
 
@@ -57,7 +72,7 @@ class Reply(commands.Cog):
         url = interaction.channel.jump_url,
         description=f"あなたの報告に関して、 {interaction.guild.name} の管理者から返信が届きました。\n"
                     "### ------------返信内容------------\n"
-                    f"{interaction.message.content.replace('【返信内容】','')}\n"
+                    f"{interaction.message.embeds[0].description}\n"
                     "### --------------------------------\n"
                     "- あなたの情報(ユーザー名, idなど)が外部に漏れることは一切ありません。\n"
                     f"- __**このメッセージに返信**__(右クリック→返信)すると、{interaction.guild.name}の管理者に届きます。",
@@ -67,6 +82,7 @@ class Reply(commands.Cog):
         await reporter.send(embed=embed)
         # view削除
         await interaction.message.edit(view=None)
+        await interaction.response.send_message(f"{interaction.user.mention}が返信を行いました。")
         await interaction.message.add_reaction("✅")
 
       except discord.error.Forbidden:
@@ -86,10 +102,10 @@ class EditReplyModal(discord.ui.Modal):
     self.msg = msg
 
     # modalのdefaultを定義
-    if "下のボタンから編集してください。" in self.msg.content:
+    if "下のボタンから編集してください。" in self.msg.embeds[0].description:
       default = None
     else:
-      default = self.msg.content.replace("【返信内容】\n","")
+      default = self.msg.embeds[0].description
 
     self.reply = discord.ui.TextInput(
       label="返信内容を入力（送信ボタンで一時保存できます。）",
@@ -101,7 +117,8 @@ class EditReplyModal(discord.ui.Modal):
     self.add_item(self.reply)
 
   async def on_submit(self, interaction: discord.Interaction):
-    await self.msg.edit(content = f"【返信内容】\n{self.reply.value}")
+    self.msg.embeds[0].description = self.reply.value
+    await self.msg.edit(embed=self.msg.embeds[0])
     await interaction.response.defer(thinking=True)
     m = await interaction.followup.send("\u200b")
     await m.delete()

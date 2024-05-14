@@ -24,7 +24,10 @@ class Config(commands.GroupCog, group_name='report'):
       return
 
     # 保存
-    report_dict = {"report_send_channel": channel.id}
+    report_dict = {
+      "report_send_channel": channel.id,
+      "reply_num": 0
+    }
     path = f"data/report/guilds/{interaction.guild.id}.json"
     with open(path, mode="w") as f:
       json.dump(report_dict, f, indent=2, ensure_ascii=False)

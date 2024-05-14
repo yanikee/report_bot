@@ -32,7 +32,12 @@ class ReplyToReply(commands.Cog):
 
     # threadを取得し、送信
     cha = await self.bot.fetch_channel(int(msg.embeds[0].url.split('/')[-1]))
-    await cha.send(f"【報告者からの返信】\n{message.content}\n--------------------------------")
+    embed=discord.Embed(
+      title="報告者からの返信",
+      description=message.content,
+      color=0x85ABFF,
+    )
+    await cha.send(embed=embed)
 
     # 返信用のbuttonを設置
     view = discord.ui.View()
@@ -42,7 +47,13 @@ class ReplyToReply(commands.Cog):
     view.add_item(button_0)
     view.add_item(button_1)
     view.add_item(button_2)
-    await cha.send("【返信内容】\n下のボタンから編集してください。", view=view)
+
+    embed=discord.Embed(
+        title="返信内容",
+        description="下のボタンから編集してください。",
+        color=0x8BFF85,
+      )
+    await cha.send(embed=embed, view=view)
 
     try:
       await message.add_reaction("✅")
