@@ -23,6 +23,36 @@ class Config(commands.GroupCog, group_name='report'):
       await interaction.response.send_message("テキストチャンネルのみ設定可能です。", ephemeral=True)
       return
 
+    # 閲覧権限など追加する。
+    permission_l = []
+    cannot = False
+    bot_member = interaction.guild.me
+    if interaction.channel.permissions_for(bot_member).read_messages:
+      permission_l.append(":white_check_mark:メッセージを見る")
+    else:
+      permission_l.append(":x:メッセージを見る")
+      cannot = True
+
+    if interaction.channel.permissions_for(bot_member).send_messages:
+      permission_l.append(":white_check_mark:メッセージを送信")
+    else:
+      permission_l.append(":x:メッセージを送信")
+      cannot = True
+
+    if interaction.channel.permissions_for(bot_member).create_public_threads:
+      permission_l.append(":white_check_mark:公開スレッドの作成")
+    else:
+      permission_l.append(":x:公開スレッドの作成")
+      cannot = True
+
+    if cannot:
+      embed=discord.Embed(
+        description=f":x:の付いた権限が不足しています。チャンネル設定から権限を追加し、もう一度このコマンドを実行してください。\n**全て:x:の場合report_botのロールをチャンネル権限に追加し、`メッセージを見る`を追加すれば、解決する場合が多い**です。\n\n- " + "\n- ".join(permission_l),
+        color=0xF4BD44
+      )
+      await interaction.response.send_message(embed=embed, ephemeral=True)
+      return
+
     # 保存
     report_dict = {
       "report_send_channel": channel.id,
