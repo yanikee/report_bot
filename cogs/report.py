@@ -87,7 +87,11 @@ class ReportButton(discord.ui.View):
       report_dict = json.load(f)
     cha = interaction.guild.get_channel(report_dict["report_send_channel"])
 
-    msg = await cha.send(f"<@{1237001692977827920}>\n{message.jump_url}", embeds=message.embeds)
+    try:
+      msg = await cha.send(f"<@{1237001692977827920}>\n{message.jump_url}", embeds=message.embeds)
+    except discord.errors.Forbidden:
+      await interaction.response.send_message("報告チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。**", ephemeral=True)
+      return
 
 
     # 匿名reportの場合 -> 報告者idを保存
