@@ -19,9 +19,14 @@ class PrivateTicket(commands.Cog):
     except KeyError:
       return
 
+    path = f"data/pticket/guilds/{interaction.guild.id}.json"
+    if not os.path.exists(path):
+      await interaction.response.send_message("サーバー管理者に`/pticket config`コマンドを実行するよう伝えてください。", ephemeral=True)
+      return
+
     try:
-      [x async for x in interaction.user.channel.history(limit=1)]
-    except discord.Errors.Forbidden:
+      [x async for x in interaction.user.history(limit=1)]
+    except discord.errors.Forbidden:
       await interaction.response.send_message("このbotからDMを受け取れるように設定してください！\n（テストメッセージをbotに送信するなど）", ephemeral=True)
       return
 
@@ -37,11 +42,11 @@ class PrivateTicketModal(discord.ui.Modal):
       label="ticket内容を入力",
       style=discord.TextStyle.long,
       default=None,
-      placeholder="添付ファイルは、後ほどbotのDMにて送信できます。",
+      placeholder="（ちなみに）添付ファイルは、後ほどbotのDMにて送信できます。",
       required=True,
       row=0
     )
-    self.add_item(self.reply)
+    self.add_item(self.first_pticket)
 
   async def on_submit(self, interaction: discord.Interaction):
     # embedの定義
@@ -51,14 +56,14 @@ class PrivateTicketModal(discord.ui.Modal):
       color=0xF4BD44,
     )
 
-    # report_send_channelの取得
-    path = f"data/report/guilds/{interaction.guild.id}.json"
+    # pticket_channelの取得
+    path = f"data/pticket/guilds/{interaction.guild.id}.json"
     with open(path, encoding='utf-8', mode="r") as f:
       report_dict = json.load(f)
     cha = interaction.guild.get_channel(report_dict["report_send_channel"])
 
     try:
-      msg = await cha.send(f"<@{1237001692977827920}>", embeds=embed)
+      msg = await cha.send(f"<@{1237001692977827920}>", embed=embed)
     except discord.errors.Forbidden:
       await interaction.response.send_message(f"匿名ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。**\n\n### ------------匿名ticket------------\n{self.first_pticket.value}", ephemeral=True)
       return

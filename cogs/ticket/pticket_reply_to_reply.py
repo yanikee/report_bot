@@ -33,25 +33,45 @@ class PticketReplyToReply(commands.Cog):
     if not "------------匿名ticket------------" in msg.embeds[0].description:
       return
 
-    # threadを取得し、送信
+    # threadを取得
     cha = await self.bot.fetch_channel(int(msg.embeds[0].url.split('/')[-1]))
+
+    # embed定義
     embed=discord.Embed(
       title="匿名ticket送信者から",
       description=message.content,
       color=0x85ABFF,
     )
-    await cha.send(embed=embed)
+
+    # 送信
+    try:
+      await cha.send(embed=embed)
+    except discord.errors.Forbidden:
+      await message.channel.send(f"匿名ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。**")
+      return
+    except Exception as e:
+      print(f"[ERROR]\n{e}")
+      await message.channel.send("[ERROR]\n返信できませんでした。\nサポートサーバーまでお問い合わせください。")
+      return
+
+    # 返信ボタンが設置されてたら削除
+    async for message in cha.history(limit=4):
+      if message.embeds:
+        if "返信内容" in message.embeds[0].title:
+          await message.delete()
+          break
 
     # attachmentがあった場合→送信
     if message.attachments:
       file_l = [await x.to_file() for x in message.attachments]
       await cha.send(files=file_l)
 
+
     # 返信用のbuttonを設置
     view = discord.ui.View()
-    button_0 = discord.ui.Button(label="返信内容を編集", custom_id=f"report_edit_reply", style=discord.ButtonStyle.primary)
-    button_1 = discord.ui.Button(label="送信する", custom_id=f"report_send", style=discord.ButtonStyle.red)
-    button_2 = discord.ui.Button(label="もう返信しない", custom_id=f"report_cancel", style=discord.ButtonStyle.gray)
+    button_0 = discord.ui.Button(label="返信内容を編集", custom_id=f"pticket_edit_reply", style=discord.ButtonStyle.primary)
+    button_1 = discord.ui.Button(label="送信する", custom_id=f"pticket_send", style=discord.ButtonStyle.red)
+    button_2 = discord.ui.Button(label="もう返信しない", custom_id=f"pticket_cancel", style=discord.ButtonStyle.gray)
     view.add_item(button_0)
     view.add_item(button_1)
     view.add_item(button_2)
@@ -61,15 +81,9 @@ class PticketReplyToReply(commands.Cog):
         description="下のボタンから編集してください。",
         color=0x8BFF85,
       )
-    await cha.send(embed=embed, view=view)
 
-    try:
-      await message.add_reaction("✅")
-    except discord.errors.Forbidden:
-      await interaction.response.send_message(f"匿名ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。**", ephemeral=True)
-    except Exception as e:
-      print(f"[ERROR]\n{e}")
-      await message.channel.send("[ERROR]\n返信できませんでした。\nサポートサーバーまでお問い合わせください。")
+    await cha.send(embed=embed, view=view)
+    await message.add_reaction("✅")
 
 
 

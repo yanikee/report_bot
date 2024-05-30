@@ -12,7 +12,7 @@ class PrivateTicketConfig(commands.GroupCog, group_name='pticket'):
   @app_commands.command(name="config", description='匿名ticketのボタンを設置, ticket送信チャンネルの設定')
   @app_commands.describe(config_channel='ticket送信チャンネル')
   @app_commands.describe(button_channel='ボタンを送信するチャンネル')
-  async def pticket_config(self, interaction:discord.Interaction, config_channel=discord.TextChannel, button_channel=discord.TextChannel):
+  async def pticket_config(self, interaction:discord.Interaction, config_channel:discord.TextChannel, button_channel:discord.TextChannel):
     if not interaction.channel.permissions_for(interaction.user).manage_channels:
       await interaction.response.send_message("権限不足です。\n`チャンネル管理`の権限が必要です。", ephemeral=True)
       return
@@ -55,19 +55,12 @@ class PrivateTicketConfig(commands.GroupCog, group_name='pticket'):
         pticket_dict = json.load(f)
     else:
       pticket_dict = {
-        "report_send_channel": channel.id,
+        "report_send_channel": config_channel.id,
         "pticket_num": 0
       }
 
     with open(path, mode="w") as f:
       json.dump(pticket_dict, f, indent=2, ensure_ascii=False)
-
-    embed = discord.Embed(
-      description=f'"report"を{channel.mention}に送信します。',
-      color=0xF4BD44,
-    )
-    await interaction.response.send_message(embed=embed)
-
 
     # buttonを送信
     embed=discord.Embed(
