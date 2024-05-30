@@ -94,7 +94,7 @@ class ReportButton(discord.ui.View):
       return
 
 
-    # 匿名reportの場合 -> 報告者idを保存
+    # 匿名reportの場合 -> 報告者idを保存{msg.id: user.id}
     if not reporter:
       path = f"data/report/private_report/{interaction.guild.id}.json"
       if os.path.exists(path):
