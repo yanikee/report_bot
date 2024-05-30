@@ -10,3 +10,15 @@ for file in files:
     pass
   else:
     cog_list.append(f"cogs.{file[:-3]}")
+
+
+path_l = ["manage", "report", "ticket"]
+
+cog_list = []
+for path in path_l:
+  files = os.listdir(f"cogs/{path}")
+  for file in files:
+    if file.startswith("_"):
+      pass
+    else:
+      cog_list.append(f"cogs.{path}.{file[:-3]}")
