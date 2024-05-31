@@ -5,6 +5,7 @@ import os
 import json
 
 
+
 class ReportConfig(commands.GroupCog, group_name='report'):
   def __init__(self, bot: commands.Bot):
     self.bot = bot

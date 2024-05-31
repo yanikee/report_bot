@@ -65,21 +65,42 @@ class Reply(commands.Cog):
       with open(path, encoding='utf-8', mode="r") as f:
         private_dict = json.load(f)
 
-      # 報告者に返信
+      # 報告者を取得
       reporter_id = private_dict[str(interaction.channel.id)]
       reporter = await interaction.guild.fetch_member(reporter_id)
-      embed = discord.Embed(
-        url = interaction.channel.jump_url,
+
+      # embedを定義
+      embeds=[]
+
+      embed_0 = discord.Embed(
+        url=interaction.channel.jump_url,
         description=f"あなたの報告に関して、 {interaction.guild.name} の管理者から返信が届きました。\n"
-                    "### ------------返信内容------------\n"
-                    f"{interaction.message.embeds[0].description}\n"
-                    "### --------------------------------\n"
                     "- あなたの情報(ユーザー名, idなど)が外部に漏れることは一切ありません。\n"
                     f"- __**このメッセージに返信**__(右クリック→返信)すると、{interaction.guild.name}の管理者に届きます。",
-      color=0xF4BD44,
+        color=0xF4BD44,
       )
+      embeds.append(embed_0)
+
+      # スレッドのメッセージ数が2だった場合→
+      # initial replyだと判断し、reportも送信する
+      l = [x for x in interaction.channel.history(limit=10, oldest_first=True)]
+      if len(l) - l.count(None) == 2:
+        embed_1 = discord.Embed(
+          url=interaction.channel.jump_url,
+          description=l[0].content,
+          color=0xF4BD44,
+        )
+        embeds.append(embed_1)
+
+      embed_2 = discord.Embed(
+        url = interaction.channel.jump_url,
+        description=interaction.message.embeds[0].description,
+        color=0xF4BD44,
+      )
+      embeds.append(embed_2)
+
       try:
-        await reporter.send(embed=embed)
+        await reporter.send(embeds=embeds)
         # view削除
         await interaction.message.edit(view=None)
         await interaction.response.send_message(f"{interaction.user.mention}が返信を行いました。")
