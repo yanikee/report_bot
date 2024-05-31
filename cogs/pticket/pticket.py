@@ -111,16 +111,18 @@ class PrivateTicketModal(discord.ui.Modal):
     await thread.send(embed=embed, view=view)
 
     # 確認msg
-    embed=discord.Embed(
+    embed_1=discord.Embed(
       url=thread.jump_url,
-      description="### ------------匿名ticket------------\n"
-                  f"{self.first_pticket.value}\n"
-                  "### ---------------------------------\n\n"
-                  "ファイルを添付する場合や追加で何か送信する場合は、**このメッセージに返信**する形で送信してください。",
+      description=self.first_pticket.value,
+      color=0x9AC9FF,
+    )
+    embed_2=discord.Embed(
+      description="- ファイルを添付する場合や追加で何か送信する場合は、**このメッセージに返信**する形で送信してください。\n"
+                  "- あなたの情報(ユーザー名, idなど)が外部に漏れることは一切ありません。",
       color=0x9AC9FF,
     )
     try:
-      await interaction.user.send(embed=embed)
+      await interaction.user.send(embeds=[embed_1, embed_2])
     except Exception as e:
       await interaction.response.send_message("不明なエラーが発生しました。サポートサーバーに問い合わせてください。", ephemeral=True)
       print(e)

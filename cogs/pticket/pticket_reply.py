@@ -29,21 +29,31 @@ class PticketReply(commands.Cog):
       with open(path, encoding='utf-8', mode="r") as f:
         pticket_dict = json.load(f)
 
-      # 報告者に返信
+      # pticket者を取得
       user_id = pticket_dict[str(interaction.channel.id)]
       user = await interaction.guild.fetch_member(user_id)
-      embed = discord.Embed(
+
+      # embedを定義
+      # embed_1: お知らせ
+      # embed_2: 返信内容
+      embed_1 = discord.Embed(
         url = interaction.channel.jump_url,
         description=f"あなたの匿名ticketに関して、 {interaction.guild.name} の管理者から返信が届きました。\n"
-                    "### ------------返信内容------------\n"
-                    f"{interaction.message.embeds[0].description}\n"
-                    "### --------------------------------\n"
-                    "- あなたの情報(ユーザー名, idなど)が外部に漏れることは一切ありません。\n"
                     f"- __**このメッセージに返信**__(右クリック→返信)すると、{interaction.guild.name}の管理者に届きます。",
         color=0x9AC9FF,
       )
+      embed_2 = discord.Embed(
+        url = interaction.channel.jump_url,
+        description=interaction.message.embeds[0].description,
+        color=0x9AC9FF,
+      )
+      embed_2.set_footer(
+        text=interaction.guild.name,
+        icon_url=interaction.guild.icon.replace(format='png').url if interaction.guild.icon else None,
+      )
+
       try:
-        await user.send(embed=embed)
+        await user.send(embeds=[embed_1, embed_2])
         # view削除
         await interaction.message.edit(view=None)
         await interaction.response.send_message(f"{interaction.user.mention}が返信を行いました。")
@@ -51,9 +61,11 @@ class PticketReply(commands.Cog):
 
       except discord.error.Forbidden:
         await interaction.response.send_message("匿名ticket送信者がDMを受け付けてないため、送信されませんでした。")
+        return
       except Exception as e:
         await interaction.response.send_message("不明なエラーが発生しました。サポートサーバーに問い合わせてください。")
         print(f"[ERROR]\n{e}")
+        return
 
 
     elif custom_id == "pticket_cancel":
