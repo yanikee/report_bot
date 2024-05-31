@@ -12,7 +12,7 @@ for file in files:
     cog_list.append(f"cogs.{file[:-3]}")
 
 
-path_l = ["manage", "report", "ticket"]
+path_l = ["manage", "report", "pticket"]
 
 cog_list = []
 for path in path_l:

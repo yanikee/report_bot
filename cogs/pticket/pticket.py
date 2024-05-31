@@ -113,7 +113,7 @@ class PrivateTicketModal(discord.ui.Modal):
     # 確認msg
     embed_1=discord.Embed(
       url=thread.jump_url,
-      description=self.first_pticket.value,
+      description=f"## 匿名ticket\n{self.first_pticket.value}",
       color=0x9AC9FF,
     )
     embed_2=discord.Embed(

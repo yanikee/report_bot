@@ -36,24 +36,21 @@ class PticketReply(commands.Cog):
       # embedを定義
       # embed_1: お知らせ
       # embed_2: 返信内容
-      embed_1 = discord.Embed(
+      embed = discord.Embed(
         url = interaction.channel.jump_url,
-        description=f"あなたの匿名ticketに関して、 {interaction.guild.name} の管理者から返信が届きました。\n"
-                    f"- __**このメッセージに返信**__(右クリック→返信)すると、{interaction.guild.name}の管理者に届きます。",
+        description="## 匿名ticket\n"
+                    f"あなたの匿名ticketに、 {interaction.guild.name} の管理者から返信が届きました。\n"
+                    f"- __**このメッセージに返信**__(右クリック→返信)すると、{interaction.guild.name}の管理者に届きます。\n\n"
+                    f"## 返信内容\n{interaction.message.embeds[0].description}",
         color=0x9AC9FF,
       )
-      embed_2 = discord.Embed(
-        url = interaction.channel.jump_url,
-        description=interaction.message.embeds[0].description,
-        color=0x9AC9FF,
-      )
-      embed_2.set_footer(
+      embed.set_footer(
         text=interaction.guild.name,
         icon_url=interaction.guild.icon.replace(format='png').url if interaction.guild.icon else None,
       )
 
       try:
-        await user.send(embeds=[embed_1, embed_2])
+        await user.send(embed=embed)
         # view削除
         await interaction.message.edit(view=None)
         await interaction.response.send_message(f"{interaction.user.mention}が返信を行いました。")
