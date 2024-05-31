@@ -30,7 +30,7 @@ class ReplyToReply(commands.Cog):
     if not msg.embeds:
       return
 
-    if not "------------返信内容------------" in msg.embeds[0].description:
+    if not "## 返信" in msg.embeds[0].description:
       return
 
     # threadを取得し、送信

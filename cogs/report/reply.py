@@ -70,48 +70,49 @@ class Reply(commands.Cog):
       reporter = await interaction.guild.fetch_member(reporter_id)
 
       # embedを定義
-      embeds=[]
-
-      embed_0 = discord.Embed(
-        url=interaction.channel.jump_url,
-        description=f"あなたの報告に関して、 {interaction.guild.name} の管理者から返信が届きました。\n"
-                    "- あなたの情報(ユーザー名, idなど)が外部に漏れることは一切ありません。\n"
-                    f"- __**このメッセージに返信**__(右クリック→返信)すると、{interaction.guild.name}の管理者に届きます。",
-        color=0xF4BD44,
+      description=(
+        f"あなたの報告に関して、 {interaction.guild.name} の管理者から返信が届きました。\n"
+        "- あなたの情報(ユーザー名, idなど)が外部に漏れることは一切ありません。\n"
+        f"- __**このメッセージに返信**__(右クリック→返信)すると、{interaction.guild.name}の管理者に届きます。\n\n"
       )
-      embeds.append(embed_0)
+
 
       # スレッドのメッセージ数が2だった場合→
       # initial replyだと判断し、reportも送信する
-      l = [x for x in interaction.channel.history(limit=10, oldest_first=True)]
-      if len(l) - l.count(None) == 2:
-        embed_1 = discord.Embed(
-          url=interaction.channel.jump_url,
-          description=l[0].content,
-          color=0xF4BD44,
-        )
-        embeds.append(embed_1)
+      #l = [x async for x in interaction.channel.history(limit=10, oldest_first=True)]
+      #if len(l) - l.count(None) == 2:
+      #  description+=(
+      #    f"## 報告内容\n{l[0].embeds[1].description}\n"
+      #    f"## 返信\n{interaction.message.embeds[0].description}"
+      #  )
+      #else:
 
-      embed_2 = discord.Embed(
-        url = interaction.channel.jump_url,
-        description=interaction.message.embeds[0].description,
+      description+=f"## 返信\n{interaction.message.embeds[0].description}"
+
+      embed = discord.Embed(
+        url=interaction.channel.jump_url,
+        description=description,
         color=0xF4BD44,
       )
-      embeds.append(embed_2)
+      embed.set_footer(
+        text=interaction.guild.name,
+        icon_url=interaction.guild.icon.replace(format='png').url if interaction.guild.icon else None,
+      )
 
       try:
-        await reporter.send(embeds=embeds)
-        # view削除
-        await interaction.message.edit(view=None)
-        await interaction.response.send_message(f"{interaction.user.mention}が返信を行いました。")
-        await interaction.message.add_reaction("✅")
-
-      except discord.error.Forbidden:
+        await reporter.send(embed=embed)
+      except discord.errors.Forbidden:
         await interaction.response.send_message("報告者がDMを受け付けてないため、送信されませんでした。")
+        return
       except Exception as e:
         await interaction.response.send_message("不明なエラーが発生しました。サポートサーバーに問い合わせてください。")
         print(f"[ERROR]\n{e}")
+        return
 
+      # view削除
+      await interaction.message.edit(view=None)
+      await interaction.response.send_message(f"{interaction.user.mention}が返信を行いました。")
+      await interaction.message.add_reaction("✅")
 
     elif custom_id == "report_cancel":
       await interaction.message.delete()
