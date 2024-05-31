@@ -40,7 +40,7 @@ class PticketReply(commands.Cog):
                     "### --------------------------------\n"
                     "- あなたの情報(ユーザー名, idなど)が外部に漏れることは一切ありません。\n"
                     f"- __**このメッセージに返信**__(右クリック→返信)すると、{interaction.guild.name}の管理者に届きます。",
-        color=0xF4BD44,
+        color=0x9AC9FF,
       )
       try:
         await user.send(embed=embed)

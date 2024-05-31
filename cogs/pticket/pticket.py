@@ -35,14 +35,14 @@ class PrivateTicket(commands.Cog):
 
 
 class PrivateTicketModal(discord.ui.Modal):
-  def __init__(self, ):
+  def __init__(self):
     super().__init__(title=f'匿名ticketモーダル')
 
     self.first_pticket = discord.ui.TextInput(
       label="ticket内容を入力",
       style=discord.TextStyle.long,
       default=None,
-      placeholder="（ちなみに）添付ファイルは、後ほどbotのDMにて送信できます。",
+      placeholder="（ちなみに）\n後ほどbotのDMに、添付ファイルなどを送信できます。",
       required=True,
       row=0
     )
@@ -53,7 +53,7 @@ class PrivateTicketModal(discord.ui.Modal):
     embed=discord.Embed(
       title="匿名ticket",
       description=self.first_pticket.value,
-      color=0xF4BD44,
+      color=0x9AC9FF,
     )
 
     # pticket_channelの取得
@@ -65,7 +65,7 @@ class PrivateTicketModal(discord.ui.Modal):
     try:
       msg = await cha.send(f"<@{1237001692977827920}>", embed=embed)
     except discord.errors.Forbidden:
-      await interaction.response.send_message(f"匿名ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。**\n\n### ------------匿名ticket------------\n{self.first_pticket.value}", ephemeral=True)
+      await interaction.response.send_message(f"匿名ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/pticket config`コマンドをもう一度実行するように伝えてください。**\n\n### ------------匿名ticket------------\n{self.first_pticket.value}", ephemeral=True)
       return
     except Exception as e:
       await interaction.response.send_message(f"不明なエラーが発生しました。\nサポートサーバーに問い合わせてください。\n\n### ------------匿名ticket------------\n{self.first_pticket.value}", ephemeral=True)
@@ -117,7 +117,7 @@ class PrivateTicketModal(discord.ui.Modal):
                   f"{self.first_pticket.value}\n"
                   "### ---------------------------------\n\n"
                   "ファイルを添付する場合や追加で何か送信する場合は、**このメッセージに返信**する形で送信してください。",
-      color=0xF4BD44,
+      color=0x9AC9FF,
     )
     try:
       await interaction.user.send(embed=embed)

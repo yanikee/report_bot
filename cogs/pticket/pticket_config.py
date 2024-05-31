@@ -5,6 +5,7 @@ import os
 import json
 
 
+
 class PrivateTicketConfig(commands.GroupCog, group_name='pticket'):
   def __init__(self, bot: commands.Bot):
     self.bot = bot
@@ -42,7 +43,7 @@ class PrivateTicketConfig(commands.GroupCog, group_name='pticket'):
     if cannot:
       embed=discord.Embed(
         description=f":x:の付いた権限が不足しています。チャンネル設定から権限を追加し、もう一度このコマンドを実行してください。\n**全て:x:の場合report_botのロールをチャンネル権限に追加し、`メッセージを見る`を追加すれば、解決する場合が多い**です。\n\n- " + "\n- ".join(permission_l),
-        color=0xF4BD44
+        color=0x9AC9FF
       )
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
@@ -65,7 +66,7 @@ class PrivateTicketConfig(commands.GroupCog, group_name='pticket'):
     # buttonを送信
     embed=discord.Embed(
       description="匿名ticketを開きます。\nこのbotのDMを通じて匿名でサーバー管理者と会話することができます。",
-      color=0xF4BD44,
+      color=0x9AC9FF,
     )
     view = discord.ui.View()
     button = discord.ui.Button(label="匿名ticket", emoji="🔖", custom_id=f"private_ticket", style=discord.ButtonStyle.primary)
