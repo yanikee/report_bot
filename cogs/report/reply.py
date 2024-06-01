@@ -71,7 +71,8 @@ class Reply(commands.Cog):
 
       # embedを定義
       description=(
-        f"あなたの報告に関して、 {interaction.guild.name} の管理者から返信が届きました。\n"
+        "## 匿名報告\n"
+        f"あなたの報告に、 {interaction.guild.name} の管理者から返信が届きました。\n"
         "- あなたの情報(ユーザー名, idなど)が外部に漏れることは一切ありません。\n"
         f"- __**このメッセージに返信**__(右クリック→返信)すると、{interaction.guild.name}の管理者に届きます。\n\n"
       )
