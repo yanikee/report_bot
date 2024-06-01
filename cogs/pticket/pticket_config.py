@@ -74,7 +74,7 @@ class PrivateTicketConfig(commands.GroupCog, group_name='pticket'):
     view.add_item(button)
 
     msg = await button_channel.send(embed=embed, view=view)
-    await interaction.response.send_message(f"匿名ticket送信チャンネル：{config_channel.mention}\nbutton：{msg.jump_url}", ephemeral=True)
+    await interaction.response.send_message(f"匿名ticket送信チャンネル：{config_channel.mention}\nbutton：{msg.jump_url}")
 
 
 
