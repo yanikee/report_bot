@@ -30,7 +30,10 @@ class PticketReplyToReply(commands.Cog):
     if not msg.embeds:
       return
 
-    if not "## 匿名ticket" in msg.embeds[0].description:
+    # 匿名ticketじゃなかった場合 -> return
+    if not msg.embeds[0].footer:
+      return
+    if not "匿名ticket |" in msg.embeds[0].footer.text:
       return
 
     # threadを取得

@@ -95,7 +95,7 @@ class Reply(commands.Cog):
         color=0xF4BD44,
       )
       embed.set_footer(
-        text=interaction.guild.name,
+        text=f"匿名報告 | {interaction.guild.name}",
         icon_url=interaction.guild.icon.replace(format='png').url if interaction.guild.icon else None,
       )
 

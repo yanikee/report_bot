@@ -45,7 +45,7 @@ class PticketReply(commands.Cog):
         color=0x9AC9FF,
       )
       embed.set_footer(
-        text=interaction.guild.name,
+        text=f"匿名ticket | {interaction.guild.name}",
         icon_url=interaction.guild.icon.replace(format='png').url if interaction.guild.icon else None,
       )
 

@@ -30,8 +30,13 @@ class ReplyToReply(commands.Cog):
     if not msg.embeds:
       return
 
-    if not "## 返信" in msg.embeds[0].description:
-      return
+    # 匿名報告のembedじゃなかった場合 -> return
+    if msg.embeds[0].footer:
+      if not "匿名報告 |" in msg.embeds[0].footer.text:
+        return
+    else:
+      if not "------------返信内容------------" in msg.embeds[0].description:
+        return
 
     # threadを取得し、送信
     cha = await self.bot.fetch_channel(int(msg.embeds[0].url.split('/')[-1]))
