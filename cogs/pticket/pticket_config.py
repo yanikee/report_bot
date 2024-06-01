@@ -54,6 +54,7 @@ class PrivateTicketConfig(commands.GroupCog, group_name='pticket'):
     if os.path.exists(path):
       with open(path, encoding='utf-8', mode="r") as f:
         pticket_dict = json.load(f)
+      pticket_dict["report_send_channel"] = config_channel.id
     else:
       pticket_dict = {
         "report_send_channel": config_channel.id,

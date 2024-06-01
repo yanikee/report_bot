@@ -59,6 +59,8 @@ class ReportConfig(commands.GroupCog, group_name='report'):
     if os.path.exists(path):
       with open(path, encoding='utf-8', mode="r") as f:
         report_dict = json.load(f)
+      report_dict["report_send_channel"] = channel.id
+
     else:
       report_dict = {
         "report_send_channel": channel.id,
