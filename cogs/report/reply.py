@@ -80,13 +80,9 @@ class Reply(commands.Cog):
 
       # スレッドのメッセージ数が2だった場合→
       # initial replyだと判断し、reportも送信する
-      #l = [x async for x in interaction.channel.history(limit=10, oldest_first=True)]
-      #if len(l) - l.count(None) == 2:
-      #  description+=(
-      #    f"## 報告内容\n{l[0].embeds[1].description}\n"
-      #    f"## 返信\n{interaction.message.embeds[0].description}"
-      #  )
-      #else:
+      l = [x async for x in interaction.channel.history(limit=10, oldest_first=True)]
+      if len(l) - l.count(None) == 2:
+        description+=(f"## 報告内容\n{l[0].embeds[1].description}\n")
 
       description+=f"## 返信\n{interaction.message.embeds[0].description}"
 
