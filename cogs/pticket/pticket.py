@@ -30,13 +30,14 @@ class PrivateTicket(commands.Cog):
       await interaction.response.send_message("このbotからDMを受け取れるように設定してください！\n（テストメッセージをbotに送信するなど）", ephemeral=True)
       return
 
-    modal = PrivateTicketModal()
+    modal = PrivateTicketModal(self.bot)
     await interaction.response.send_modal(modal)
 
 
 class PrivateTicketModal(discord.ui.Modal):
-  def __init__(self):
+  def __init__(self, bot):
     super().__init__(title=f'匿名ticketモーダル')
+    self.bot = bot
 
     self.first_pticket = discord.ui.TextInput(
       label="ticket内容を入力",

@@ -32,7 +32,7 @@ class Report(commands.Cog):
       await interaction.response.send_message("サーバー管理者に、configコマンドを実行してもらってください。", ephemeral=True)
       return
 
-    button = ReportButton(interaction, message)
+    button = ReportButton(self,bot, interaction, message)
     embed=discord.Embed(
       description="通常報告：報告者名がサーバー管理者に伝わる\n匿名報告：報告者名は誰にも伝わらない",
       color=0xF4BD44,
@@ -42,8 +42,9 @@ class Report(commands.Cog):
 
 
 class ReportButton(discord.ui.View):
-  def __init__(self, interaction, message, timeout=30):
+  def __init__(self, bot, interaction, message, timeout=30):
     super().__init__(timeout=timeout)
+    self.bot = bot
     self.interaction = interaction
     self.message = message
 
@@ -88,7 +89,7 @@ class ReportButton(discord.ui.View):
     cha = interaction.guild.get_channel(report_dict["report_send_channel"])
 
     try:
-      msg = await cha.send(f"<@{1237001692977827920}>\n{message.jump_url}", embeds=message.embeds)
+      msg = await cha.send(f"{self.bot.user.mention}\n{message.jump_url}", embeds=message.embeds)
     except discord.errors.Forbidden:
       await interaction.response.send_message("報告チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。**", ephemeral=True)
       return
