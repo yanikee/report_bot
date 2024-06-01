@@ -107,7 +107,7 @@ class PrivateTicketModal(discord.ui.Modal):
     embed=discord.Embed(
       title="返信内容",
       description="下のボタンから編集してください。",
-      color=0x8BFF85,
+      color=0x95FFA1,
     )
     await thread.send(embed=embed, view=view)
 

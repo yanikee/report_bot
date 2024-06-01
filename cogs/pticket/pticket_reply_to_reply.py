@@ -43,7 +43,7 @@ class PticketReplyToReply(commands.Cog):
     embed=discord.Embed(
       title="匿名ticket送信者から",
       description=message.content,
-      color=0x85ABFF,
+      color=0x9AC9FF,
     )
 
     # 送信
@@ -82,7 +82,7 @@ class PticketReplyToReply(commands.Cog):
     embed=discord.Embed(
         title="返信内容",
         description="下のボタンから編集してください。",
-        color=0x8BFF85,
+        color=0x95FFA1,
       )
 
     await cha.send(embed=embed, view=view)

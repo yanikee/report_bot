@@ -43,7 +43,7 @@ class ReplyToReply(commands.Cog):
     embed=discord.Embed(
       title="報告者からの返信",
       description=message.content,
-      color=0x85ABFF,
+      color=0xF4BD44,
     )
     await cha.send(embed=embed)
 
@@ -64,7 +64,7 @@ class ReplyToReply(commands.Cog):
     embed=discord.Embed(
         title="返信内容",
         description="下のボタンから編集してください。",
-        color=0x8BFF85,
+        color=0x95FFA1,
       )
     await cha.send(embed=embed, view=view)
 
