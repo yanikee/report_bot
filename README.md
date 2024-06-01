@@ -10,14 +10,14 @@
 ### report
 reportを送信するチャンネルを設定します。
 ```
-/report config channel:任意
+/report config <channel:任意>
 ```
 - channel欄に何も入力しないと、コマンドを実行したチャンネルがreport送信チャンネルに設定されます。</br></br>
 
 ### 匿名ticket
 匿名ticketを送信するチャンネルを設定, 匿名ticketを開始するbuttonを設置します。
 ```
-/pticket config config_channel:必須, button_channel:必須
+/pticket config <config_channel:必須, button_channel:必須>
 ```
 
 ## 使い方
