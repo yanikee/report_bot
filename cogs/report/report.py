@@ -32,7 +32,7 @@ class Report(commands.Cog):
       await interaction.response.send_message("サーバー管理者に、configコマンドを実行してもらってください。", ephemeral=True)
       return
 
-    button = ReportButton(self,bot, interaction, message)
+    button = ReportButton(self.bot, interaction, message)
     embed=discord.Embed(
       description="通常報告：報告者名がサーバー管理者に伝わる\n匿名報告：報告者名は誰にも伝わらない",
       color=0xF4BD44,

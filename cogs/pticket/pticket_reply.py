@@ -30,7 +30,11 @@ class PticketReply(commands.Cog):
         pticket_dict = json.load(f)
 
       # pticket者を取得
-      user_id = pticket_dict[str(interaction.channel.id)]
+      try:
+        user_id = pticket_dict[str(interaction.channel.id)]
+      except KeyError:
+        await interaction.response.send_message("データが存在しませんでした。")
+        return
       user = await interaction.guild.fetch_member(user_id)
 
       # embedを定義

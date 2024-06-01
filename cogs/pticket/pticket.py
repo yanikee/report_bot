@@ -117,6 +117,11 @@ class PrivateTicketModal(discord.ui.Modal):
       description=f"## 匿名ticket\n{self.first_pticket.value}",
       color=0x9AC9FF,
     )
+    embed_1.set_footer(
+        text=f"匿名ticket | {interaction.guild.name}",
+        icon_url=interaction.guild.icon.replace(format='png').url if interaction.guild.icon else None,
+      )
+
     embed_2=discord.Embed(
       description="- ファイルを添付する場合や追加で何か送信する場合は、**このメッセージに返信**する形で送信してください。\n"
                   "- あなたの情報(ユーザー名, idなど)が外部に漏れることは一切ありません。",

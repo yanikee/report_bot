@@ -66,7 +66,11 @@ class Reply(commands.Cog):
         private_dict = json.load(f)
 
       # 報告者を取得
-      reporter_id = private_dict[str(interaction.channel.id)]
+      try:
+        reporter_id = private_dict[str(interaction.channel.id)]
+      except KeyError:
+        await interaction.response.send_message("データが存在しませんでした。")
+        return
       reporter = await interaction.guild.fetch_member(reporter_id)
 
       # embedを定義
@@ -76,13 +80,6 @@ class Reply(commands.Cog):
         "- あなたの情報(ユーザー名, idなど)が外部に漏れることは一切ありません。\n"
         f"- __**このメッセージに返信**__(右クリック→返信)すると、{interaction.guild.name}の管理者に届きます。\n\n"
       )
-
-
-      # スレッドのメッセージ数が2だった場合→
-      # initial replyだと判断し、reportも送信する
-      l = [x async for x in interaction.channel.history(limit=10, oldest_first=True)]
-      if len(l) - l.count(None) == 2:
-        description+=(f"## 報告内容\n{l[0].embeds[1].description}\n")
 
       description+=f"## 返信\n{interaction.message.embeds[0].description}"
 

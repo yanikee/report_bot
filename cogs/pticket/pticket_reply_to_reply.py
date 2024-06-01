@@ -59,10 +59,9 @@ class PticketReplyToReply(commands.Cog):
 
     # 返信ボタンが設置されてたら削除
     async for msg in cha.history(limit=4):
-      if msg.embeds:
-        if "返信内容" in msg.embeds[0].title:
-          await msg.delete()
-          break
+      if msg.components:
+        await msg.delete()
+        break
 
     # attachmentがあった場合→送信
     if message.attachments:

@@ -71,7 +71,7 @@ class ReplyToReply(commands.Cog):
     try:
       await message.add_reaction("✅")
     except discord.errors.Forbidden:
-      await interaction.response.send_message(f"報告report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。** 1", ephemeral=True)
+      await message.channel.send(f"報告report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。** 1", ephemeral=True)
     except Exception as e:
       print(f"[ERROR]\n{e}")
       await message.channel.send("[ERROR]\n返信できませんでした。\nサポートサーバーまでお問い合わせください。")
