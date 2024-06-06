@@ -93,6 +93,11 @@ class ReportButton(discord.ui.View):
     except discord.errors.Forbidden:
       await interaction.response.send_message("報告チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。**", ephemeral=True)
       return
+    except Exception as e:
+      await interaction.response.send_message(f"不明なエラーが発生しました。\nサポートサーバーに問い合わせてください。\n\n### ------------匿名ticket------------\n{self.first_pticket.value}", ephemeral=True)
+      error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
+      print(e)
+      return
 
 
     # 匿名reportの場合 -> 報告者idを保存{msg.id: user.id}

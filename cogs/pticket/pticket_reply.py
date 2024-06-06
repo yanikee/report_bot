@@ -65,7 +65,8 @@ class PticketReply(commands.Cog):
         return
       except Exception as e:
         await interaction.response.send_message("不明なエラーが発生しました。サポートサーバーに問い合わせてください。")
-        print(f"[ERROR]\n{e}")
+        error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
+        print(e)
         return
 
 
