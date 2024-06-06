@@ -10,7 +10,7 @@ class Notification(commands.Cog):
   def __init__(self, bot: commands.Bot):
     self.bot = bot
 
-  @app_commands.command(name="notification", description='[開発者専]全サーバーに通知を送信します。')
+  @app_commands.command(name="notification", description='[開発者専用]全サーバーに通知を送信します。')
   @app_commands.describe(msg_id='こいつを送信するお')
   async def notification(self, interaction:discord.Interaction, msg_id:str):
     if not await self.bot.is_owner(interaction.user):

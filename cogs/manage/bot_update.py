@@ -11,7 +11,7 @@ class BotUpdate(commands.GroupCog, group_name='update'):
 
   @app_commands.command(
     name="report_bot",
-    description="report bot! のアップデート"
+    description="[開発者専用]report bot! のアップデート"
   )
   @app_commands.describe(channel="送信するチャンネルを選択してください。")
   @app_commands.describe(version="バージョンを指定してください。⚪︎.⚪︎.⚪︎の形が好ましいです。")
