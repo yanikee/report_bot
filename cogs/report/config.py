@@ -5,13 +5,14 @@ import os
 import json
 
 
-class Config(commands.GroupCog, group_name='report'):
+
+class ReportConfig(commands.GroupCog, group_name='report'):
   def __init__(self, bot: commands.Bot):
     self.bot = bot
 
   @app_commands.command(name="config", description='"report"を送信するチャンネルを設定します。')
   @app_commands.describe(channel='"report"を送信するチャンネル')
-  async def report(self, interaction:discord.Interaction, channel:discord.TextChannel=None):
+  async def report_config(self, interaction:discord.Interaction, channel:discord.TextChannel=None):
     if not interaction.channel.permissions_for(interaction.user).manage_channels:
       await interaction.response.send_message("権限不足です。\n`チャンネル管理`の権限が必要です。", ephemeral=True)
       return
@@ -27,19 +28,19 @@ class Config(commands.GroupCog, group_name='report'):
     permission_l = []
     cannot = False
     bot_member = interaction.guild.me
-    if interaction.channel.permissions_for(bot_member).read_messages:
+    if channel.permissions_for(bot_member).read_messages:
       permission_l.append(":white_check_mark:メッセージを見る")
     else:
       permission_l.append(":x:メッセージを見る")
       cannot = True
 
-    if interaction.channel.permissions_for(bot_member).send_messages:
+    if channel.permissions_for(bot_member).send_messages:
       permission_l.append(":white_check_mark:メッセージを送信")
     else:
       permission_l.append(":x:メッセージを送信")
       cannot = True
 
-    if interaction.channel.permissions_for(bot_member).create_public_threads:
+    if channel.permissions_for(bot_member).create_public_threads:
       permission_l.append(":white_check_mark:公開スレッドの作成")
     else:
       permission_l.append(":x:公開スレッドの作成")
@@ -54,11 +55,18 @@ class Config(commands.GroupCog, group_name='report'):
       return
 
     # 保存
-    report_dict = {
-      "report_send_channel": channel.id,
-      "reply_num": 0
-    }
     path = f"data/report/guilds/{interaction.guild.id}.json"
+    if os.path.exists(path):
+      with open(path, encoding='utf-8', mode="r") as f:
+        report_dict = json.load(f)
+      report_dict["report_send_channel"] = channel.id
+
+    else:
+      report_dict = {
+        "report_send_channel": channel.id,
+        "reply_num": 0
+      }
+
     with open(path, mode="w") as f:
       json.dump(report_dict, f, indent=2, ensure_ascii=False)
 
@@ -71,4 +79,4 @@ class Config(commands.GroupCog, group_name='report'):
 
 
 async def setup(bot):
-  await bot.add_cog(Config(bot))
+  await bot.add_cog(ReportConfig(bot))

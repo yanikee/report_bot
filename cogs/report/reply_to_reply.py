@@ -30,14 +30,27 @@ class ReplyToReply(commands.Cog):
     if not msg.embeds:
       return
 
+    # 匿名報告のembedじゃなかった場合 -> return
+    if msg.embeds[0].footer:
+      if not "匿名報告 |" in msg.embeds[0].footer.text:
+        return
+    else:
+      if not "------------返信内容------------" in msg.embeds[0].description:
+        return
+
     # threadを取得し、送信
     cha = await self.bot.fetch_channel(int(msg.embeds[0].url.split('/')[-1]))
     embed=discord.Embed(
       title="報告者からの返信",
       description=message.content,
-      color=0x85ABFF,
+      color=0xF4BD44,
     )
     await cha.send(embed=embed)
+
+    # attachmentがあった場合→送信
+    if message.attachments:
+      file_l = [await x.to_file() for x in message.attachments]
+      await cha.send(files=file_l)
 
     # 返信用のbuttonを設置
     view = discord.ui.View()
@@ -51,15 +64,19 @@ class ReplyToReply(commands.Cog):
     embed=discord.Embed(
         title="返信内容",
         description="下のボタンから編集してください。",
-        color=0x8BFF85,
+        color=0x95FFA1,
       )
     await cha.send(embed=embed, view=view)
 
     try:
       await message.add_reaction("✅")
+    except discord.errors.Forbidden:
+      await message.channel.send(f"報告report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。** 1", ephemeral=True)
     except Exception as e:
-      print(f"[ERROR]\n{e}")
       await message.channel.send("[ERROR]\n返信できませんでした。\nサポートサーバーまでお問い合わせください。")
+      error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
+      print(e)
+      return
 
 
 

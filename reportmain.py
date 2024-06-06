@@ -10,8 +10,7 @@ cog_list = cog_list.cog_list
 intents = discord.Intents.default()
 bot = commands.Bot(command_prefix="!!!!!", intents=intents)
 TOKEN = os.environ["ReportBot_TOKEN"]
-guild_id = int(os.environ['Guild_id'])
-yapibotcha_id = int(os.environ['yapibotcha_id'])
+report_bot_service_cha = int(os.environ["report_bot_service_cha"])
 
 
 @bot.event
@@ -21,8 +20,7 @@ async def on_ready():
     print(f"ロード完了：{x}")
   await bot.tree.sync()
   print("全ロード完了")
-  guild = bot.get_guild(guild_id)
-  channel = guild.get_channel(yapibotcha_id)
+  channel = bot.get_channel(report_bot_service_cha)
   await channel.send(f"{bot.user.mention} がオンラインになったよう。")
 
   path = "data/bot_version"

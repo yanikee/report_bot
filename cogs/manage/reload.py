@@ -18,7 +18,7 @@ class Reload(commands.Cog):
     choices = cog_list
     return [app_commands.Choice(name=choice, value=choice) for choice in choices if current.lower() in choice.lower()]
 
-  @app_commands.command(name="reload",description="cogをreloadします。"  )
+  @app_commands.command(name="reload",description="[開発者専用]cogをreloadします。"  )
   @app_commands.autocomplete(choices=reload_choice)
   @app_commands.describe(choices="reloadしたいCogを選択してください")
   @app_commands.describe(all_reload="すべてのCogをreloadします")

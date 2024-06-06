@@ -48,7 +48,7 @@ class Reply(commands.Cog):
       embed=discord.Embed(
         title="返信内容",
         description="下のボタンから編集してください。",
-        color=0x8BFF85,
+        color=0x95FFA1,
       )
       await thread.send(embed=embed, view=view)
 
@@ -65,32 +65,49 @@ class Reply(commands.Cog):
       with open(path, encoding='utf-8', mode="r") as f:
         private_dict = json.load(f)
 
-      # 報告者に返信
-      reporter_id = private_dict[str(interaction.channel.id)]
+      # 報告者を取得
+      try:
+        reporter_id = private_dict[str(interaction.channel.id)]
+      except KeyError:
+        await interaction.response.send_message("データが存在しませんでした。")
+        return
       reporter = await interaction.guild.fetch_member(reporter_id)
-      embed = discord.Embed(
-        url = interaction.channel.jump_url,
-        description=f"あなたの報告に関して、 {interaction.guild.name} の管理者から返信が届きました。\n"
-                    "### ------------返信内容------------\n"
-                    f"{interaction.message.embeds[0].description}\n"
-                    "### --------------------------------\n"
-                    "- あなたの情報(ユーザー名, idなど)が外部に漏れることは一切ありません。\n"
-                    f"- __**このメッセージに返信**__(右クリック→返信)すると、{interaction.guild.name}の管理者に届きます。",
-      color=0xF4BD44,
+
+      # embedを定義
+      description=(
+        "## 匿名報告\n"
+        f"あなたの報告に、 {interaction.guild.name} の管理者から返信が届きました。\n"
+        "- あなたの情報(ユーザー名, idなど)が外部に漏れることは一切ありません。\n"
+        f"- __**このメッセージに返信**__(右クリック→返信)すると、{interaction.guild.name}の管理者に届きます。\n\n"
       )
+
+      description+=f"## 返信\n{interaction.message.embeds[0].description}"
+
+      embed = discord.Embed(
+        url=interaction.channel.jump_url,
+        description=description,
+        color=0xF4BD44,
+      )
+      embed.set_footer(
+        text=f"匿名報告 | {interaction.guild.name}",
+        icon_url=interaction.guild.icon.replace(format='png').url if interaction.guild.icon else None,
+      )
+
       try:
         await reporter.send(embed=embed)
-        # view削除
-        await interaction.message.edit(view=None)
-        await interaction.response.send_message(f"{interaction.user.mention}が返信を行いました。")
-        await interaction.message.add_reaction("✅")
-
-      except discord.error.Forbidden:
+      except discord.errors.Forbidden:
         await interaction.response.send_message("報告者がDMを受け付けてないため、送信されませんでした。")
+        return
       except Exception as e:
         await interaction.response.send_message("不明なエラーが発生しました。サポートサーバーに問い合わせてください。")
-        print(f"[ERROR]\n{e}")
+        error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
+        print(e)
+        return
 
+      # view削除
+      await interaction.message.edit(view=None)
+      await interaction.response.send_message(f"{interaction.user.mention}が返信を行いました。")
+      await interaction.message.add_reaction("✅")
 
     elif custom_id == "report_cancel":
       await interaction.message.delete()
