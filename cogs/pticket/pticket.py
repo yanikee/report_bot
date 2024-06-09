@@ -50,6 +50,7 @@ class PrivateTicketModal(discord.ui.Modal):
     self.add_item(self.first_pticket)
 
   async def on_submit(self, interaction: discord.Interaction):
+    await interaction.response.defer()
     # embedの定義
     embed=discord.Embed(
       title="匿名ticket",
@@ -66,10 +67,10 @@ class PrivateTicketModal(discord.ui.Modal):
     try:
       msg = await cha.send(f"<@{1237001692977827920}>", embed=embed)
     except discord.errors.Forbidden:
-      await interaction.response.send_message(f"匿名ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/pticket config`コマンドをもう一度実行するように伝えてください。**\n\n### ------------匿名ticket------------\n{self.first_pticket.value}", ephemeral=True)
+      await interaction.followup.send(f"匿名ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/pticket config`コマンドをもう一度実行するように伝えてください。**\n\n### ------------匿名ticket------------\n{self.first_pticket.value}", ephemeral=True)
       return
     except Exception as e:
-      await interaction.response.send_message(f"不明なエラーが発生しました。\nサポートサーバーに問い合わせてください。\n\n### ------------匿名ticket------------\n{self.first_pticket.value}", ephemeral=True)
+      await interaction.followup.send(f"不明なエラーが発生しました。\nサポートサーバーに問い合わせてください。\n\n### ------------匿名ticket------------\n{self.first_pticket.value}", ephemeral=True)
       print(e)
       return
 
@@ -130,10 +131,10 @@ class PrivateTicketModal(discord.ui.Modal):
     try:
       await interaction.user.send(embeds=[embed_1, embed_2])
     except Exception as e:
-      await interaction.response.send_message("不明なエラーが発生しました。サポートサーバーに問い合わせてください。", ephemeral=True)
+      await interaction.followup.send("不明なエラーが発生しました。サポートサーバーに問い合わせてください。", ephemeral=True)
       print(e)
     else:
-      await interaction.response.send_message("送信されました。\nこのbotのDMをご確認ください。", ephemeral=True)
+      await interaction.followup.send("送信されました。\nこのbotのDMをご確認ください。", ephemeral=True)
 
 
 
