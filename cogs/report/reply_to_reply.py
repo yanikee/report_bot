@@ -39,7 +39,17 @@ class ReplyToReply(commands.Cog):
         return
 
     # threadを取得し、送信
-    cha = await self.bot.fetch_channel(int(msg.embeds[0].url.split('/')[-1]))
+    try:
+      cha = await self.bot.fetch_channel(int(msg.embeds[0].url.split('/')[-1]))
+    except discord.errors.Forbidden:
+      await message.channel.send(f"報告report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。** 1", ephemeral=True)
+      return
+    except Exception as e:
+      error = f"\n\n[ERROR]\n- {message.guild.id}\n{e}\n\n"
+      print(error)
+      await message.channel.send("[ERROR]\n返信できませんでした。\nサポートサーバーまでお問い合わせください。")
+      return
+
     embed=discord.Embed(
       title="報告者からの返信",
       description=message.content,
@@ -75,7 +85,7 @@ class ReplyToReply(commands.Cog):
     except Exception as e:
       await message.channel.send("[ERROR]\n返信できませんでした。\nサポートサーバーまでお問い合わせください。")
       error = f"\n\n[ERROR]\n- {message.guild.id}\n{e}\n\n"
-      print(e)
+      print(error)
       return
 
 

@@ -96,7 +96,7 @@ class ReportButton(discord.ui.View):
     except Exception as e:
       await interaction.response.send_message(f"不明なエラーが発生しました。\nサポートサーバーに問い合わせてください。\n\n### ------------匿名ticket------------\n{self.first_pticket.value}", ephemeral=True)
       error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
-      print(e)
+      print(error)
       return
 
 

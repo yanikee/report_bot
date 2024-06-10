@@ -101,7 +101,7 @@ class Reply(commands.Cog):
       except Exception as e:
         await interaction.response.send_message("不明なエラーが発生しました。サポートサーバーに問い合わせてください。")
         error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
-        print(e)
+        print(error)
         return
 
       # view削除

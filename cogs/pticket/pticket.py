@@ -71,7 +71,8 @@ class PrivateTicketModal(discord.ui.Modal):
       return
     except Exception as e:
       await interaction.followup.send(f"不明なエラーが発生しました。\nサポートサーバーに問い合わせてください。\n\n### ------------匿名ticket------------\n{self.first_pticket.value}", ephemeral=True)
-      print(e)
+      error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
+      print(error)
       return
 
     # pticket送信者idを保存{msg.id: user.id}
@@ -132,7 +133,8 @@ class PrivateTicketModal(discord.ui.Modal):
       await interaction.user.send(embeds=[embed_1, embed_2])
     except Exception as e:
       await interaction.followup.send("不明なエラーが発生しました。サポートサーバーに問い合わせてください。", ephemeral=True)
-      print(e)
+      error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
+      print(error)
     else:
       await interaction.followup.send("送信されました。\nこのbotのDMをご確認ください。", ephemeral=True)
 
