@@ -40,7 +40,7 @@ class PticketReplyToReply(commands.Cog):
     try:
       cha = await self.bot.fetch_channel(int(msg.embeds[0].url.split('/')[-1]))
     except Exception as e:
-      error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
+      error = f"\n\n[ERROR]\n- {message.guild.id}\n{e}\n\n"
       print(e)
       await message.channel.send("[ERROR]\n返信できませんでした。\nサポートサーバーまでお問い合わせください。")
       return
@@ -59,7 +59,7 @@ class PticketReplyToReply(commands.Cog):
       await message.channel.send(f"匿名ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。**")
       return
     except Exception as e:
-      error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
+      error = f"\n\n[ERROR]\n- {message.guild.id}\n{e}\n\n"
       print(e)
       await message.channel.send("[ERROR]\n返信できませんでした。\nサポートサーバーまでお問い合わせください。")
       return
