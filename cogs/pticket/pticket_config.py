@@ -10,15 +10,16 @@ class PrivateTicketConfig(commands.GroupCog, group_name='pticket'):
   def __init__(self, bot: commands.Bot):
     self.bot = bot
 
-  @app_commands.command(name="config", description='匿名ticketのボタンを設置, ticket送信チャンネルの設定')
-  @app_commands.describe(config_channel='ticket送信チャンネル')
-  @app_commands.describe(button_channel='ボタンを送信するチャンネル')
-  async def pticket_config(self, interaction:discord.Interaction, config_channel:discord.TextChannel, button_channel:discord.TextChannel):
+  @app_commands.command(name="config", description='匿名ticket開始のボタンを設置するチャンネルで実行してください。')
+  @app_commands.describe(config_channel='ticketが送信されるチャンネルを指定')
+  async def pticket_config(self, interaction:discord.Interaction, config_channel:discord.TextChannel):
     if not interaction.channel.permissions_for(interaction.user).manage_channels:
       await interaction.response.send_message("権限不足です。\n`チャンネル管理`の権限が必要です。", ephemeral=True)
       return
 
+    await interaction.response.defer(ephemeral=True)
     # 閲覧権限など追加する。
+    button_channel = interaction.channel
     permission_l = []
     cannot = False
     bot_member = interaction.guild.me
@@ -45,7 +46,7 @@ class PrivateTicketConfig(commands.GroupCog, group_name='pticket'):
         description=f":x:の付いた権限が不足しています。チャンネル設定から権限を追加し、もう一度このコマンドを実行してください。\n**全て:x:の場合report_botのロールをチャンネル権限に追加し、`メッセージを見る`を追加すれば、解決する場合が多い**です。\n\n- " + "\n- ".join(permission_l),
         color=0x9AC9FF
       )
-      await interaction.response.send_message(embed=embed, ephemeral=True)
+      await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
 
@@ -70,11 +71,48 @@ class PrivateTicketConfig(commands.GroupCog, group_name='pticket'):
       color=0x9AC9FF,
     )
     view = discord.ui.View()
-    button = discord.ui.Button(label="匿名ticket", emoji="🔖", custom_id=f"private_ticket", style=discord.ButtonStyle.primary)
-    view.add_item(button)
+    button_1 = discord.ui.Button(label="内容を編集する", emoji="✍️", custom_id=f"edit_private_ticket", style=discord.ButtonStyle.primary)
+    button_2 = discord.ui.Button(label="確定する", emoji="👌", custom_id=f"confirm_private_ticket", style=discord.ButtonStyle.red)
+    button_3 = discord.ui.Button(label="匿名ticket", emoji="🔖", custom_id=f"private_ticket", style=discord.ButtonStyle.primary, disable=True)
+    view.add_item(button_1)
+    view.add_item(button_2)
+    view.add_item(button_3)
 
-    msg = await button_channel.send(embed=embed, view=view)
-    await interaction.response.send_message(f"匿名ticket送信チャンネル：{config_channel.mention}\nbutton：{msg.jump_url}")
+    await interaction.followup.send(embed=embed, view=view)
+
+
+  @commands.Cog.listener()
+  async def on_interaction(self, interaction):
+    try:
+      if not interaction.data["custom_id"] in ["edit_private_ticket", "confirm_private_ticket"]:
+        return
+    except KeyError:
+      return
+
+    if interaction.data["custom_id"] == "edit_private_ticket":
+      modal = EditPrivateModal(interaction.message)
+
+
+class EditPrivateModal(discord.ui.Modal):
+  def __init__(self, msg):
+    super().__init__(title=f'匿名ticketメッセージ編集モーダル')
+    self.bot = bot
+
+    self.private_ticket_msg = discord.ui.TextInput(
+      label="",
+      style=discord.TextStyle.long,
+      default=None,
+      placeholder="匿名ticketを開きます。\nこのbotのDMを通じて匿名でサーバー管理者と会話することができます。",
+      required=True,
+      row=0
+    )
+    self.add_item(self.private_ticket_msg)
+
+  async def on_submit(self, interaction: discord.Interaction):
+    await interaction.response.defer()
+    # embedの定義
+    embed = msg.embeds[0]
+
 
 
 
