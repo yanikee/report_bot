@@ -46,12 +46,12 @@ class Help(commands.Cog):
         description="## まず何をすればいいの？(設定方法)\n"
                     "### Report機能\n"
                     "- __**`/report config` を実行**__\n"
-                    " - Reportを受け取るチャンネルを設定します\n"
+                    " - Reportを受信するチャンネルを設定します\n"
                     " - Reportを受け取りたいチャンネルで実行\n"
                     "### 匿名Ticket機能\n"
                     "- __**`/pticket config` を実行**__\n"
-                    " - 匿名Ticketを開始するためのボタンを設置するチャンネルで実行\n"
-                    " - Ticketを送信するチャンネルを指定してください\n\n"
+                    " - 匿名Ticketを受信するチャンネル，匿名Ticketを開始するためのボタンを設置するチャンネル を指定します。\n"
+                    " - 匿名Ticketを開始するためのボタンを設置したいチャンネルで実行\n"
                     "- 詳しくは[こちら](https://yanikee.github.io/report_bot-docs2/docs/quickstart/)\n"
                     "- 画像付きで解説しています",
         color=0xF4BD44,
