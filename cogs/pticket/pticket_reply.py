@@ -72,7 +72,7 @@ class PticketReply(commands.Cog):
       button = discord.ui.Button(
         label="追加で返信する",
         style=discord.ButtonStyle.gray,
-        custom_id="add_reply",
+        custom_id="pticket_add_reply",
       )
       view.add_item(button)
       await interaction.channel.send(view=view)
@@ -80,7 +80,7 @@ class PticketReply(commands.Cog):
 
 
     # 追加返信ボタンが押されたときの処理
-    elif custom_id == "add_reply":
+    elif custom_id == "pticket_add_reply":
       view = discord.ui.View()
       button_0 = discord.ui.Button(label="返信内容を編集", custom_id=f"pticket_edit_reply", style=discord.ButtonStyle.primary)
       button_1 = discord.ui.Button(label="送信する", custom_id=f"pticket_send", style=discord.ButtonStyle.red)
