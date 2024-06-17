@@ -78,7 +78,6 @@ class PticketReplyToReply(commands.Cog):
       file_l = [await x.to_file() for x in message.attachments]
       await cha.send(files=file_l)
 
-
     # 返信用のbuttonを設置
     view = discord.ui.View()
     button_0 = discord.ui.Button(label="返信内容を編集", custom_id=f"pticket_edit_reply", style=discord.ButtonStyle.primary)
