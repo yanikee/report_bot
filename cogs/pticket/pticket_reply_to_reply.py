@@ -50,7 +50,7 @@ class PticketReplyToReply(commands.Cog):
 
     # embed定義
     embed=discord.Embed(
-      title="匿名ticket送信者から",
+      title="匿名Ticket送信者から",
       description=message.content,
       color=0x9AC9FF,
     )
