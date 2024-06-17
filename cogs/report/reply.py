@@ -104,7 +104,12 @@ class Reply(commands.Cog):
         print(error)
         return
 
-      await interaction.response.edit_message(content=f"返信者：{interaction.user.mention}", view=None)
+      embed = interaction.message.embeds[0]
+      embed.set_author(
+        name=f"返信：{interaction.user.display_name}",
+        icon_url=interaction.user.display_avatar.url,
+      )
+      await interaction.response.edit_message(embed=embed, view=None)
 
       # 追加返信ボタン設置
       view = discord.ui.View()
