@@ -1,5 +1,6 @@
+import discord
 from discord.ext import commands, tasks
-
+import asyncio
 
 
 class ChangeStatus(commands.Cog):
