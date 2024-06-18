@@ -17,12 +17,12 @@ class ChangeStatus(commands.Cog):
     with open(path, mode="r") as f:
       version = f.read()
     custom_activity = discord.Game(f"/help | ver{version}")
-    await bot.change_presence(status=discord.Status.online, activity=custom_activity)
+    await self.bot.change_presence(status=discord.Status.online, activity=custom_activity)
 
     await asyncio.sleep(30)
 
     custom_activity = discord.Game(f"/help | {len(self.bot.guilds):,}guilds / {len(self.bot.users):,}users")
-    await bot.change_presence(status=discord.Status.online, activity=custom_activity)
+    await self.bot.change_presence(status=discord.Status.online, activity=custom_activity)
 
 
 
