@@ -104,10 +104,41 @@ class Reply(commands.Cog):
         print(error)
         return
 
-      # view削除
-      await interaction.message.edit(view=None)
-      await interaction.response.send_message(f"{interaction.user.mention}が返信を行いました。")
-      await interaction.message.add_reaction("✅")
+      embed = interaction.message.embeds[0]
+      embed.set_author(
+        name=f"返信：{interaction.user.display_name}",
+        icon_url=interaction.user.display_avatar.url,
+      )
+      await interaction.response.edit_message(embed=embed, view=None)
+
+      # 追加返信ボタン設置
+      view = discord.ui.View()
+      button = discord.ui.Button(
+        label="追加で返信する",
+        style=discord.ButtonStyle.gray,
+        custom_id="add_reply",
+      )
+      view.add_item(button)
+      await interaction.channel.send(view=view)
+      await interaction.channel.add_user(interaction.user)
+
+
+    # 追加返信ボタンが押されたときの処理
+    elif custom_id == "add_reply":
+      view = discord.ui.View()
+      button_0 = discord.ui.Button(label="返信内容を編集", custom_id=f"report_edit_reply", style=discord.ButtonStyle.primary)
+      button_1 = discord.ui.Button(label="送信する", custom_id=f"report_send", style=discord.ButtonStyle.red)
+      view.add_item(button_0)
+      view.add_item(button_1)
+
+      embed=discord.Embed(
+        title="返信内容",
+        description="下のボタンから編集してください。",
+        color=0x95FFA1,
+      )
+      await interaction.channel.send(embed=embed, view=view)
+      await interaction.message.delete()
+
 
     elif custom_id == "report_cancel":
       await interaction.message.delete()
@@ -134,11 +165,10 @@ class EditReplyModal(discord.ui.Modal):
     self.add_item(self.reply)
 
   async def on_submit(self, interaction: discord.Interaction):
+    # NOTE: 編集が適用されたことが分かりやすいように、わざとdeferしてる
+    await interaction.response.defer()
     self.msg.embeds[0].description = self.reply.value
-    await self.msg.edit(embed=self.msg.embeds[0])
-    await interaction.response.defer(thinking=True)
-    m = await interaction.followup.send("\u200b")
-    await m.delete()
+    await interaction.followup.edit_message(self.msg.id, embed=self.msg.embeds[0])
 
 
 async def setup(bot):

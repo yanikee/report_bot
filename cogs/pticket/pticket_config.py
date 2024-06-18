@@ -102,7 +102,7 @@ class PrivateTicketConfig(commands.GroupCog, group_name='pticket'):
       await interaction.response.edit_message(content="ok", embed=None, view=None)
       # フッターを消し、送信する
       embed = interaction.message.embeds[0]
-      embed.footer.text = None
+      embed.set_footer(text=None)
       await interaction.channel.send(embed=embed, view=view)
 
     # 編集ボタンを押したとき

@@ -57,6 +57,12 @@ class ReplyToReply(commands.Cog):
     )
     await cha.send(embed=embed)
 
+    # 返信ボタンが設置されてたら削除
+    async for msg in cha.history(limit=4):
+      if msg.components:
+        await msg.delete()
+        break
+
     # attachmentがあった場合→送信
     if message.attachments:
       file_l = [await x.to_file() for x in message.attachments]
