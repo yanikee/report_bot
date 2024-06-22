@@ -3,6 +3,7 @@ import discord
 import os
 import logging
 import cog_list
+import aiofiles
 
 
 cog_list = cog_list.cog_list
@@ -24,8 +25,8 @@ async def on_ready():
   await channel.send(f"{bot.user.mention} がオンラインになったよう。")
 
   path = "data/bot_version"
-  with open(path, mode="r") as f:
-    version = f.read()
+  async with aiofiles.open(path, mode="r") as f:
+    version = await f.read()
   custom_activity = discord.Game(f"/help | ver{version}")
   await bot.change_presence(status=discord.Status.online,activity=custom_activity)
 

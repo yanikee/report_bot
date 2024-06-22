@@ -3,6 +3,7 @@ from discord import app_commands
 import discord
 import os
 import json
+import aiofiles
 
 
 
@@ -30,11 +31,13 @@ class Reply(commands.Cog):
 
       # reply_numを定義
       path = f"data/report/guilds/{interaction.guild.id}.json"
-      with open(path, encoding='utf-8', mode="r") as f:
-        report_dict = json.load(f)
+      async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
+        contents = await f.read()
+      report_dict = json.loads(contents)
       report_dict["reply_num"] += 1
-      with open(path, mode="w") as f:
-        json.dump(report_dict, f, indent=2, ensure_ascii=False)
+      async with aiofiles.open(path, mode="w") as f:
+        json.dumps(report_dict, indent=2, ensure_ascii=False)
+        await f.write(contents)
 
       # thread作成, 送信
       thread = await interaction.message.create_thread(name=f"report_reply-{str(report_dict['reply_num']).zfill(4)}")
@@ -62,8 +65,9 @@ class Reply(commands.Cog):
 
 
     elif custom_id == "report_send":
-      with open(path, encoding='utf-8', mode="r") as f:
-        private_dict = json.load(f)
+      async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
+        contents = await f.read()
+      private_dict = json.loads(contents)
 
       # 報告者を取得
       try:

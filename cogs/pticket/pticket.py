@@ -3,6 +3,7 @@ from discord import app_commands
 import discord
 import os
 import json
+import aiofiles
 
 
 
@@ -60,8 +61,9 @@ class PrivateTicketModal(discord.ui.Modal):
 
     # pticket_channelの取得
     path = f"data/pticket/guilds/{interaction.guild.id}.json"
-    with open(path, encoding='utf-8', mode="r") as f:
-      report_dict = json.load(f)
+    async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
+      contents = await f.read()
+    report_dict = json.loads(contents)
     cha = interaction.guild.get_channel(report_dict["report_send_channel"])
 
     try:
@@ -78,24 +80,28 @@ class PrivateTicketModal(discord.ui.Modal):
     # pticket送信者idを保存{msg.id: user.id}
     path = f"data/pticket/pticket/{interaction.guild.id}.json"
     if os.path.exists(path):
-      with open(path, encoding='utf-8', mode="r") as f:
-        pticket_dict = json.load(f)
+      async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
+        contents = await f.read()
+      pticket_dict = json.loads(contents)
     else:
       pticket_dict = {}
 
     pticket_dict[str(msg.id)] = interaction.user.id
 
-    with open(path, mode="w") as f:
-      json.dump(pticket_dict, f, indent=2, ensure_ascii=False)
+    async with aiofiles.open(path, mode="w") as f:
+      contents = json.dumps(pticket_dict, indent=2, ensure_ascii=False)
+      await f.write(contents)
 
 
     # pticket_numを定義
     path = f"data/pticket/guilds/{interaction.guild.id}.json"
-    with open(path, encoding='utf-8', mode="r") as f:
-      report_dict = json.load(f)
+    async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
+      contents = await f.read()
+    report_dict = json.loads(contents)
     report_dict["pticket_num"] += 1
-    with open(path, mode="w") as f:
-      json.dump(report_dict, f, indent=2, ensure_ascii=False)
+    async with aiofiles.open(path, mode="w") as f:
+      contents = json.dumps(report_dict, indent=2, ensure_ascii=False)
+      await f.write(contents)
 
     # thread作成, button送信
     thread = await msg.create_thread(name=f"private_ticket-{str(report_dict['pticket_num']).zfill(4)}")
