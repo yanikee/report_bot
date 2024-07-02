@@ -2,6 +2,7 @@ from discord import app_commands
 from discord.ext import commands
 import discord
 import datetime
+import aiofiles
 
 
 
@@ -37,8 +38,8 @@ class BotUpdate(commands.GroupCog, group_name='update'):
     await channel.send(embed=embed)
 
     path = "data/bot_version"
-    with open(path, mode="w") as f:
-      f.write(version)
+    async with aiofiles.open(path, mode="w") as f:
+      await f.write(version)
     custom_activity = discord.Game(f"/help | ver{version}")
     await self.bot.change_presence(status=discord.Status.online,activity=custom_activity)
 

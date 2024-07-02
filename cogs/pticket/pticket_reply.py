@@ -3,6 +3,7 @@ from discord import app_commands
 import discord
 import os
 import json
+import aiofiles
 
 
 
@@ -26,8 +27,9 @@ class PticketReply(commands.Cog):
 
 
     elif custom_id == "pticket_send":
-      with open(path, encoding='utf-8', mode="r") as f:
-        pticket_dict = json.load(f)
+      async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
+        contents = await f.read()
+      pticket_dict = json.loads(contents)
 
       # pticket者を取得
       try:

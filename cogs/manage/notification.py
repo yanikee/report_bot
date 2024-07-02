@@ -3,6 +3,7 @@ from discord import app_commands
 import discord
 import os
 import json
+import aiofiles
 
 
 
@@ -25,8 +26,9 @@ class Notification(commands.Cog):
 
     for guild_id in guild_id_l:
       path = f"data/report/guilds/{guild_id}"
-      with open(path, encoding='utf-8', mode="r") as f:
-        report_dict = json.load(f)
+      async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
+        contents = await f.read()
+      report_dict = json.loads(contents)
       cha_id = report_dict["report_send_channel"]
       cha = self.bot.get_channel(int(cha_id))
 

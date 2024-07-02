@@ -3,6 +3,7 @@ from discord import app_commands
 import discord
 import os
 import json
+import aiofiles
 
 
 
@@ -53,8 +54,9 @@ class PrivateTicketConfig(commands.GroupCog, group_name='pticket'):
     # 保存
     path = f"data/pticket/guilds/{interaction.guild.id}.json"
     if os.path.exists(path):
-      with open(path, encoding='utf-8', mode="r") as f:
-        pticket_dict = json.load(f)
+      async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
+        contents = await f.read()
+      pticket_dict = json.loads(contents)
       pticket_dict["report_send_channel"] = config_channel.id
     else:
       pticket_dict = {
@@ -62,8 +64,9 @@ class PrivateTicketConfig(commands.GroupCog, group_name='pticket'):
         "pticket_num": 0
       }
 
-    with open(path, mode="w") as f:
-      json.dump(pticket_dict, f, indent=2, ensure_ascii=False)
+    async with aiofiles.open(path, mode="w") as f:
+      contents = json.dumps(pticket_dict, indent=2, ensure_ascii=False)
+      await f.write(contents)
 
     # buttonを送信
     embed=discord.Embed(

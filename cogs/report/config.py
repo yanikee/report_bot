@@ -3,6 +3,7 @@ from discord import app_commands
 import discord
 import os
 import json
+import aiofiles
 
 
 
@@ -57,8 +58,9 @@ class ReportConfig(commands.GroupCog, group_name='report'):
     # 保存
     path = f"data/report/guilds/{interaction.guild.id}.json"
     if os.path.exists(path):
-      with open(path, encoding='utf-8', mode="r") as f:
-        report_dict = json.load(f)
+      async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
+        contents = await f.read()
+      report_dict = json.loads(contents)
       report_dict["report_send_channel"] = channel.id
 
     else:
@@ -67,8 +69,9 @@ class ReportConfig(commands.GroupCog, group_name='report'):
         "reply_num": 0
       }
 
-    with open(path, mode="w") as f:
-      json.dump(report_dict, f, indent=2, ensure_ascii=False)
+    async with aiofiles.open(path, mode="w") as f:
+      contents = json.dumps(report_dict, indent=2, ensure_ascii=False)
+      await f.write(contents)
 
     embed = discord.Embed(
       description=f'"report"を{channel.mention}に送信します。',

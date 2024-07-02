@@ -3,6 +3,7 @@ from discord import app_commands
 import discord
 import os
 import json
+import aiofiles
 
 
 
@@ -26,8 +27,9 @@ class Report(commands.Cog):
       return
 
     # report送信チャンネルがなかった場合 -> return
-    with open(path, encoding='utf-8', mode="r") as f:
-      report_dict = json.load(f)
+    async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
+      contents = await f.read()
+    report_dict = json.loads(contents)
     if not "report_send_channel" in report_dict:
       await interaction.response.send_message("サーバー管理者に、configコマンドを実行してもらってください。", ephemeral=True)
       return
@@ -84,8 +86,9 @@ class ReportButton(discord.ui.View):
 
     # report_send_channelの取得
     path = f"data/report/guilds/{interaction.guild.id}.json"
-    with open(path, encoding='utf-8', mode="r") as f:
-      report_dict = json.load(f)
+    async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
+      contents = await f.read()
+    report_dict = json.loads(contents)
     cha = interaction.guild.get_channel(report_dict["report_send_channel"])
 
     try:
@@ -104,15 +107,17 @@ class ReportButton(discord.ui.View):
     if not reporter:
       path = f"data/report/private_report/{interaction.guild.id}.json"
       if os.path.exists(path):
-        with open(path, encoding='utf-8', mode="r") as f:
-          private_dict = json.load(f)
+        async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
+          contents = await f.read()
+        private_dict = json.loads(contents)
       else:
         private_dict = {}
 
       private_dict[str(msg.id)] = interaction.user.id
 
-      with open(path, mode="w") as f:
-        json.dump(private_dict, f, indent=2, ensure_ascii=False)
+      async with aiofiles.open(path, mode="w") as f:
+        contents = json.dumps(private_dict, indent=2, ensure_ascii=False)
+        await f.write(contents)
 
       # 返信ボタンを設置
       view = discord.ui.View()
