@@ -36,7 +36,7 @@ class Reply(commands.Cog):
       report_dict = json.loads(contents)
       report_dict["reply_num"] += 1
       async with aiofiles.open(path, mode="w") as f:
-        json.dumps(report_dict, indent=2, ensure_ascii=False)
+        contents = json.dumps(report_dict, indent=2, ensure_ascii=False)
         await f.write(contents)
 
       # thread作成, 送信
