@@ -24,7 +24,7 @@ class PticketSendFiles(commands.Cog):
     # スレッド内での返信編集
     if custom_id == "pticket_send_file":
       if interaction.message.embeds[0].description == "下のボタンから編集してください。":
-        custom_id = "pticket_send_file_process"
+        custom_id = "pticket_send_files_process"
 
       else:
         # embedの定義
