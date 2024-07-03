@@ -80,18 +80,12 @@ class Reply(commands.Cog):
       reporter = await interaction.guild.fetch_member(reporter_id)
 
       # embedを定義
-      description=(
-        "## 匿名報告\n"
-        f"あなたの報告に、 {interaction.guild.name} の管理者から返信が届きました。\n"
-        "- あなたの情報(ユーザー名, idなど)が外部に漏れることは一切ありません。\n"
-        f"- __**このメッセージに返信**__(右クリック→返信)すると、{interaction.guild.name}の管理者に届きます。\n\n"
-      )
-
-      description+=f"## 返信\n{interaction.message.embeds[0].description}"
-
       embed = discord.Embed(
         url=interaction.channel.jump_url,
-        description=description,
+        description="## 匿名報告\n"
+                    f"あなたの報告に、 {interaction.guild.name} の管理者から返信が届きました。\n"
+                    f"- __**このメッセージに返信**__(右クリック→返信)すると、{interaction.guild.name}の管理者に届きます。\n\n"
+                    f"## 返信内容\n{interaction.message.embeds[0].description}",
         color=0xF4BD44,
       )
       embed.set_footer(
