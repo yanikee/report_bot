@@ -129,7 +129,7 @@ class ReportSendFiles(commands.Cog):
         return
 
       embed = discord.Embed(
-        description=f"{interaction.user.mention}によって、ファイルが送信されました。",
+        description=f"{interaction.user.mention}がファイルを送信しました。",
         color=0x95FFA1,
       )
       await interaction.message.delete()
