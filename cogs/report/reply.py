@@ -36,17 +36,19 @@ class Reply(commands.Cog):
       report_dict = json.loads(contents)
       report_dict["reply_num"] += 1
       async with aiofiles.open(path, mode="w") as f:
-        json.dumps(report_dict, indent=2, ensure_ascii=False)
+        contents = json.dumps(report_dict, indent=2, ensure_ascii=False)
         await f.write(contents)
 
       # thread作成, 送信
       thread = await interaction.message.create_thread(name=f"report_reply-{str(report_dict['reply_num']).zfill(4)}")
 
       view = discord.ui.View()
-      button_0 = discord.ui.Button(label="返信内容を編集", custom_id=f"report_edit_reply", style=discord.ButtonStyle.primary)
-      button_1 = discord.ui.Button(label="送信する", custom_id=f"report_send", style=discord.ButtonStyle.red)
+      button_0 = discord.ui.Button(label="返信内容を編集", custom_id=f"report_edit_reply", style=discord.ButtonStyle.primary, row=0)
+      button_1 = discord.ui.Button(label="送信する", custom_id=f"report_send", style=discord.ButtonStyle.red, row=0)
+      button_2 = discord.ui.Button(label="ファイルを送信する", custom_id=f"report_send_file", style=discord.ButtonStyle.green, row=1)
       view.add_item(button_0)
       view.add_item(button_1)
+      view.add_item(button_2)
 
       embed=discord.Embed(
         title="返信内容",
@@ -120,7 +122,7 @@ class Reply(commands.Cog):
       button = discord.ui.Button(
         label="追加で返信する",
         style=discord.ButtonStyle.gray,
-        custom_id="add_reply",
+        custom_id="report_add_reply",
       )
       view.add_item(button)
       await interaction.channel.send(view=view)
@@ -128,12 +130,14 @@ class Reply(commands.Cog):
 
 
     # 追加返信ボタンが押されたときの処理
-    elif custom_id == "add_reply":
+    elif custom_id == "report_add_reply" or custom_id == "add_reply":
       view = discord.ui.View()
-      button_0 = discord.ui.Button(label="返信内容を編集", custom_id=f"report_edit_reply", style=discord.ButtonStyle.primary)
-      button_1 = discord.ui.Button(label="送信する", custom_id=f"report_send", style=discord.ButtonStyle.red)
+      button_0 = discord.ui.Button(label="返信内容を編集", custom_id=f"report_edit_reply", style=discord.ButtonStyle.primary, row=0)
+      button_1 = discord.ui.Button(label="送信する", custom_id=f"report_send", style=discord.ButtonStyle.red, row=0)
+      button_2 = discord.ui.Button(label="ファイルを送信する", custom_id=f"report_send_file", style=discord.ButtonStyle.green, row=1)
       view.add_item(button_0)
       view.add_item(button_1)
+      view.add_item(button_2)
 
       embed=discord.Embed(
         title="返信内容",
