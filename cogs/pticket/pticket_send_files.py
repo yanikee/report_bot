@@ -66,7 +66,7 @@ class PticketSendFiles(commands.Cog):
         return message.channel == interaction.channel and message.reference and message.attachments
 
       try:
-        message = await self.bot.wait_for('message', timeout=10.0, check=check)
+        message = await self.bot.wait_for('message', timeout=60.0, check=check)
 
       except asyncio.TimeoutError:
         await interaction.message.delete()
