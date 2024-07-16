@@ -48,6 +48,18 @@ class PticketReplyToReply(commands.Cog):
       await message.channel.send("[ERROR]\n返信できませんでした。\nサポートサーバーまでお問い合わせください。")
       return
 
+    # block判定
+    path = f"data/pticket/pticket/{cha.id}.json"
+    async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
+      contents = await f.read()
+    pticket_dict = json.loads(contents)
+    try:
+      if pticket_dict["blocked"] == True:
+        await message.channel.send("サーバー管理者にブロックされているため、返信できません。")
+        return
+    except KeyError:
+      pass
+
     # embed定義
     embed=discord.Embed(
       title="匿名Ticket送信者から",

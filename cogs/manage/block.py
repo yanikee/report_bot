@@ -16,7 +16,7 @@ class Block(commands.Cog):
 
     await interaction.response.defer(ephemeral=True)
 
-    report_path = f"data/report/report/{interaction.channel.id}.json"
+    report_path = f"data/report/private_report/{interaction.channel.id}.json"
     pticket_path = f"data/pticket/pticket/{interaction.channel.id}.json"
 
     # 匿名reportだった場合
