@@ -38,7 +38,7 @@ class ReplyToReply(commands.Cog):
       if not "------------返信内容------------" in msg.embeds[0].description:
         return
 
-    # threadを取得し、送信
+    # threadを取得
     try:
       cha = await self.bot.fetch_channel(int(msg.embeds[0].url.split('/')[-1]))
     except discord.errors.Forbidden:
@@ -50,6 +50,19 @@ class ReplyToReply(commands.Cog):
       await message.channel.send("[ERROR]\n返信できませんでした。\nサポートサーバーまでお問い合わせください。")
       return
 
+    # block判定
+    path = f"data/report/private_report/{cha.id}.json"
+    async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
+      contents = await f.read()
+    report_dict = json.loads(contents)
+    try:
+      if report_dict["blocked"] == True:
+        await message.channel.send("サーバー管理者にブロックされているため、返信できません。")
+        return
+    except KeyError:
+      pass
+
+    # embedの定義
     embed=discord.Embed(
       title="報告者からの返信",
       description=message.content,
