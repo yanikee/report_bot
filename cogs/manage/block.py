@@ -16,53 +16,49 @@ class Block(commands.Cog):
 
     await interaction.response.defer(ephemeral=True)
 
-    report_path = f"data/report/private_report/{interaction.channel.id}.json"
-    pticket_path = f"data/pticket/pticket/{interaction.channel.id}.json"
+    # report_dict, pticket_dictを取得する
+    report_path = f"data/report/private_report/{interaction.guild.id}.json"
+    pticket_path = f"data/pticket/pticket/{interaction.guild.id}.json"
+    async with aiofiles.open(report_path, encoding='utf-8', mode="f") as f:
+      contents = await f.read()
+    report_dict = json.loads(contents)
+    async with aiofiles.open(pticklet_path, encoding='utf-8', mode="f") as f:
+      contents = await f.read()
+    pticket_dict = json.loads(contents)
 
-    # 匿名reportだった場合
-    if os.path.exists(report_path):
-      async with aiofiles.open(report_path, encoding='utf-8', mode="f") as f:
-        contents = await f.read()
-
-      report_dict = self.bool_change(json.loads(contents))
-
-      async with aiofiles.open(report_path, encoding='utf-8', mode="w") as f:
-        contents = json.dumps(report_dict, indent=2, ensure_ascii=False)
-        await f.write(contents)
-
-    # 匿名Ticketだった場合
-    elif os.path.exists(pticket_path):
-      async with aiofiles.open(pticklet_path, encoding='utf-8', mode="f") as f:
-        contents = await f.read()
-
-      pticket_dict = self.bool_change(json.loads(contents))
-
-      async with aiofiles.open(pticket_path, encoding='utf-8', mode="w") as f:
-        contents = json.dumps(pticket_dict, indent=2, ensure_ascii=False)
-        await f.write(contents)
-
-    # データが見つからなかった場合
+    # reportの場合
+    if str(interaction.channel.id) in report_dict:
+      x = "report"
+      blocked_path = f"data/report/blocked/{interaction.guild.id}.json"
+    # pticketの場合
+    elif str(interaction.channel.id) in pticket_dict:
+      x = "pticket"
+      blocked_path = f"data/pticket/blocked/{interaction.guild.id}.json"
     else:
-      await interaction.followup.send("保存データが見つかりませんでした。", ephemeral=True)
-      error=f"[ERROR]\nGuild_id : {interaction.guild.id}\nChannel_id : {interaction.channel.id}\n"
-      print(error)
+      await interaction.followup.send("このスレッドは匿名Report, 匿名Ticketのスレッドではありません。", ephemeral=True)
       return
 
+    # blocked_dictを定義
+    if os.path.exists(blocked_path):
+      async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
+        contents = await f.read()
+      blocked_dict = json.loads(contents)
+    else:
+      blocked_dict = {}
 
-    await interaction.followup.send("ブロックが完了しました。\n以後、ユーザーからメッセージが届かなくなります。", ephemeral=True)
-
-
-  # blockのboolを変更する関数
-  def bool_change(self, data_dict):
+    # blockedのbool
     try:
-      if data_dict["blocked"] == True:
-        data_dict["blocked"] = False
+      if blocked_dict[str(interaction.channel.id)] == True:
+        blocked_dict[str(interaction.channel.id)] = False
       else:
-        data_dict["blocked"] = True
+        blocked_dict[str(interaction.channel.id)] = True
     except KeyError:
-      data_dict["blocked"] = True
+      blocked_dict[str(interaction.channel.id)] = True
 
-    return data_dict
+    # 保存
+    contents = json.dumps(blocked_dict, indent=2, ensure_ascii=False)
+    async with aiofiles.open(blocked_path, encoding='ctf-8', mode="w") as f:
+      await f.write(contents)
 
 
 
