@@ -43,7 +43,10 @@ class ReplyToReply(commands.Cog):
     try:
       cha = await self.bot.fetch_channel(int(msg.embeds[0].url.split('/')[-1]))
     except discord.errors.Forbidden:
-      await message.channel.send(f"報告report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。** 1", ephemeral=True)
+      await message.channel.send(f"報告Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。**", ephemeral=True)
+      return
+    except discord.errors.NotFound:
+      await message.channel.send(f"報告Report送信チャンネルが削除されています。", ephemeral=True)
       return
     except Exception as e:
       error = f"\n\n[ERROR]\n- {message.guild.id}\n{e}\n\n"
