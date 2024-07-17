@@ -52,12 +52,12 @@ class ReplyToReply(commands.Cog):
       return
 
     # block判定
-    path = f"data/report/private_report/{cha.id}.json"
+    path = f"data/report/blocked/{cha.id}.json"
     async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
       contents = await f.read()
-    report_dict = json.loads(contents)
+    blocked_dict = json.loads(contents)
     try:
-      if report_dict["blocked"] == True:
+      if blocked_dict[str(message.channel.id)] == True:
         await message.channel.send("サーバー管理者にブロックされているため、返信できません。")
         return
     except KeyError:

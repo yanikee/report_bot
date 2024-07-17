@@ -50,12 +50,12 @@ class PticketReplyToReply(commands.Cog):
       return
 
     # block判定
-    path = f"data/pticket/pticket/{cha.id}.json"
+    path = f"data/pticket/blocked/{cha.id}.json"
     async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
       contents = await f.read()
-    pticket_dict = json.loads(contents)
+    blocked_dict = json.loads(contents)
     try:
-      if pticket_dict["blocked"] == True:
+      if blocked_dict[str(message.channel.id)] == True:
         await message.channel.send("サーバー管理者にブロックされているため、返信できません。")
         return
     except KeyError:
