@@ -2,6 +2,9 @@ from discord.ext import commands
 from discord import app_commands
 import discord
 import aiofiles
+import json
+import os
+
 
 
 class Block(commands.Cog):
@@ -17,22 +20,35 @@ class Block(commands.Cog):
     await interaction.response.defer(ephemeral=True)
 
     # report_dict, pticket_dictを取得する
+    # 取得できなかった場合->return
     report_path = f"data/report/private_report/{interaction.guild.id}.json"
     pticket_path = f"data/pticket/pticket/{interaction.guild.id}.json"
-    async with aiofiles.open(report_path, encoding='utf-8', mode="f") as f:
-      contents = await f.read()
-    report_dict = json.loads(contents)
-    async with aiofiles.open(pticklet_path, encoding='utf-8', mode="f") as f:
-      contents = await f.read()
-    pticket_dict = json.loads(contents)
+    count = 0
+
+    if os.path.exists(report_path):
+      async with aiofiles.open(report_path, encoding='utf-8', mode="r") as f:
+        contents = await f.read()
+      report_dict = json.loads(contents)
+    else:
+      report_dict = ""
+
+    if os.path.exists(pticket_path):
+      async with aiofiles.open(pticket_path, encoding='utf-8', mode="r") as f:
+        contents = await f.read()
+      pticket_dict = json.loads(contents)
+    else:
+      pticket_dict = ""
+
+    if not report_dict and not pticket_dict:
+      await interaction.followup.send("このスレッドは匿名Report, 匿名Ticketのスレッドではありません。", ephemeral=True)
+      return
+
 
     # reportの場合
     if str(interaction.channel.id) in report_dict:
-      x = "report"
       blocked_path = f"data/report/blocked/{interaction.guild.id}.json"
     # pticketの場合
     elif str(interaction.channel.id) in pticket_dict:
-      x = "pticket"
       blocked_path = f"data/pticket/blocked/{interaction.guild.id}.json"
     else:
       await interaction.followup.send("このスレッドは匿名Report, 匿名Ticketのスレッドではありません。", ephemeral=True)
@@ -40,7 +56,7 @@ class Block(commands.Cog):
 
     # blocked_dictを定義
     if os.path.exists(blocked_path):
-      async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
+      async with aiofiles.open(blocked_path, encoding='utf-8', mode="r") as f:
         contents = await f.read()
       blocked_dict = json.loads(contents)
     else:
@@ -57,17 +73,26 @@ class Block(commands.Cog):
 
     # 保存
     contents = json.dumps(blocked_dict, indent=2, ensure_ascii=False)
-    async with aiofiles.open(blocked_path, encoding='ctf-8', mode="w") as f:
+    async with aiofiles.open(blocked_path, encoding='utf-8', mode="w") as f:
       await f.write(contents)
 
     # 最後に送信
-    embed = discord.Embed(
-      description="返信をブロック済み",
-      color=0xff0000,
-    )
-    embed.set_footer(text="ブロックを解除する：`/block`")
+    if blocked_dict[str(interaction.channel.id)] == True:
+      embed = discord.Embed(
+        description="返信をブロック済み",
+        color=0xff0000,
+      )
+      embed.set_footer(text="ブロックを解除する：`/block`")
+      await interaction.followup.send("ユーザーのブロックが完了しました。\nブロックを解除するには、もう一度`/block`コマンドを実行してください。", ephemeral=True)
+
+    else:
+      embed = discord.Embed(
+        description="ブロックを解除しました。",
+        color=0xff0000,
+      )
+      await interaction.followup.send("ユーザーのブロックを解除しました。", ephemeral=True)
+
     await interaction.channel.send(embed=embed)
-    await interaction.followup.send("ユーザーのブロックが完了しました。\nブロックを解除するには、もう一度`/block`コマンドを実行してください。", ephemeral=True)
 
 
 

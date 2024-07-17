@@ -52,16 +52,17 @@ class ReplyToReply(commands.Cog):
       return
 
     # block判定
-    path = f"data/report/blocked/{cha.id}.json"
-    async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
-      contents = await f.read()
-    blocked_dict = json.loads(contents)
-    try:
-      if blocked_dict[str(message.channel.id)] == True:
-        await message.channel.send("サーバー管理者にブロックされているため、返信できません。")
-        return
-    except KeyError:
-      pass
+    path = f"data/report/blocked/{cha.guild.id}.json"
+    if os.path.exists(path):
+      async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
+        contents = await f.read()
+      blocked_dict = json.loads(contents)
+      try:
+        if blocked_dict[str(cha.id)] == True:
+          await message.channel.send("サーバー管理者にブロックされているため、返信できません。")
+          return
+      except KeyError:
+        pass
 
     # embedの定義
     embed=discord.Embed(
