@@ -79,16 +79,23 @@ class Block(commands.Cog):
     # 最後に送信
     if blocked_dict[str(interaction.channel.id)] == True:
       embed = discord.Embed(
-        description="返信をブロック済み",
+        description="ブロックされています\nブロックを解除する->`/block`",
         color=0xff0000,
       )
-      embed.set_footer(text="ブロックを解除する：`/block`")
+      embed.set_footer(
+        text=f"実行者:{interaction.user.display_name}",
+        icon_url=interaction.user.default_avatar.url,
+      )
       await interaction.followup.send("ユーザーのブロックが完了しました。\nブロックを解除するには、もう一度`/block`コマンドを実行してください。", ephemeral=True)
 
     else:
       embed = discord.Embed(
         description="ブロックを解除しました。",
         color=0xff0000,
+      )
+      embed.set_footer(
+        text=f"実行者:{interaction.user.display_name}",
+        icon_url=interaction.user.default_avatar.url,
       )
       await interaction.followup.send("ユーザーのブロックを解除しました。", ephemeral=True)
 
