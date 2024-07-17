@@ -4,14 +4,24 @@ import os
 import logging
 import cog_list
 import aiofiles
+import json
+
 
 
 cog_list = cog_list.cog_list
 
 intents = discord.Intents.default()
 bot = commands.Bot(command_prefix="!!!!!", intents=intents)
-TOKEN = os.environ["ReportBot_TOKEN"]
-report_bot_service_cha = int(os.environ["report_bot_service_cha"])
+
+try:
+  TOKEN = os.environ["ReportBot_TOKEN"]
+  report_bot_service_cha = int(os.environ["report_bot_service_cha"])
+except KeyError:
+  with open("env.json", mode="r") as f:
+    content = json.load(f)
+  TOKEN = content["ReportBot_TOKEN"]
+  report_bot_service_cha = int(content["report_bot_service_cha"])
+
 
 
 @bot.event

@@ -8,7 +8,6 @@ from typing import List
 
 
 cog_list = cog_list.cog_list
-yappi = os.environ['yappi']
 
 class Reload(commands.Cog):
   def __init__(self, bot: commands.Bot):

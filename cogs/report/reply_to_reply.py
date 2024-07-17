@@ -3,6 +3,7 @@ from discord import app_commands
 import discord
 import os
 import json
+import aiofiles
 
 
 
@@ -38,11 +39,14 @@ class ReplyToReply(commands.Cog):
       if not "------------返信内容------------" in msg.embeds[0].description:
         return
 
-    # threadを取得し、送信
+    # threadを取得
     try:
       cha = await self.bot.fetch_channel(int(msg.embeds[0].url.split('/')[-1]))
     except discord.errors.Forbidden:
-      await message.channel.send(f"報告report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。** 1", ephemeral=True)
+      await message.channel.send(f"報告Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。**", ephemeral=True)
+      return
+    except discord.errors.NotFound:
+      await message.channel.send(f"報告Report送信チャンネルが削除されています。", ephemeral=True)
       return
     except Exception as e:
       error = f"\n\n[ERROR]\n- {message.guild.id}\n{e}\n\n"
@@ -50,6 +54,20 @@ class ReplyToReply(commands.Cog):
       await message.channel.send("[ERROR]\n返信できませんでした。\nサポートサーバーまでお問い合わせください。")
       return
 
+    # block判定
+    path = f"data/report/blocked/{cha.guild.id}.json"
+    if os.path.exists(path):
+      async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
+        contents = await f.read()
+      blocked_dict = json.loads(contents)
+      try:
+        if blocked_dict[str(cha.id)] == True:
+          await message.channel.send("サーバー管理者にブロックされているため、返信できません。")
+          return
+      except KeyError:
+        pass
+
+    # embedの定義
     embed=discord.Embed(
       title="報告者からの返信",
       description=message.content,
