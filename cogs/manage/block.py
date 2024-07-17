@@ -60,6 +60,15 @@ class Block(commands.Cog):
     async with aiofiles.open(blocked_path, encoding='ctf-8', mode="w") as f:
       await f.write(contents)
 
+    # 最後に送信
+    embed = discord.Embed(
+      description="返信をブロック済み",
+      color=0xff0000,
+    )
+    embed.set_footer(text="ブロックを解除する：`/block`")
+    await interaction.channel.send(embed=embed)
+    await interaction.followup.send("ユーザーのブロックが完了しました。\nブロックを解除するには、もう一度`/block`コマンドを実行してください。", ephemeral=True)
+
 
 
 async def setup(bot):
