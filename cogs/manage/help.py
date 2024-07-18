@@ -81,7 +81,9 @@ class Help(commands.Cog):
         description="## その他のコマンド！\n"
                     "## `/block`\n"
                     "- 匿名Report, Ticketのユーザーによる返信をブロックできる機能\n"
-                    "- 本botを悪用した荒らしなどが行われた場合にご活用ください。\n",
+                    "- 本botを悪用した荒らしなどが行われた場合にご活用ください。\n"
+                    "[使い方]\n"
+                    "- ブロックしたいスレッド内で実行",
         color=0xF4BD44,
       )
       await interaction.response.edit_message(embed=embed)
