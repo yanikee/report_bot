@@ -128,7 +128,7 @@ class PticketSendFiles(commands.Cog):
         await user.send(embed=embed, files=files)
       except discord.error.Forbidden:
         embed=error.generate(
-          code="2-3-03",
+          code="2-4-03",
           description="匿名Ticket送信者がDMを受け付けてないため、送信されませんでした。",
         )
         await interaction.followup.send(embed=embed)
@@ -136,7 +136,7 @@ class PticketSendFiles(commands.Cog):
         return
       except Exception as e:
         embed=error.generate(
-          code="2-3-04",
+          code="2-4-04",
           description="不明なエラーが発生しました。サポートサーバーまでお問い合わせください。",
         )
         await interaction.followup.send(embed=embed)
