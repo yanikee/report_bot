@@ -45,14 +45,14 @@ class ReplyToReply(commands.Cog):
       cha = await self.bot.fetch_channel(int(msg.embeds[0].url.split('/')[-1]))
     except discord.errors.Forbidden:
       embed = error.generate(
-        num="3-2-01",
+        code="3-2-01",
         description="匿名Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/report config`コマンドをもう一度実行するように伝えてください。**",
       )
       await message.channel.send(embed=embed)
       return
     except discord.errors.NotFound:
       embed = error.generate(
-        num="3-2-02",
+        code="3-2-02",
         description="匿名Report送信チャンネルが削除されています。\n**サーバー管理者さんに、`/report config`コマンドをもう一度実行するように伝えてください。**",
       )
       await message.channel.send(embed=embed)
@@ -61,7 +61,7 @@ class ReplyToReply(commands.Cog):
       error = f"\n\n[ERROR]\n- {message.guild.id}\n{e}\n\n"
       print(error)
       embed = error.generate(
-        num="3-2-03",
+        code="3-2-03",
         description="送信できませんでした。\nサポートサーバーまでお問い合わせください。",
       )
       await message.channel.send(embed=embed)
@@ -121,7 +121,7 @@ class ReplyToReply(commands.Cog):
       await message.add_reaction("✅")
     except discord.errors.Forbidden:
       embed = error.generate(
-        num="3-2-04",
+        code="3-2-04",
         description=f"匿名Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/report config`コマンドをもう一度実行するように伝えてください。**",
       )
       await message.channel.send(embed=embed)
@@ -129,7 +129,7 @@ class ReplyToReply(commands.Cog):
       error = f"\n\n[ERROR]\n- {message.guild.id}\n{e}\n\n"
       print(error)
       embed = error.generate(
-        num="2-2-05",
+        code="2-2-05",
         description="返信できませんでした。\nサポートサーバーまでお問い合わせください。",
       )
       await message.channel.send(embed=embed)

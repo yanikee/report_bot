@@ -77,7 +77,7 @@ class Reply(commands.Cog):
         reporter_id = private_dict[str(interaction.channel.id)]
       except KeyError:
         embed=error.generate(
-          num="3-3-01",
+          code="3-3-01",
           description="データが存在しませんでした。"
         )
         await interaction.response.send_message(embed=embed)
@@ -102,7 +102,7 @@ class Reply(commands.Cog):
         await reporter.send(embed=embed)
       except discord.errors.Forbidden:
         embed=error.generate(
-          num="3-3-02",
+          code="3-3-02",
           description="匿名Ticket送信者がDMを受け付けてないため、送信されませんでした。"
         )
         await interaction.response.send_message(embed=embed)
@@ -111,7 +111,7 @@ class Reply(commands.Cog):
         error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
         print(error)
         embed=error.generate(
-          num="3-3-03",
+          code="3-3-03",
           description="不明なエラーが発生しました。サポートサーバーまでお問い合わせください。"
         )
         await interaction.response.send_message(embed=embed)

@@ -86,7 +86,7 @@ class PticketSendFiles(commands.Cog):
         user_id = pticket_dict[str(interaction.channel.id)]
       except KeyError:
         embed=error.generate(
-          num="2-4-01",
+          code="2-4-01",
           description="ユーザーデータが存在しませんでした。"
         )
         await interaction.followup.send(embed=embed, ephemeral=True)
@@ -115,7 +115,7 @@ class PticketSendFiles(commands.Cog):
         files = [await attachment.to_file() for attachment in message.attachments]
       except Exception:
         embed=error.generate(
-          num="2-4-02",
+          code="2-4-02",
           description="ファイル変換時に、不明なエラーが発生しました。\nサポートサーバーまでお問い合わせください。",
         )
         await interaction.followup.send(embed=embed, ephemeral=True)
@@ -128,7 +128,7 @@ class PticketSendFiles(commands.Cog):
         await user.send(embed=embed, files=files)
       except discord.error.Forbidden:
         embed=error.generate(
-          num="2-3-03",
+          code="2-3-03",
           description="匿名Ticket送信者がDMを受け付けてないため、送信されませんでした。",
         )
         await interaction.followup.send(embed=embed)
@@ -136,7 +136,7 @@ class PticketSendFiles(commands.Cog):
         return
       except Exception as e:
         embed=error.generate(
-          num="2-3-04",
+          code="2-3-04",
           description="不明なエラーが発生しました。サポートサーバーまでお問い合わせください。",
         )
         await interaction.followup.send(embed=embed)

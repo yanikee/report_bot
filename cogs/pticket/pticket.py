@@ -24,7 +24,7 @@ class PrivateTicket(commands.Cog):
     path = f"data/pticket/guilds/{interaction.guild.id}.json"
     if not os.path.exists(path):
       embed=error.generate(
-        num="2-5-01",
+        code="2-5-01",
         description="サーバー管理者に`/pticket config`コマンドを実行するよう伝えてください。",
       )
       await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -34,7 +34,7 @@ class PrivateTicket(commands.Cog):
       [x async for x in interaction.user.history(limit=1)]
     except discord.errors.Forbidden:
       embed=error.generate(
-          num="2-5-02",
+          code="2-5-02",
           description="DMが送信できませんでした。\n**このbotからDMを受け取れるように設定してください！**\n（テストメッセージをbotに送信するなど）",
         )
       await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -79,7 +79,7 @@ class PrivateTicketModal(discord.ui.Modal):
       msg = await cha.send(f"<@{1237001692977827920}>", embed=embed)
     except discord.errors.Forbidden:
       embed=error.generate(
-        num="2-5-03",
+        code="2-5-03",
         description=f"匿名ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/pticket config`コマンドをもう一度実行するように伝えてください。**\n\n### ------------匿名ticket------------\n{self.first_pticket.value}",
         support=False,
       )
@@ -89,7 +89,7 @@ class PrivateTicketModal(discord.ui.Modal):
       error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
       print(error)
       embed=error.generate(
-        num="2-5-04",
+        code="2-5-04",
         description=f"不明なエラーが発生しました。\nサポートサーバーにお問い合わせください。\n\n### ------------匿名ticket------------\n{self.first_pticket.value}",
         support=False
       )
@@ -160,7 +160,7 @@ class PrivateTicketModal(discord.ui.Modal):
       await interaction.user.send(embeds=[embed_1, embed_2])
     except Exception as e:
       embed=error.generate(
-        num="2-3-05",
+        code="2-3-05",
         description="不明なエラーが発生しました。サポートサーバーまでお問い合わせください。"
       )
       await interaction.followup.send(embed=embed, ephemeral=True)

@@ -25,7 +25,7 @@ class Report(commands.Cog):
     path = f"data/report/guilds/{interaction.guild.id}.json"
     if not os.path.exists(path):
       embed=error.generate(
-        num="3-4-01",
+        code="3-4-01",
         description="サーバー管理者に`/report config`コマンドを実行するよう伝えてください。",
       )
       await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -37,7 +37,7 @@ class Report(commands.Cog):
     report_dict = json.loads(contents)
     if not "report_send_channel" in report_dict:
       embed=error.generate(
-        num="3-4-02",
+        code="3-4-02",
         description="サーバー管理者に`/report config`コマンドを実行するよう伝えてください。",
       )
       await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -104,15 +104,21 @@ class ReportButton(discord.ui.View):
       msg = await cha.send(f"{self.bot.user.mention}\n{message.jump_url}", embeds=message.embeds)
     except discord.errors.Forbidden:
       embed=error.generate(
-        num="3-4-03",
+        code="3-4-03",
         description=f"匿名Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/report config`コマンドをもう一度実行するように伝えてください。**\n\n### ------------匿名report------------\n{self.first_pticket.value}",
+        support=False,
       )
       await interaction.followup.send(embed=embed, ephemeral=True)
       return
     except Exception as e:
-      await interaction.response.send_message(f"不明なエラーが発生しました。\nサポートサーバーに問い合わせてください。\n\n### ------------匿名ticket------------\n{self.first_pticket.value}", ephemeral=True)
       error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
       print(error)
+      embed=error.generate(
+        code="3-4-04",
+        description=f"不明なエラーが発生しました。\nサポートサーバーにお問い合わせください。\n\n### ------------匿名report------------\n{self.first_pticket.value}",
+        support=False
+      )
+      await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
 
