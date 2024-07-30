@@ -2,7 +2,7 @@ import discord
 
 def generate(code:str, description:str, support:bool=True):
   if support:
-    desc = f"{description}\n\n- サポートサーバーは[こちら](https://discord.gg/djQHvM6PtE)"
+    desc = f"{description}\n\n- エラーガイドは[こちら](https://yanikee.github.io/report_bot-docs2/docs/error/)\n- サポートサーバーは[こちら](https://discord.gg/djQHvM6PtE)"
   else:
     desc = description
 
