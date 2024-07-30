@@ -14,7 +14,11 @@ class Block(commands.Cog):
   @app_commands.command(name="block", description='匿名Report, 匿名Ticketをブロック/ブロック解除します。')
   async def block(self, interaction:discord.Interaction):
     if interaction.channel.type != discord.ChannelType.public_thread:
-      await interaction.response.send_message("匿名Report, 匿名Ticketのスレッド内で実行してください。", ephemeral=True)
+      embed = error.generate(
+        num="1-1-01",
+        description="匿名Report, 匿名Ticketのスレッド内で実行してください。",
+      )
+      await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
     await interaction.response.defer(ephemeral=True)
@@ -41,7 +45,7 @@ class Block(commands.Cog):
 
     if not report_dict and not pticket_dict:
       embed = error.generate(
-        num="1-1-01",
+        num="1-1-02",
         description="このスレッドは匿名Report, 匿名Ticketのスレッドではありません。",
       )
       await interaction.followup.send(embed=embed, ephemeral=True)
@@ -56,7 +60,7 @@ class Block(commands.Cog):
       blocked_path = f"data/pticket/blocked/{interaction.guild.id}.json"
     else:
       embed = error.generate(
-        num="1-1-02",
+        num="1-1-03",
         description="このスレッドは匿名Report, 匿名Ticketのスレッドではありません。",
       )
       await interaction.followup.send(embed=embed, ephemeral=True)
