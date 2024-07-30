@@ -4,6 +4,7 @@ import discord
 import os
 import json
 import aiofiles
+import error
 
 
 
@@ -23,7 +24,11 @@ class Report(commands.Cog):
     # jsonファイルがなかった場合 -> return
     path = f"data/report/guilds/{interaction.guild.id}.json"
     if not os.path.exists(path):
-      await interaction.response.send_message("サーバー管理者に、configコマンドを実行してもらってください。", ephemeral=True)
+      embed=error.generate(
+        num="3-4-01",
+        description="サーバー管理者に`/report config`コマンドを実行するよう伝えてください。",
+      )
+      await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
     # report送信チャンネルがなかった場合 -> return
@@ -31,7 +36,11 @@ class Report(commands.Cog):
       contents = await f.read()
     report_dict = json.loads(contents)
     if not "report_send_channel" in report_dict:
-      await interaction.response.send_message("サーバー管理者に、configコマンドを実行してもらってください。", ephemeral=True)
+      embed=error.generate(
+        num="3-4-02",
+        description="サーバー管理者に`/report config`コマンドを実行するよう伝えてください。",
+      )
+      await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
     button = ReportButton(self.bot, interaction, message)
@@ -94,7 +103,11 @@ class ReportButton(discord.ui.View):
     try:
       msg = await cha.send(f"{self.bot.user.mention}\n{message.jump_url}", embeds=message.embeds)
     except discord.errors.Forbidden:
-      await interaction.response.send_message("報告チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。**", ephemeral=True)
+      embed=error.generate(
+        num="3-4-03",
+        description=f"匿名Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/report config`コマンドをもう一度実行するように伝えてください。**\n\n### ------------匿名report------------\n{self.first_pticket.value}",
+      )
+      await interaction.followup.send(embed=embed, ephemeral=True)
       return
     except Exception as e:
       await interaction.response.send_message(f"不明なエラーが発生しました。\nサポートサーバーに問い合わせてください。\n\n### ------------匿名ticket------------\n{self.first_pticket.value}", ephemeral=True)

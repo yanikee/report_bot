@@ -4,6 +4,7 @@ import discord
 import os
 import json
 import aiofiles
+import error
 
 
 
@@ -43,15 +44,27 @@ class ReplyToReply(commands.Cog):
     try:
       cha = await self.bot.fetch_channel(int(msg.embeds[0].url.split('/')[-1]))
     except discord.errors.Forbidden:
-      await message.channel.send(f"報告Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。**", ephemeral=True)
+      embed = error.generate(
+        num="3-2-01",
+        description="匿名Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/report config`コマンドをもう一度実行するように伝えてください。**",
+      )
+      await message.channel.send(embed=embed)
       return
     except discord.errors.NotFound:
-      await message.channel.send(f"報告Report送信チャンネルが削除されています。", ephemeral=True)
+      embed = error.generate(
+        num="3-2-02",
+        description="匿名Report送信チャンネルが削除されています。\n**サーバー管理者さんに、`/report config`コマンドをもう一度実行するように伝えてください。**",
+      )
+      await message.channel.send(embed=embed)
       return
     except Exception as e:
       error = f"\n\n[ERROR]\n- {message.guild.id}\n{e}\n\n"
       print(error)
-      await message.channel.send("[ERROR]\n返信できませんでした。\nサポートサーバーまでお問い合わせください。")
+      embed = error.generate(
+        num="3-2-03",
+        description="送信できませんでした。\nサポートサーバーまでお問い合わせください。",
+      )
+      await message.channel.send(embed=embed)
       return
 
     # block判定
@@ -107,11 +120,19 @@ class ReplyToReply(commands.Cog):
     try:
       await message.add_reaction("✅")
     except discord.errors.Forbidden:
-      await message.channel.send(f"報告report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。** 1", ephemeral=True)
+      embed = error.generate(
+        num="3-2-04",
+        description=f"匿名Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/report config`コマンドをもう一度実行するように伝えてください。**",
+      )
+      await message.channel.send(embed=embed)
     except Exception as e:
-      await message.channel.send("[ERROR]\n返信できませんでした。\nサポートサーバーまでお問い合わせください。")
       error = f"\n\n[ERROR]\n- {message.guild.id}\n{e}\n\n"
       print(error)
+      embed = error.generate(
+        num="2-2-05",
+        description="返信できませんでした。\nサポートサーバーまでお問い合わせください。",
+      )
+      await message.channel.send(embed=embed)
       return
 
 

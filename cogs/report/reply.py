@@ -4,6 +4,7 @@ import discord
 import os
 import json
 import aiofiles
+import error
 
 
 
@@ -75,7 +76,11 @@ class Reply(commands.Cog):
       try:
         reporter_id = private_dict[str(interaction.channel.id)]
       except KeyError:
-        await interaction.response.send_message("データが存在しませんでした。")
+        embed=error.generate(
+          num="3-3-01",
+          description="データが存在しませんでした。"
+        )
+        await interaction.response.send_message(embed=embed)
         return
       reporter = await interaction.guild.fetch_member(reporter_id)
 
@@ -96,12 +101,20 @@ class Reply(commands.Cog):
       try:
         await reporter.send(embed=embed)
       except discord.errors.Forbidden:
-        await interaction.response.send_message("報告者がDMを受け付けてないため、送信されませんでした。")
+        embed=error.generate(
+          num="3-3-02",
+          description="匿名Ticket送信者がDMを受け付けてないため、送信されませんでした。"
+        )
+        await interaction.response.send_message(embed=embed)
         return
       except Exception as e:
-        await interaction.response.send_message("不明なエラーが発生しました。サポートサーバーに問い合わせてください。")
         error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
         print(error)
+        embed=error.generate(
+          num="3-3-03",
+          description="不明なエラーが発生しました。サポートサーバーまでお問い合わせください。"
+        )
+        await interaction.response.send_message(embed=embed)
         return
 
       embed = interaction.message.embeds[0]

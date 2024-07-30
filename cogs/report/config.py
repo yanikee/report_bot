@@ -4,6 +4,7 @@ import discord
 import os
 import json
 import aiofiles
+import error
 
 
 
@@ -15,7 +16,11 @@ class ReportConfig(commands.GroupCog, group_name='report'):
   @app_commands.describe(channel='"report"を送信するチャンネル')
   async def report_config(self, interaction:discord.Interaction, channel:discord.TextChannel=None):
     if not interaction.channel.permissions_for(interaction.user).manage_channels:
-      await interaction.response.send_message("権限不足です。\n`チャンネル管理`の権限が必要です。", ephemeral=True)
+      embed=error.generate(
+        num="3-1-01",
+        description=f"権限不足です。\n`チャンネル管理`の権限が必要です。",
+      )
+      await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
     if not channel:
@@ -48,9 +53,9 @@ class ReportConfig(commands.GroupCog, group_name='report'):
       cannot = True
 
     if cannot:
-      embed=discord.Embed(
-        description=f":x:の付いた権限が不足しています。チャンネル設定から権限を追加し、もう一度このコマンドを実行してください。\n**全て:x:の場合report_botのロールをチャンネル権限に追加し、`メッセージを見る`を追加すれば、解決する場合が多い**です。\n\n- " + "\n- ".join(permission_l),
-        color=0xF4BD44
+      embed=error.generate(
+        num="3-1-02",
+        description=f":x:の付いた権限が不足しています。チャンネル設定から権限を追加し、もう一度このコマンドを実行してください。\n**全て:x:の場合report_botのロールをチャンネル権限に追加し、`メッセージを見る`を追加すれば、解決する場合が多い**です。\n\n- " + "\n- ".join(permission_l)
       )
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return

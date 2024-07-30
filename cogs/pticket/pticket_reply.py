@@ -71,13 +71,13 @@ class PticketReply(commands.Cog):
         await interaction.response.send_message(embed=embed)
         return
       except Exception as e:
+        error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
+        print(error)
         embed=error.generate(
           num="2-3-03",
           description="不明なエラーが発生しました。サポートサーバーまでお問い合わせください。"
         )
         await interaction.response.send_message(embed=embed)
-        error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
-        print(error)
         return
 
       embed = interaction.message.embeds[0]

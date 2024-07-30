@@ -83,7 +83,11 @@ class ReportSendFiles(commands.Cog):
       try:
         user_id = report_dict[str(interaction.channel.id)]
       except KeyError:
-        await interaction.followup.send("ユーザーデータが存在しませんでした。", ephemeral=True)
+        embed=error.generate(
+          num="3-5-01",
+          description="ユーザーデータが存在しませんでした。"
+        )
+        await interaction.followup.send(embed=embed, ephemeral=True)
         await interaction.message.delete()
         await self.add_reply(interaction)
         return
@@ -108,7 +112,11 @@ class ReportSendFiles(commands.Cog):
       try:
         files = [await attachment.to_file() for attachment in message.attachments]
       except Exception:
-        await interaction.followup.send("ファイル変換時に、不明なエラーが発生しました。\nサポートサーバーまでお越しください。", ephemeral=True)
+        embed=error.generate(
+          num="3-5-02",
+          description="ファイル変換時に、不明なエラーが発生しました。\nサポートサーバーまでお問い合わせください。",
+        )
+        await interaction.followup.send(embed=embed, ephemeral=True)
         await interaction.message.delete()
         await self.add_reply(interaction)
         return
@@ -117,11 +125,19 @@ class ReportSendFiles(commands.Cog):
       try:
         await user.send(embed=embed, files=files)
       except discord.error.Forbidden:
-        await interaction.followup.send("報告者がDMを受け付けてないため、送信されませんでした。", ephemeral=True)
+        embed=error.generate(
+          num="3-5-03",
+          description="匿名Report送信者がDMを受け付けてないため、送信されませんでした。",
+        )
+        await interaction.followup.send(embed=embed)
         await interaction.message.delete()
         return
       except Exception as e:
-        await interaction.followup.send("不明なエラーが発生しました。サポートサーバーに問い合わせてください。", ephemeral=True)
+        embed=error.generate(
+          num="3-5-04",
+          description="不明なエラーが発生しました。サポートサーバーまでお問い合わせください。",
+        )
+        await interaction.followup.send(embed=embed)
         error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
         print(error)
         await interaction.message.delete()

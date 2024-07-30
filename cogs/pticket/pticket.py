@@ -26,7 +26,6 @@ class PrivateTicket(commands.Cog):
       embed=error.generate(
         num="2-5-01",
         description="サーバー管理者に`/pticket config`コマンドを実行するよう伝えてください。",
-        suppoer=False,
       )
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
@@ -37,7 +36,6 @@ class PrivateTicket(commands.Cog):
       embed=error.generate(
           num="2-5-02",
           description="DMが送信できませんでした。\n**このbotからDMを受け取れるように設定してください！**\n（テストメッセージをbotに送信するなど）",
-          support=False
         )
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
@@ -88,14 +86,14 @@ class PrivateTicketModal(discord.ui.Modal):
       await interaction.followup.send(embed=embed, ephemeral=True)
       return
     except Exception as e:
+      error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
+      print(error)
       embed=error.generate(
         num="2-5-04",
         description=f"不明なエラーが発生しました。\nサポートサーバーにお問い合わせください。\n\n### ------------匿名ticket------------\n{self.first_pticket.value}",
-        support=False,
+        support=False
       )
       await interaction.followup.send(embed=embed, ephemeral=True)
-      error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
-      print(error)
       return
 
     # pticket送信者idを保存{msg.id: user.id}
