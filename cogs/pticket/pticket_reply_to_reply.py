@@ -4,6 +4,7 @@ import discord
 import os
 import json
 import aiofiles
+import error
 
 
 
@@ -41,15 +42,29 @@ class PticketReplyToReply(commands.Cog):
     try:
       cha = await self.bot.fetch_channel(int(msg.embeds[0].url.split('/')[-1]))
     except discord.errors.Forbidden:
-      await message.channel.send(f"Ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。**", ephemeral=True)
+      embed = error.generate(
+        num="2-2-01",
+        description="匿名Ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/pticket config`コマンドをもう一度実行するように伝えてください。**",
+        support=False
+      )
+      await message.channel.send(embed=embed, ephemeral=True)
       return
     except discord.erroes.NotFound:
-      await message.channel.send(f"Ticket送信チャンネルが削除されています。", ephemeral=True)
+      embed = error.generate(
+        num="2-2-02",
+        description="匿名Ticket送信チャンネルが削除されています。\n**サーバー管理者さんに、`/pticket config`コマンドをもう一度実行するように伝えてください。**",
+        support=False
+      )
+      await message.channel.send(embed=embed, ephemeral=True)
       return
     except Exception as e:
+      embed = error.generate(
+        num="2-2-03",
+        description="送信できませんでした。\nサポートサーバーまでお問い合わせください。",
+      )
       error = f"\n\n[ERROR]\n- {message.guild.id}\n{e}\n\n"
       print(error)
-      await message.channel.send("[ERROR]\n返信できませんでした。\nサポートサーバーまでお問い合わせください。")
+      await message.channel.send(embed=embed, ephemeral=True)
       return
 
     # block判定
@@ -79,9 +94,13 @@ class PticketReplyToReply(commands.Cog):
       await message.channel.send(f"匿名ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。**")
       return
     except Exception as e:
+      embed = error.generate(
+        num="1-1-01",
+        description="返信できませんでした。\nサポートサーバーまでお問い合わせください。",
+      )
       error = f"\n\n[ERROR]\n- {message.guild.id}\n{e}\n\n"
       print(error)
-      await message.channel.send("[ERROR]\n返信できませんでした。\nサポートサーバーまでお問い合わせください。")
+      await message.channel.send(embed=embed)
       return
 
     # 返信ボタンが設置されてたら削除

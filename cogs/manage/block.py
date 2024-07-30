@@ -4,7 +4,7 @@ import discord
 import aiofiles
 import json
 import os
-
+import error
 
 
 class Block(commands.Cog):
@@ -40,7 +40,11 @@ class Block(commands.Cog):
       pticket_dict = ""
 
     if not report_dict and not pticket_dict:
-      await interaction.followup.send("このスレッドは匿名Report, 匿名Ticketのスレッドではありません。", ephemeral=True)
+      embed = error.generate(
+        num="1-1-01",
+        description="このスレッドは匿名Report, 匿名Ticketのスレッドではありません。",
+      )
+      await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
 
@@ -51,7 +55,11 @@ class Block(commands.Cog):
     elif str(interaction.channel.id) in pticket_dict:
       blocked_path = f"data/pticket/blocked/{interaction.guild.id}.json"
     else:
-      await interaction.followup.send("このスレッドは匿名Report, 匿名Ticketのスレッドではありません。", ephemeral=True)
+      embed = error.generate(
+        num="1-1-02",
+        description="このスレッドは匿名Report, 匿名Ticketのスレッドではありません。",
+      )
+      await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
     # blocked_dictを定義

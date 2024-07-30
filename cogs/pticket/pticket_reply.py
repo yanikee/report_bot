@@ -4,6 +4,7 @@ import discord
 import os
 import json
 import aiofiles
+import error
 
 
 
@@ -35,7 +36,11 @@ class PticketReply(commands.Cog):
       try:
         user_id = pticket_dict[str(interaction.channel.id)]
       except KeyError:
-        await interaction.response.send_message("データが存在しませんでした。")
+        embed=error.generate(
+          num="2-3-01",
+          description="データが存在しませんでした。"
+        )
+        await interaction.response.send_message(embed=embed)
         return
       user = await interaction.guild.fetch_member(user_id)
 
@@ -59,10 +64,18 @@ class PticketReply(commands.Cog):
       try:
         await user.send(embed=embed)
       except discord.error.Forbidden:
-        await interaction.response.send_message("匿名Ticket送信者がDMを受け付けてないため、送信されませんでした。")
+        embed=error.generate(
+          num="2-3-02",
+          description="匿名Ticket送信者がDMを受け付けてないため、送信されませんでした。"
+        )
+        await interaction.response.send_message(embed=embed)
         return
       except Exception as e:
-        await interaction.response.send_message("不明なエラーが発生しました。サポートサーバーに問い合わせてください。")
+        embed=error.generate(
+          num="2-3-03",
+          description="不明なエラーが発生しました。サポートサーバーまでお問い合わせください。"
+        )
+        await interaction.response.send_message(embed=embed)
         error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
         print(error)
         return

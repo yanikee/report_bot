@@ -4,6 +4,7 @@ import discord
 import os
 import json
 import aiofiles
+import error
 
 
 
@@ -43,9 +44,9 @@ class PrivateTicketConfig(commands.GroupCog, group_name='pticket'):
       cannot = True
 
     if cannot:
-      embed=discord.Embed(
+      embed=error.generate(
+        num="2-1-01",
         description=f":x:の付いた権限が不足しています。チャンネル設定から権限を追加し、もう一度このコマンドを実行してください。\n**全て:x:の場合report_botのロールをチャンネル権限に追加し、`メッセージを見る`を追加すれば、解決する場合が多い**です。\n\n- " + "\n- ".join(permission_l),
-        color=0x9AC9FF
       )
       await interaction.followup.send(embed=embed, ephemeral=True)
       return
