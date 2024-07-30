@@ -90,7 +90,7 @@ class PticketReply(commands.Cog):
     elif custom_id == "pticket_add_reply":
       view = discord.ui.View()
       button_0 = discord.ui.Button(label="返信内容を編集", custom_id=f"pticket_edit_reply", style=discord.ButtonStyle.primary, row=0)
-      button_1 = discord.ui.Button(label="送信する", custom_id=f"pticket_send", style=discord.ButtonStyle.red, row=0)
+      button_1 = discord.ui.Button(label="送信する", custom_id=f"pticket_send", style=discord.ButtonStyle.red, row=0, disabled=True)
       button_2 = discord.ui.Button(label="ファイルを送信する", custom_id=f"pticket_send_file", style=discord.ButtonStyle.green, row=1)
       view.add_item(button_0)
       view.add_item(button_1)
@@ -133,7 +133,21 @@ class EditReplyModal(discord.ui.Modal):
     # NOTE: 編集が適用されたことが分かりやすいように、わざとdeferしてる
     await interaction.response.defer()
     self.msg.embeds[0].description = self.reply.value
-    await interaction.followup.edit_message(self.msg.id, embed=self.msg.embeds[0])
+
+    if self.reply.value == "下のボタンから編集してください。":
+      button_bool = True
+    else:
+      button_bool = False
+
+    view = discord.ui.View()
+    button_0 = discord.ui.Button(label="返信内容を編集", custom_id=f"pticket_edit_reply", style=discord.ButtonStyle.primary, row=0)
+    button_1 = discord.ui.Button(label="送信する", custom_id=f"pticket_send", style=discord.ButtonStyle.red, row=0, disabled=button_bool)
+    button_2 = discord.ui.Button(label="ファイルを送信する", custom_id=f"pticket_send_file", style=discord.ButtonStyle.green, row=1)
+    view.add_item(button_0)
+    view.add_item(button_1)
+    view.add_item(button_2)
+
+    await interaction.followup.edit_message(self.msg.id, embed=self.msg.embeds[0], view=view)
 
 
 

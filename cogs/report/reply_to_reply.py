@@ -87,9 +87,14 @@ class ReplyToReply(commands.Cog):
       await cha.send(files=file_l)
 
     # 返信用のbuttonを設置
+    embed=discord.Embed(
+        title="返信内容",
+        description="下のボタンから編集してください。",
+        color=0x95FFA1,
+      )
     view = discord.ui.View()
     button_0 = discord.ui.Button(label="返信内容を編集", custom_id=f"report_edit_reply", style=discord.ButtonStyle.primary, row=0)
-    button_1 = discord.ui.Button(label="送信する", custom_id=f"report_send", style=discord.ButtonStyle.red, row=0)
+    button_1 = discord.ui.Button(label="送信する", custom_id=f"report_send", style=discord.ButtonStyle.red, row=0, disabled=True)
     button_2 = discord.ui.Button(label="ファイルを送信する", custom_id=f"report_send_file", style=discord.ButtonStyle.green, row=1)
     button_3 = discord.ui.Button(label="もう返信しない", custom_id=f"report_cancel", style=discord.ButtonStyle.gray, row=2)
     view.add_item(button_0)
@@ -97,11 +102,6 @@ class ReplyToReply(commands.Cog):
     view.add_item(button_2)
     view.add_item(button_3)
 
-    embed=discord.Embed(
-        title="返信内容",
-        description="下のボタンから編集してください。",
-        color=0x95FFA1,
-      )
     await cha.send(embed=embed, view=view)
 
     try:
