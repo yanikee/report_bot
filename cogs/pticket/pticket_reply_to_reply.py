@@ -41,7 +41,10 @@ class PticketReplyToReply(commands.Cog):
     try:
       cha = await self.bot.fetch_channel(int(msg.embeds[0].url.split('/')[-1]))
     except discord.errors.Forbidden:
-      await message.channel.send(f"報告report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。** 1", ephemeral=True)
+      await message.channel.send(f"Ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/config`コマンドをもう一度実行するように伝えてください。**", ephemeral=True)
+      return
+    except discord.erroes.NotFound:
+      await message.channel.send(f"Ticket送信チャンネルが削除されています。", ephemeral=True)
       return
     except Exception as e:
       error = f"\n\n[ERROR]\n- {message.guild.id}\n{e}\n\n"
@@ -93,9 +96,15 @@ class PticketReplyToReply(commands.Cog):
       await cha.send(files=file_l)
 
     # 返信用のbuttonを設置
+    embed=discord.Embed(
+        title="返信内容",
+        description="下のボタンから編集してください。",
+        color=0x95FFA1,
+      )
+
     view = discord.ui.View()
     button_0 = discord.ui.Button(label="返信内容を編集", custom_id=f"pticket_edit_reply", style=discord.ButtonStyle.primary, row=0)
-    button_1 = discord.ui.Button(label="送信する", custom_id=f"pticket_send", style=discord.ButtonStyle.red, row=0)
+    button_1 = discord.ui.Button(label="送信する", custom_id=f"pticket_send", style=discord.ButtonStyle.red, row=0, disabled=True)
     button_2 = discord.ui.Button(label="ファイルを送信する", custom_id=f"pticket_send_file", style=discord.ButtonStyle.green, row=1)
     button_3 = discord.ui.Button(label="もう返信しない", custom_id=f"pticket_cancel", style=discord.ButtonStyle.gray, row=2)
     view.add_item(button_0)
@@ -103,11 +112,6 @@ class PticketReplyToReply(commands.Cog):
     view.add_item(button_2)
     view.add_item(button_3)
 
-    embed=discord.Embed(
-        title="返信内容",
-        description="下のボタンから編集してください。",
-        color=0x95FFA1,
-      )
 
     await cha.send(embed=embed, view=view)
     await message.add_reaction("✅")
