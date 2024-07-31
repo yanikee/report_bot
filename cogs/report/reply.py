@@ -5,6 +5,7 @@ import os
 import json
 import aiofiles
 import error
+import datetime
 
 
 
@@ -23,7 +24,13 @@ class Reply(commands.Cog):
     if custom_id in ["report_reply", "report_edit_reply", "report_send"]:
       path = f"data/report/private_report/{interaction.guild.id}.json"
       if not os.path.exists(path):
-        await interaction.response.send_message("guildファイルが存在しません。サポートサーバーに問い合わせてください。", ephemeral=True)
+        e = f"[ERROR[3-3-01]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\nJson file was not found"
+        print(e)
+        embed=error.generate(
+          code="3-3-01",
+          description="サーバーデータが存在しませんでした。\nサポートサーバーまでお問い合わせください。"
+        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 
     if custom_id == "report_reply":
@@ -68,21 +75,32 @@ class Reply(commands.Cog):
 
 
     elif custom_id == "report_send":
+      # 報告者を取得
       async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
         contents = await f.read()
       private_dict = json.loads(contents)
 
-      # 報告者を取得
       try:
         reporter_id = private_dict[str(interaction.channel.id)]
       except KeyError:
+        e = f"\n[ERROR[3-3-02]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{interaction.channel.id}\nReporter_id was not found\n"
+        print(e)
         embed=error.generate(
-          code="3-3-01",
-          description="データが存在しませんでした。"
+          code="3-3-02",
+          description="ユーザーデータが存在しませんでした。\nサポートサーバーまでお問い合わせください。"
+        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        return
+
+      try:
+        reporter = await interaction.guild.fetch_member(reporter_id)
+      except Exception:
+        embed=error.generate(
+          code="3-3-03",
+          description="匿名Reportのユーザーを取得することができませんでした。\nユーザーは既にサーバーを抜けているかも...？"
         )
         await interaction.response.send_message(embed=embed)
         return
-      reporter = await interaction.guild.fetch_member(reporter_id)
 
       # embedを定義
       embed = discord.Embed(
@@ -98,25 +116,27 @@ class Reply(commands.Cog):
         icon_url=interaction.guild.icon.replace(format='png').url if interaction.guild.icon else None,
       )
 
+      # 返信を送信する
       try:
         await reporter.send(embed=embed)
       except discord.errors.Forbidden:
         embed=error.generate(
-          code="3-3-02",
+          code="3-3-04",
           description="匿名Ticket送信者がDMを受け付けてないため、送信されませんでした。"
         )
         await interaction.response.send_message(embed=embed)
         return
       except Exception as e:
-        error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
-        print(error)
+        e = f"\n[ERROR[3-3-05]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
+        print(e)
         embed=error.generate(
-          code="3-3-03",
-          description="不明なエラーが発生しました。サポートサーバーまでお問い合わせください。"
+          code="3-3-05",
+          description="不明なエラーが発生しました。\nサポートサーバーまでお問い合わせください。"
         )
-        await interaction.response.send_message(embed=embed)
+        await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 
+      # 返信パネルを編集する
       embed = interaction.message.embeds[0]
       embed.set_author(
         name=f"返信：{interaction.user.display_name}",
@@ -154,7 +174,7 @@ class Reply(commands.Cog):
       await interaction.channel.send(embed=embed, view=view)
       await interaction.message.delete()
 
-
+    # もう返信しないボタンが押されたときの処理
     elif custom_id == "report_cancel":
       await interaction.message.delete()
 
@@ -198,6 +218,7 @@ class EditReplyModal(discord.ui.Modal):
     view.add_item(button_2)
 
     await interaction.followup.edit_message(self.msg.id, embed=self.msg.embeds[0], view=view)
+
 
 
 async def setup(bot):

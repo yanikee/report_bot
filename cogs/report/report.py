@@ -4,6 +4,7 @@ import discord
 import os
 import json
 import aiofiles
+import datetime
 import error
 
 
@@ -111,8 +112,8 @@ class ReportButton(discord.ui.View):
       await interaction.followup.send(embed=embed, ephemeral=True)
       return
     except Exception as e:
-      error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
-      print(error)
+      e = f"\n[ERROR[3-4-04]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
+      print(e)
       embed=error.generate(
         code="3-4-04",
         description=f"不明なエラーが発生しました。\nサポートサーバーにお問い合わせください。\n\n### ------------匿名report------------\n{self.first_pticket.value}",
