@@ -4,6 +4,7 @@ import discord
 import os
 import json
 import aiofiles
+import datetime
 import error
 
 
@@ -58,8 +59,8 @@ class ReplyToReply(commands.Cog):
       await message.channel.send(embed=embed)
       return
     except Exception as e:
-      error = f"\n\n[ERROR]\n- {message.guild.id}\n{e}\n\n"
-      print(error)
+      e = f"\n[ERROR[3-2-03]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n{e}\n"
+      print(e)
       embed = error.generate(
         code="3-2-03",
         description="送信できませんでした。\nサポートサーバーまでお問い合わせください。",
@@ -82,11 +83,30 @@ class ReplyToReply(commands.Cog):
 
     # embedの定義
     embed=discord.Embed(
-      title="報告者からの返信",
+      title="ユーザーからの返信",
       description=message.content,
       color=0xF4BD44,
     )
-    await cha.send(embed=embed)
+
+    # ユーザーからの返信を送信
+    try:
+      await cha.send(embed=embed)
+    except discord.errors.Forbidden:
+      embed = error.generate(
+        code="3-2-04",
+        description=f"匿名Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/report config`コマンドをもう一度実行するように伝えてください。**",
+      )
+      await message.channel.send(embed=embed)
+      return
+    except Exception as e:
+      e = f"\n[ERROR[3-2-05]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n- GUILD_ID:{cha.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
+      print(e)
+      embed = error.generate(
+        code="3-2-05",
+        description="返信できませんでした。\nサポートサーバーまでお問い合わせください。",
+      )
+      await message.channel.send(embed=embed)
+      return
 
     # 返信ボタンが設置されてたら削除
     async for msg in cha.history(limit=4):
@@ -115,25 +135,21 @@ class ReplyToReply(commands.Cog):
     view.add_item(button_2)
     view.add_item(button_3)
 
-    await cha.send(embed=embed, view=view)
-
+    # 返信用のbuttonを送信
     try:
-      await message.add_reaction("✅")
-    except discord.errors.Forbidden:
-      embed = error.generate(
-        code="3-2-04",
-        description=f"匿名Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/report config`コマンドをもう一度実行するように伝えてください。**",
-      )
-      await message.channel.send(embed=embed)
+      await cha.send(embed=embed, view=view)
     except Exception as e:
-      error = f"\n\n[ERROR]\n- {message.guild.id}\n{e}\n\n"
-      print(error)
+      e = f"\n[ERROR[3-2-06]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n- GUILD_ID:{cha.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
+      print(e)
       embed = error.generate(
-        code="2-2-05",
-        description="返信できませんでした。\nサポートサーバーまでお問い合わせください。",
+        code="3-2-06",
+        description="操作が完了できませんでした。\nサポートサーバーまでお問い合わせください。",
       )
       await message.channel.send(embed=embed)
       return
+
+    # リアクションを付ける
+    await message.add_reaction("✅")
 
 
 
