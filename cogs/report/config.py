@@ -60,7 +60,7 @@ class ReportConfig(commands.GroupCog, group_name='report'):
       embed=error.generate(
         code="3-1-03",
         description=f":x:の付いた権限が不足しています。チャンネル設定から権限を追加し、もう一度このコマンドを実行してください。\n"
-                    "全て:x:の場合、**チャンネル権限にreport bot!のロールを追加し、`メッセージを見る`を付与すれば、解決することが多い**です。"
+                    "全て:x:の場合、**チャンネル権限にreport bot!のロールを追加し、「メッセージを見る」を付与**すれば、解決することが多いです。"
                     "\n\n- " + "\n- ".join(permission_l)
       )
       await interaction.response.send_message(embed=embed, ephemeral=True)
