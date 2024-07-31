@@ -50,7 +50,10 @@ class PrivateTicketConfig(commands.GroupCog, group_name='pticket'):
     if cannot:
       embed=error.generate(
         code="2-1-02",
-        description=f":x:の付いた権限が不足しています。チャンネル設定から権限を追加し、もう一度このコマンドを実行してください。\n**全て:x:の場合report_botのロールをチャンネル権限に追加し、`メッセージを見る`を追加すれば、解決する場合が多い**です。\n\n- " + "\n- ".join(permission_l),
+        description=f":x:の付いた権限が不足しています。チャンネル設定から権限を追加し、もう一度このコマンドを実行してください。\n"
+                    "全て:x:の場合、**チャンネル権限にreport bot!のロールを追加し、`メッセージを見る`を付与すれば、解決することが多い**です。\n\n"
+                    "このチャンネルと、Ticketが送信されるチャンネルの2つの権限をご確認ください。"
+                    "\n\n- " + "\n- ".join(permission_l)
       )
       await interaction.followup.send(embed=embed, ephemeral=True)
       return
