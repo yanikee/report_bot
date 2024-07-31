@@ -27,7 +27,11 @@ class ReportConfig(commands.GroupCog, group_name='report'):
       channel = interaction.channel
 
     if channel.type != discord.ChannelType.text:
-      await interaction.response.send_message("テキストチャンネルのみ設定可能です。", ephemeral=True)
+      embed=error.generate(
+        code="3-1-02",
+        description=f"テキストチャンネルのみ設定可能です。",
+      )
+      await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
     # 閲覧権限など追加する。
@@ -54,7 +58,7 @@ class ReportConfig(commands.GroupCog, group_name='report'):
 
     if cannot:
       embed=error.generate(
-        code="3-1-02",
+        code="3-1-03",
         description=f":x:の付いた権限が不足しています。チャンネル設定から権限を追加し、もう一度このコマンドを実行してください。\n**全て:x:の場合report_botのロールをチャンネル権限に追加し、`メッセージを見る`を追加すれば、解決する場合が多い**です。\n\n- " + "\n- ".join(permission_l)
       )
       await interaction.response.send_message(embed=embed, ephemeral=True)
