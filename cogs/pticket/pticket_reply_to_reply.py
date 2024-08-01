@@ -5,6 +5,7 @@ import os
 import json
 import aiofiles
 import error
+import datetime
 
 
 
@@ -56,8 +57,8 @@ class PticketReplyToReply(commands.Cog):
       await message.channel.send(embed=embed)
       return
     except Exception as e:
-      error = f"\n\n[ERROR]\n- {message.guild.id}\n{e}\n\n"
-      print(error)
+      e = f"\n[ERROR[2-2-03]]{datetime.datetime.now()}\n- GUILD_ID:{message.guild.id}\n{e}\n"
+      print(e)
       embed = error.generate(
         code="2-2-03",
         description="送信できませんでした。\nサポートサーバーまでお問い合わせください。",
@@ -85,7 +86,7 @@ class PticketReplyToReply(commands.Cog):
       color=0x9AC9FF,
     )
 
-    # 送信
+    # ユーザーからの返信を送信
     try:
       await cha.send(embed=embed)
     except discord.errors.Forbidden:
@@ -95,10 +96,9 @@ class PticketReplyToReply(commands.Cog):
       )
       await message.channel.send(embed=embed)
       return
-
     except Exception as e:
-      error = f"\n\n[ERROR]\n- {message.guild.id}\n{e}\n\n"
-      print(error)
+      e = f"\n[ERROR[2-2-05]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n- GUILD_ID:{cha.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
+      print(e)
       embed = error.generate(
         code="2-2-05",
         description="返信できませんでした。\nサポートサーバーまでお問い合わせください。",
@@ -135,7 +135,20 @@ class PticketReplyToReply(commands.Cog):
     view.add_item(button_3)
 
 
-    await cha.send(embed=embed, view=view)
+    # 返信用のbuttonを送信
+    try:
+      await cha.send(embed=embed, view=view)
+    except Exception as e:
+      e = f"\n[ERROR[2-2-06]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n- GUILD_ID:{cha.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
+      print(e)
+      embed = error.generate(
+        code="3-2-06",
+        description="操作が完了できませんでした。\nサポートサーバーまでお問い合わせください。",
+      )
+      await message.channel.send(embed=embed)
+      return
+
+    # リアクションを付ける
     await message.add_reaction("✅")
 
 

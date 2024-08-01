@@ -5,6 +5,7 @@ import os
 import json
 import aiofiles
 import error
+import datetime
 
 
 
@@ -86,8 +87,8 @@ class PrivateTicketModal(discord.ui.Modal):
       await interaction.followup.send(embed=embed, ephemeral=True)
       return
     except Exception as e:
-      error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
-      print(error)
+      e = f"\n[ERROR[2-5-04]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
+      print(e)
       embed=error.generate(
         code="2-5-04",
         description=f"不明なエラーが発生しました。\nサポートサーバーにお問い合わせください。\n\n### ------------匿名ticket------------\n{self.first_pticket.value}",
@@ -140,7 +141,7 @@ class PrivateTicketModal(discord.ui.Modal):
 
     await thread.send(embed=embed, view=view)
 
-    # 確認msg
+    # Pticket完了確認membedを定義
     embed_1=discord.Embed(
       url=thread.jump_url,
       description=f"## 匿名ticket\n{self.first_pticket.value}",
@@ -156,18 +157,22 @@ class PrivateTicketModal(discord.ui.Modal):
                   "- あなたの情報(ユーザー名, idなど)が外部に漏れることは一切ありません。",
       color=0x9AC9FF,
     )
+
+    # Pticket完了確認embedを送信
     try:
       await interaction.user.send(embeds=[embed_1, embed_2])
     except Exception as e:
+      e = f"\n[ERROR[2-5-05]]{datetime.datetime.now()}\n- USER_ID:{interaction.user.id}\n- GUILD_ID:{interaction.guild.id}\- CHANNEL_ID:{interaction.channel.id}\n{e}\n"
+      print(e)
       embed=error.generate(
-        code="2-3-05",
+        code="2-5-05",
         description="不明なエラーが発生しました。サポートサーバーまでお問い合わせください。"
       )
       await interaction.followup.send(embed=embed, ephemeral=True)
-      error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
-      print(error)
-    else:
-      await interaction.followup.send("送信されました。\nこのbotのDMをご確認ください。", ephemeral=True)
+      return
+
+    # 完了msgを送信
+    await interaction.followup.send("送信されました。\nこのbotのDMをご確認ください。", ephemeral=True)
 
 
 
