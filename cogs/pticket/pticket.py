@@ -4,6 +4,8 @@ import discord
 import os
 import json
 import aiofiles
+import error
+import datetime
 
 
 
@@ -22,13 +24,22 @@ class PrivateTicket(commands.Cog):
 
     path = f"data/pticket/guilds/{interaction.guild.id}.json"
     if not os.path.exists(path):
-      await interaction.response.send_message("サーバー管理者に`/pticket config`コマンドを実行するよう伝えてください。", ephemeral=True)
+      embed=error.generate(
+        code="2-5-01",
+        description="サーバー管理者に`/pticket config`コマンドを実行するよう伝えてください。",
+      )
+      await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
     try:
-      [x async for x in interaction.user.history(limit=1)]
-    except discord.errors.Forbidden:
-      await interaction.response.send_message("このbotからDMを受け取れるように設定してください！\n（テストメッセージをbotに送信するなど）", ephemeral=True)
+      msg = await interaction.user.send("テストメッセージ", silent=True)
+      await msg.delete()
+    except Exception:
+      embed=error.generate(
+          code="2-5-02",
+          description="DMが送信できませんでした。\n**このbotからDMを受け取れるように設定してください！**\n（テストメッセージをbotに送信するなど）",
+        )
+      await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
     modal = PrivateTicketModal(self.bot)
@@ -67,14 +78,24 @@ class PrivateTicketModal(discord.ui.Modal):
     cha = interaction.guild.get_channel(report_dict["report_send_channel"])
 
     try:
-      msg = await cha.send(f"<@{1237001692977827920}>", embed=embed)
+      msg = await cha.send(f"<@{1237001692977827920}>", esmbed=embed)
     except discord.errors.Forbidden:
-      await interaction.followup.send(f"匿名ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/pticket config`コマンドをもう一度実行するように伝えてください。**\n\n### ------------匿名ticket------------\n{self.first_pticket.value}", ephemeral=True)
+      embed=error.generate(
+        code="2-5-03",
+        description=f"匿名ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/pticket config`コマンドをもう一度実行するように伝えてください。**\n\n### ------------匿名ticket------------\n{self.first_pticket.value}",
+        support=False,
+      )
+      await interaction.followup.send(embed=embed, ephemeral=True)
       return
     except Exception as e:
-      await interaction.followup.send(f"不明なエラーが発生しました。\nサポートサーバーに問い合わせてください。\n\n### ------------匿名ticket------------\n{self.first_pticket.value}", ephemeral=True)
-      error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
-      print(error)
+      e = f"\n[ERROR[2-5-04]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
+      print(e)
+      embed=error.generate(
+        code="2-5-04",
+        description=f"不明なエラーが発生しました。\nサポートサーバーにお問い合わせください。\n\n### ------------匿名ticket------------\n{self.first_pticket.value}",
+        support=False
+      )
+      await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
     # pticket送信者idを保存{msg.id: user.id}
@@ -121,7 +142,7 @@ class PrivateTicketModal(discord.ui.Modal):
 
     await thread.send(embed=embed, view=view)
 
-    # 確認msg
+    # Pticket完了確認membedを定義
     embed_1=discord.Embed(
       url=thread.jump_url,
       description=f"## 匿名ticket\n{self.first_pticket.value}",
@@ -137,14 +158,22 @@ class PrivateTicketModal(discord.ui.Modal):
                   "- あなたの情報(ユーザー名, idなど)が外部に漏れることは一切ありません。",
       color=0x9AC9FF,
     )
+
+    # Pticket完了確認embedを送信
     try:
       await interaction.user.send(embeds=[embed_1, embed_2])
     except Exception as e:
-      await interaction.followup.send("不明なエラーが発生しました。サポートサーバーに問い合わせてください。", ephemeral=True)
-      error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
-      print(error)
-    else:
-      await interaction.followup.send("送信されました。\nこのbotのDMをご確認ください。", ephemeral=True)
+      e = f"\n[ERROR[2-5-05]]{datetime.datetime.now()}\n- USER_ID:{interaction.user.id}\n- GUILD_ID:{interaction.guild.id}\- CHANNEL_ID:{interaction.channel.id}\n{e}\n"
+      print(e)
+      embed=error.generate(
+        code="2-5-05",
+        description="不明なエラーが発生しました。サポートサーバーまでお問い合わせください。"
+      )
+      await interaction.followup.send(embed=embed, ephemeral=True)
+      return
+
+    # 完了msgを送信
+    await interaction.followup.send("送信されました。\nこのbotのDMをご確認ください。", ephemeral=True)
 
 
 

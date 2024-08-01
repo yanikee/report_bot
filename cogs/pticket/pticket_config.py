@@ -4,6 +4,7 @@ import discord
 import os
 import json
 import aiofiles
+import error
 
 
 
@@ -15,7 +16,11 @@ class PrivateTicketConfig(commands.GroupCog, group_name='pticket'):
   @app_commands.describe(config_channel='Ticketが送信されるチャンネルを指定する')
   async def pticket_config(self, interaction:discord.Interaction, config_channel:discord.TextChannel):
     if not interaction.channel.permissions_for(interaction.user).manage_channels:
-      await interaction.response.send_message("権限不足です。\n`チャンネル管理`の権限が必要です。", ephemeral=True)
+      embed=error.generate(
+        code="2-1-01",
+        description=f"権限不足です。\n`チャンネル管理`の権限が必要です。",
+      )
+      await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
     await interaction.response.defer(ephemeral=True)
@@ -43,9 +48,12 @@ class PrivateTicketConfig(commands.GroupCog, group_name='pticket'):
       cannot = True
 
     if cannot:
-      embed=discord.Embed(
-        description=f":x:の付いた権限が不足しています。チャンネル設定から権限を追加し、もう一度このコマンドを実行してください。\n**全て:x:の場合report_botのロールをチャンネル権限に追加し、`メッセージを見る`を追加すれば、解決する場合が多い**です。\n\n- " + "\n- ".join(permission_l),
-        color=0x9AC9FF
+      embed=error.generate(
+        code="2-1-02",
+        description=f":x:の付いた権限が不足しています。チャンネル設定から権限を追加し、もう一度このコマンドを実行してください。\n"
+                    "全て:x:の場合、**チャンネル権限にreport bot!のロールを追加し、「メッセージを見る」を付与**すれば、解決することが多いです。\n\n"
+                    "このチャンネルと、Ticketが送信されるチャンネルの2つの権限をご確認ください。"
+                    "\n\n- " + "\n- ".join(permission_l)
       )
       await interaction.followup.send(embed=embed, ephemeral=True)
       return

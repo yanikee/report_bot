@@ -5,6 +5,8 @@ import os
 import json
 import aiofiles
 import asyncio
+import error
+import datetime
 
 
 
@@ -23,9 +25,21 @@ class PticketSendFiles(commands.Cog):
 
     # スレッド内での返信編集
     if custom_id == "pticket_send_file":
+      if not os.path.exists(path):
+        e = f"[ERROR[2-4-01]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\nJson file was not found"
+        print(e)
+        embed=error.generate(
+          code="2-4-01",
+          description="サーバーデータが存在しませんでした。\nサポートサーバーまでお問い合わせください。"
+        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        return
+
+
       if interaction.message.embeds[0].description == "下のボタンから編集してください。":
         custom_id = "pticket_send_files_process"
 
+      # 返信パネルのメッセージを編集していた場合の警告メッセージ
       else:
         # embedの定義
         embed = discord.Embed(
@@ -53,46 +67,58 @@ class PticketSendFiles(commands.Cog):
 
 
     if custom_id == "pticket_send_files_process":
-      # embedを定義
+      # ファイル送信のembedを定義, 送信
       embed = discord.Embed(
         description="この埋め込みに__**返信する形**__でファイルを送信してください。(60秒以内)\n__**メンションはON**__にしてください。\n\n"
-                    "⚠️⚠️⚠️\n送信されたファイルは、確認なしにすぐにユーザーに送信されます。ご注意ください。",
+                    "⚠️注意⚠️\n送信されたファイルは、確認なしにすぐにユーザーに送信されます。ご注意ください。",
         color=0x95FFA1,
       )
-
       await interaction.response.edit_message(embed=embed, view=None)
 
+      # ファイル送信を待つ
       def check(message):
         return message.channel == interaction.channel and message.reference and message.attachments
-
       try:
         message = await self.bot.wait_for('message', timeout=60.0, check=check)
-
       except asyncio.TimeoutError:
         await interaction.message.delete()
         await interaction.followup.send('タイムアウトしました。\nメッセージが受信されませんでした。', ephemeral=True)
         await self.add_reply(interaction)
         return
 
-      # ファイルを送信する
+      # pticket者を取得
       path = f"data/pticket/pticket/{interaction.guild.id}.json"
       async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
         contents = await f.read()
       pticket_dict = json.loads(contents)
 
-      # pticket者を取得
       try:
         user_id = pticket_dict[str(interaction.channel.id)]
       except KeyError:
-        await interaction.followup.send("ユーザーデータが存在しませんでした。", ephemeral=True)
+        e = f"\n[ERROR[2-4-02]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{interaction.channel.id}\nPticket user_id was not found\n"
+        print(e)
+        embed=error.generate(
+          code="2-4-02",
+          description="ユーザーデータが存在しませんでした。\nサポートサーバーまでお問い合わせください。"
+        )
+        await interaction.followup.send(embed=embed, ephemeral=True)
         await interaction.message.delete()
         await self.add_reply(interaction)
         return
-      user = await interaction.guild.fetch_member(user_id)
+
+      try:
+        user = await interaction.guild.fetch_member(user_id)
+      except Exception:
+        embed=error.generate(
+          code="2-4-03",
+          description="匿名Ticketのユーザーを取得することができませんでした。\nユーザーは既にサーバーを抜けているかも...？"
+        )
+        await interaction.followup.send(embed=embed, ephemeral=True)
+        await interaction.message.delete()
+        await self.add_reply(interaction)
+        return
 
       # embedを定義
-      # embed_1: お知らせ
-      # embed_2: 返信内容
       embed = discord.Embed(
         url = interaction.channel.jump_url,
         description="## 匿名ticket\n"
@@ -108,27 +134,42 @@ class PticketSendFiles(commands.Cog):
       #  attachments to files
       try:
         files = [await attachment.to_file() for attachment in message.attachments]
-      except Exception:
-        await interaction.followup.send("ファイル変換時に、不明なエラーが発生しました。\nサポートサーバーまでお越しください。", ephemeral=True)
+      except Exception as e:
+        e = f"\n[ERROR[2-4-04]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
+        print(e)
+        embed=error.generate(
+          code="2-4-04",
+          description="ファイル変換時に、不明なエラーが発生しました。\nサポートサーバーまでお問い合わせください。",
+        )
+        await interaction.followup.send(embed=embed, ephemeral=True)
         await interaction.message.delete()
         await self.add_reply(interaction)
         return
 
-      # 返信する
+      # fileを返信する
       try:
         await user.send(embed=embed, files=files)
-      except discord.error.Forbidden:
-        await interaction.followup.send("匿名Ticket送信者がDMを受け付けてないため、送信されませんでした。", ephemeral=True)
+      except discord.errors.Forbidden:
+        embed=error.generate(
+          code="2-4-05",
+          description="匿名Ticket送信者がDMを受け付けてないため、送信されませんでした。",
+        )
+        await interaction.followup.send(embed=embed)
         await interaction.message.delete()
         return
       except Exception as e:
-        await interaction.followup.send("不明なエラーが発生しました。サポートサーバーに問い合わせてください。", ephemeral=True)
-        error = f"\n\n[ERROR]\n- {interaction.guild.id}\n{e}\n\n"
-        print(error)
+        e = f"\n[ERROR[2-4-06]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
+        print(e)
+        embed=error.generate(
+          code="2-4-06",
+          description="不明なエラーが発生しました。サポートサーバーまでお問い合わせください。",
+        )
+        await interaction.followup.send(embed=embed)
         await interaction.message.delete()
         await self.add_reply(interaction)
         return
 
+      # 確認メッセージを送信
       embed = discord.Embed(
         description=f"{interaction.user.mention}がファイルを送信しました。",
         color=0x95FFA1,
