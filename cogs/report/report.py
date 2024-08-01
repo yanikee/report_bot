@@ -106,20 +106,18 @@ class ReportButton(discord.ui.View):
     except discord.errors.Forbidden:
       embed=error.generate(
         code="3-4-03",
-        description=f"匿名Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/report config`コマンドをもう一度実行するように伝えてください。**\n\n### ------------匿名report------------\n{self.first_pticket.value}",
-        support=False,
+        description=f"匿名Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/report config`コマンドをもう一度実行するように伝えてください。",
       )
-      await interaction.followup.send(embed=embed, ephemeral=True)
+      await interaction.response.send_message(embed=embed, ephemeral=True)
       return
     except Exception as e:
       e = f"\n[ERROR[3-4-04]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
       print(e)
       embed=error.generate(
         code="3-4-04",
-        description=f"不明なエラーが発生しました。\nサポートサーバーにお問い合わせください。\n\n### ------------匿名report------------\n{self.first_pticket.value}",
-        support=False
+        description=f"不明なエラーが発生しました。\nサポートサーバーにお問い合わせください。",
       )
-      await interaction.followup.send(embed=embed, ephemeral=True)
+      await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
 

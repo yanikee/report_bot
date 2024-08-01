@@ -101,7 +101,7 @@ class ReportSendFiles(commands.Cog):
           code="3-5-02",
           description="ユーザーデータが存在しませんでした。\nサポートサーバーまでお問い合わせください。"
         )
-        await interaction.followup.send(embed=embed, ephemeral=True)
+        await interaction.followup.send(embed=embed)
         await interaction.message.delete()
         await self.add_reply(interaction)
         return
@@ -149,7 +149,7 @@ class ReportSendFiles(commands.Cog):
       # fileを返信する
       try:
         await user.send(embed=embed, files=files)
-      except discord.error.Forbidden:
+      except discord.errors.Forbidden:
         embed=error.generate(
           code="3-5-05",
           description="匿名Report送信者がDMを受け付けてないため、送信されませんでした。",
