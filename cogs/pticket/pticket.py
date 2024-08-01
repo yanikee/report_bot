@@ -78,7 +78,7 @@ class PrivateTicketModal(discord.ui.Modal):
     cha = interaction.guild.get_channel(report_dict["report_send_channel"])
 
     try:
-      msg = await cha.send(f"<@{1237001692977827920}>", esmbed=embed)
+      msg = await cha.send(f"<@{1237001692977827920}>", embed=embed)
     except discord.errors.Forbidden:
       embed=error.generate(
         code="2-5-03",
