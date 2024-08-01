@@ -49,7 +49,7 @@ class PticketReplyToReply(commands.Cog):
       )
       await message.channel.send(embed=embed)
       return
-    except discord.erroes.NotFound:
+    except discord.errors.NotFound:
       embed = error.generate(
         code="2-2-02",
         description="匿名Ticket送信チャンネルが削除されています。\n**サーバー管理者さんに、`/pticket config`コマンドをもう一度実行するように伝えてください。**",
@@ -57,7 +57,7 @@ class PticketReplyToReply(commands.Cog):
       await message.channel.send(embed=embed)
       return
     except Exception as e:
-      e = f"\n[ERROR[2-2-03]]{datetime.datetime.now()}\n- GUILD_ID:{message.guild.id}\n{e}\n"
+      e = f"\n[ERROR[2-2-03]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n{e}\n"
       print(e)
       embed = error.generate(
         code="2-2-03",

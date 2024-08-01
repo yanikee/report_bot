@@ -94,7 +94,7 @@ class PticketReply(commands.Cog):
         await interaction.response.send_message(embed=embed)
         return
       except Exception as e:
-        e = f"\n[ERROR[2-3-54]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
+        e = f"\n[ERROR[2-3-05]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
         print(e)
         embed=error.generate(
           code="2-3-05",

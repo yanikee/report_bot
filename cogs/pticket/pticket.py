@@ -32,8 +32,9 @@ class PrivateTicket(commands.Cog):
       return
 
     try:
-      [x async for x in interaction.user.history(limit=1)]
-    except discord.errors.Forbidden:
+      msg = await interaction.user.send("テストメッセージ", silent=True)
+      await msg.delete()
+    except Exception:
       embed=error.generate(
           code="2-5-02",
           description="DMが送信できませんでした。\n**このbotからDMを受け取れるように設定してください！**\n（テストメッセージをbotに送信するなど）",
@@ -77,7 +78,7 @@ class PrivateTicketModal(discord.ui.Modal):
     cha = interaction.guild.get_channel(report_dict["report_send_channel"])
 
     try:
-      msg = await cha.send(f"<@{1237001692977827920}>", embed=embed)
+      msg = await cha.send(f"<@{1237001692977827920}>", esmbed=embed)
     except discord.errors.Forbidden:
       embed=error.generate(
         code="2-5-03",

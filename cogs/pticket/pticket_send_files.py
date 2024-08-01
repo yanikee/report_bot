@@ -134,7 +134,7 @@ class PticketSendFiles(commands.Cog):
       #  attachments to files
       try:
         files = [await attachment.to_file() for attachment in message.attachments]
-      except Exception:
+      except Exception as e:
         e = f"\n[ERROR[2-4-04]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
         print(e)
         embed=error.generate(
