@@ -1,4 +1,5 @@
 data/
+log/
 __pycache__/
 .gitpod.yml
 env.json
