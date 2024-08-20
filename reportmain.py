@@ -10,7 +10,10 @@ import json
 
 cog_list = cog_list.cog_list
 
-intents = discord.Intents.default()
+intents = discord.Intents.none()
+intents.messages = True
+intents.guilds = True
+
 bot = commands.Bot(command_prefix="!!!!!", intents=intents)
 
 try:
