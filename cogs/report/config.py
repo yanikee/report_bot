@@ -85,7 +85,7 @@ class ReportConfig(commands.GroupCog, group_name='report'):
       await f.write(contents)
 
     embed = discord.Embed(
-      description=f'"report"を{channel.mention}に送信します。',
+      description=f'Reportを{channel.mention}に送信します。',
       color=0xF4BD44,
     )
     await interaction.response.send_message(embed=embed)
