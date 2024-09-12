@@ -9,9 +9,11 @@ import datetime
 
 
 
+
 class PrivateTicket(commands.Cog):
   def __init__(self, bot: commands.Bot):
     self.bot = bot
+    self.cooldown_mapping = commands.CooldownMapping.from_cooldown(1, 30, commands.BucketType.user)
 
   # private_ticketからthreadを作る
   @commands.Cog.listener()
@@ -40,6 +42,13 @@ class PrivateTicket(commands.Cog):
           description="DMが送信できませんでした。\n**このbotからDMを受け取れるように設定してください！**\n（テストメッセージをbotに送信するなど）",
         )
       await interaction.response.send_message(embed=embed, ephemeral=True)
+      return
+
+    retry_after = self.cooldown_mapping.update_rate_limit(interaction.message)
+    if retry_after:
+      retry_minute = int(retry_after) // 60
+      retry_second = int(retry_after) % 60
+      await interaction.response.send_message(f"cooldownあと{retry_minute}分{retry_second}秒待ってね！", ephemeral=True)
       return
 
     modal = PrivateTicketModal(self.bot)
