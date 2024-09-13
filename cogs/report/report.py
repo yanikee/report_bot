@@ -110,9 +110,18 @@ class ReportButton(discord.ui.View):
       contents = await f.read()
     report_dict = json.loads(contents)
     cha = interaction.guild.get_channel(report_dict["report_send_channel"])
+    if "mention_role" in report_dict:
+      mention_role_id = report_dict["mention_role"]
+    else:
+      mention_role_id = None
 
+    # Ticketを送信
+    if mention_role_id:
+      msg = f"<@&{mention_role_id}>\n{self.bot.user.mention}"
+    else:
+      msg = self.bot.user.mention
     try:
-      msg = await cha.send(f"{self.bot.user.mention}\n{message.jump_url}", embeds=message.embeds)
+      msg = await cha.send(f"{msg}\n{message.jump_url}", embeds=message.embeds)
     except discord.errors.Forbidden:
       embed=error.generate(
         code="3-4-03",

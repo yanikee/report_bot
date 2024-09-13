@@ -84,10 +84,10 @@ class PrivateTicketModal(discord.ui.Modal):
     path = f"data/pticket/guilds/{interaction.guild.id}.json"
     async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
       contents = await f.read()
-    report_dict = json.loads(contents)
-    cha = interaction.guild.get_channel(report_dict["report_send_channel"])
-    if "mention_role" in report_dict:
-      mention_role_id = report_dict["mention_role"]
+    ticket_dict = json.loads(contents)
+    cha = interaction.guild.get_channel(ticket_dict["report_send_channel"])
+    if "mention_role" in ticket_dict:
+      mention_role_id = ticket_dict["mention_role"]
     else:
       mention_role_id = None
 
@@ -138,14 +138,14 @@ class PrivateTicketModal(discord.ui.Modal):
     path = f"data/pticket/guilds/{interaction.guild.id}.json"
     async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
       contents = await f.read()
-    report_dict = json.loads(contents)
-    report_dict["pticket_num"] += 1
+    ticket_dict = json.loads(contents)
+    ticket_dict["pticket_num"] += 1
     async with aiofiles.open(path, mode="w") as f:
-      contents = json.dumps(report_dict, indent=2, ensure_ascii=False)
+      contents = json.dumps(ticket_dict, indent=2, ensure_ascii=False)
       await f.write(contents)
 
     # thread作成, button送信
-    thread = await msg.create_thread(name=f"private_ticket-{str(report_dict['pticket_num']).zfill(4)}")
+    thread = await msg.create_thread(name=f"private_ticket-{str(ticket_dict['pticket_num']).zfill(4)}")
 
     embed=discord.Embed(
       title="返信内容",

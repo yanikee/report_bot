@@ -1,9 +1,11 @@
 from discord.ext import commands
 from discord import app_commands
 import discord
+
 import os
 import json
 import aiofiles
+
 import error
 
 
@@ -13,8 +15,9 @@ class ReportConfig(commands.GroupCog, group_name='report'):
     self.bot = bot
 
   @app_commands.command(name="setting", description='Reportを送信するチャンネルを設定します。')
-  @app_commands.describe(channel='Reportを送信するチャンネル')
-  async def report_setting(self, interaction:discord.Interaction, channel:discord.TextChannel=None):
+  @app_commands.describe(channel='Reportを送信するチャンネルを指定します')
+  @app_commands.describe(mention_role="Reportが送信されたときにメンションするロールを指定します")
+  async def report_setting(self, interaction:discord.Interaction, channel:discord.TextChannel=None, mention_role:discord.Role=None):
     if not interaction.channel.permissions_for(interaction.user).manage_channels:
       embed=error.generate(
         code="3-1-01",
@@ -73,19 +76,23 @@ class ReportConfig(commands.GroupCog, group_name='report'):
         contents = await f.read()
       report_dict = json.loads(contents)
       report_dict["report_send_channel"] = channel.id
-
     else:
       report_dict = {
         "report_send_channel": channel.id,
         "reply_num": 0
       }
+    if mention_role:
+      report_dict["mention_role"] = mention_role.id
+    else:
+      report_dict["mention_role"] = None
 
     async with aiofiles.open(path, mode="w") as f:
       contents = json.dumps(report_dict, indent=2, ensure_ascii=False)
       await f.write(contents)
 
     embed = discord.Embed(
-      description=f'Reportを{channel.mention}に送信します。',
+      title="Report",
+      description=f'送信チャンネル：{channel.mention}\nメンションロール：{mention_role}',
       color=0xF4BD44,
     )
     await interaction.response.send_message(embed=embed)
