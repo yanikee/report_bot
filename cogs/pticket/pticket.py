@@ -30,7 +30,7 @@ class PrivateTicket(commands.Cog):
     if not os.path.exists(path):
       embed=error.generate(
         code="2-5-01",
-        description="サーバー管理者に`/pticket config`コマンドを実行するよう伝えてください。",
+        description="サーバー管理者に`/pticket setting`コマンドを実行するよう伝えてください。",
       )
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
@@ -80,19 +80,29 @@ class PrivateTicketModal(discord.ui.Modal):
       color=0x9AC9FF,
     )
 
-    # pticket_channelの取得
+    # pticket_channel, mention_roleの取得
     path = f"data/pticket/guilds/{interaction.guild.id}.json"
     async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
       contents = await f.read()
-    report_dict = json.loads(contents)
-    cha = interaction.guild.get_channel(report_dict["report_send_channel"])
+    ticket_dict = json.loads(contents)
+    cha = interaction.guild.get_channel(ticket_dict["report_send_channel"])
+    if "mention_role" in ticket_dict:
+      mention_role_id = ticket_dict["mention_role"]
+    else:
+      mention_role_id = None
+
+    # Ticketを送信
+    if mention_role_id:
+      msg = f"<@&{mention_role_id}>\n{self.bot.user.mention}"
+    else:
+      msg = self.bot.user.mention
 
     try:
-      msg = await cha.send(f"<@{1237001692977827920}>", embed=embed)
+      msg = await cha.send(msg, embed=embed)
     except discord.errors.Forbidden:
       embed=error.generate(
         code="2-5-03",
-        description=f"匿名ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/pticket config`コマンドをもう一度実行するように伝えてください。**\n\n### ------------匿名ticket------------\n{self.first_pticket.value}",
+        description=f"匿名ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/pticket setting`コマンドをもう一度実行するように伝えてください。**\n\n### ------------匿名ticket------------\n{self.first_pticket.value}",
         support=False,
       )
       await interaction.followup.send(embed=embed, ephemeral=True)
@@ -128,14 +138,14 @@ class PrivateTicketModal(discord.ui.Modal):
     path = f"data/pticket/guilds/{interaction.guild.id}.json"
     async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
       contents = await f.read()
-    report_dict = json.loads(contents)
-    report_dict["pticket_num"] += 1
+    ticket_dict = json.loads(contents)
+    ticket_dict["pticket_num"] += 1
     async with aiofiles.open(path, mode="w") as f:
-      contents = json.dumps(report_dict, indent=2, ensure_ascii=False)
+      contents = json.dumps(ticket_dict, indent=2, ensure_ascii=False)
       await f.write(contents)
 
     # thread作成, button送信
-    thread = await msg.create_thread(name=f"private_ticket-{str(report_dict['pticket_num']).zfill(4)}")
+    thread = await msg.create_thread(name=f"private_ticket-{str(ticket_dict['pticket_num']).zfill(4)}")
 
     embed=discord.Embed(
       title="返信内容",

@@ -54,14 +54,14 @@ class PticketReplyToReply(commands.Cog):
     except discord.errors.Forbidden:
       embed = error.generate(
         code="2-2-01",
-        description="匿名Ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/pticket config`コマンドをもう一度実行するように伝えてください。**",
+        description="匿名Ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/pticket setting`コマンドをもう一度実行するように伝えてください。**",
       )
       await message.channel.send(embed=embed)
       return
     except discord.errors.NotFound:
       embed = error.generate(
         code="2-2-02",
-        description="匿名Ticket送信チャンネルが削除されています。\n**サーバー管理者さんに、`/pticket config`コマンドをもう一度実行するように伝えてください。**",
+        description="匿名Ticket送信チャンネルが削除されています。\n**サーバー管理者さんに、`/pticket setting`コマンドをもう一度実行するように伝えてください。**",
       )
       await message.channel.send(embed=embed)
       return
@@ -101,7 +101,7 @@ class PticketReplyToReply(commands.Cog):
     except discord.errors.Forbidden:
       embed = error.generate(
         code="2-2-04",
-        description=f"匿名Ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/pticket config`コマンドをもう一度実行するように伝えてください。**",
+        description=f"匿名Ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/pticket setting`コマンドをもう一度実行するように伝えてください。**",
       )
       await message.channel.send(embed=embed)
       return

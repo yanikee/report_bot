@@ -9,7 +9,7 @@ class Help(commands.Cog):
     self.bot = bot
 
   @app_commands.command(name="help", description='helpコマンドです。')
-  async def report(self, interaction:discord.Interaction):
+  async def help(self, interaction:discord.Interaction):
     embed = discord.Embed(
       title="Help! (1/4)",
       description="このbotには2つの機能があります。\n\n"
@@ -46,13 +46,13 @@ class Help(commands.Cog):
         title="Help! (2/4)",
         description="## まず何をすればいいの？(設定方法)\n"
                     "### Report機能\n"
-                    "- __**`/report config` を実行**__\n"
-                    " - Reportを受信するチャンネルを設定します\n"
+                    "- __**`/report setting` を実行**__\n"
                     " - Reportを受け取りたいチャンネルで実行\n"
+                    " - Report開始時にメンションを行うロールを指定できます\n\n"
                     "### 匿名Ticket機能\n"
-                    "- __**`/pticket config` を実行**__\n"
-                    " - 匿名Ticketを受信するチャンネル，匿名Ticketを開始するためのボタンを設置するチャンネル を指定します。\n"
-                    " - 匿名Ticketを開始するためのボタンを設置したいチャンネルで実行\n\n"
+                    "- __**`/pticket setting` を実行**__\n"
+                    " - 匿名Ticket開始用のボタンを設置したいチャンネルで実行\n"
+                    " - Ticket開始時にメンションを行うロールを指定できます\n\n"
                     "- 詳しくは[こちら](https://yanikee.github.io/report_bot-docs2/docs/quickstart/)\n"
                     "- 画像付きで解説しています",
         color=0xF4BD44,
@@ -70,7 +70,7 @@ class Help(commands.Cog):
                     "### 匿名Ticket機能\n"
                     "1. 匿名Ticketボタンをクリック\n"
                     " - サーバー管理者が設置します\n"
-                    " - 存在しなかったら、サーバー管理者さんに聞いてみてください",
+                    " - 存在しない場合は、サーバー管理者さんに聞いてみてください",
         color=0xF4BD44,
       )
       await interaction.response.edit_message(embed=embed)
@@ -78,12 +78,18 @@ class Help(commands.Cog):
     elif interaction.data["custom_id"] == "others":
       embed=discord.Embed(
         title="Help! (4/4)",
-        description="## その他のコマンド！\n"
+        description="## その他\n"
                     "## `/block`\n"
                     "- 匿名Report, Ticketのユーザーによる返信をブロックできる機能\n"
                     "- 本botを悪用した荒らしなどが行われた場合にご活用ください。\n"
                     "[使い方]\n"
-                    "- ブロックしたいスレッド内で実行",
+                    "- ブロックしたいスレッド内で実行\n\n"
+                    "### クールダウンについて\n"
+                    "- botの負荷軽減, 悪用を防ぐためにクールダウンを導入しています。\n"
+                    "- 以下の機能は30秒に1度までしか、利用できません。\n"
+                    " - 【！サーバー管理者に報告】\n"
+                    " - Ticket開始ボタン\n"
+                    " - DMからサーバー管理者への返信",
         color=0xF4BD44,
       )
       await interaction.response.edit_message(embed=embed)

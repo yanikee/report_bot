@@ -57,14 +57,14 @@ class ReplyToReply(commands.Cog):
     except discord.errors.Forbidden:
       embed = error.generate(
         code="3-2-01",
-        description="匿名Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/report config`コマンドをもう一度実行するように伝えてください。**",
+        description="匿名Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/report setting`コマンドをもう一度実行するように伝えてください。**",
       )
       await message.channel.send(embed=embed)
       return
     except discord.errors.NotFound:
       embed = error.generate(
         code="3-2-02",
-        description="匿名Report送信チャンネルが削除されています。\n**サーバー管理者さんに、`/report config`コマンドをもう一度実行するように伝えてください。**",
+        description="匿名Report送信チャンネルが削除されています。\n**サーバー管理者さんに、`/report setting`コマンドをもう一度実行するように伝えてください。**",
       )
       await message.channel.send(embed=embed)
       return
@@ -104,7 +104,7 @@ class ReplyToReply(commands.Cog):
     except discord.errors.Forbidden:
       embed = error.generate(
         code="3-2-04",
-        description=f"匿名Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/report config`コマンドをもう一度実行するように伝えてください。**",
+        description=f"匿名Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/report setting`コマンドをもう一度実行するように伝えてください。**",
       )
       await message.channel.send(embed=embed)
       return

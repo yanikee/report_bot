@@ -31,7 +31,7 @@ class Report(commands.Cog):
     if not os.path.exists(path):
       embed=error.generate(
         code="3-4-01",
-        description="サーバー管理者に`/report config`コマンドを実行するよう伝えてください。",
+        description="サーバー管理者に`/report setting`コマンドを実行するよう伝えてください。",
       )
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
@@ -43,7 +43,7 @@ class Report(commands.Cog):
     if not "report_send_channel" in report_dict:
       embed=error.generate(
         code="3-4-02",
-        description="サーバー管理者に`/report config`コマンドを実行するよう伝えてください。",
+        description="サーバー管理者に`/report setting`コマンドを実行するよう伝えてください。",
       )
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
@@ -110,13 +110,22 @@ class ReportButton(discord.ui.View):
       contents = await f.read()
     report_dict = json.loads(contents)
     cha = interaction.guild.get_channel(report_dict["report_send_channel"])
+    if "mention_role" in report_dict:
+      mention_role_id = report_dict["mention_role"]
+    else:
+      mention_role_id = None
 
+    # Ticketを送信
+    if mention_role_id:
+      msg = f"<@&{mention_role_id}>\n{self.bot.user.mention}"
+    else:
+      msg = self.bot.user.mention
     try:
-      msg = await cha.send(f"{self.bot.user.mention}\n{message.jump_url}", embeds=message.embeds)
+      msg = await cha.send(f"{msg}\n{message.jump_url}", embeds=message.embeds)
     except discord.errors.Forbidden:
       embed=error.generate(
         code="3-4-03",
-        description=f"匿名Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/report config`コマンドをもう一度実行するように伝えてください。",
+        description=f"匿名Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/report setting`コマンドをもう一度実行するように伝えてください。",
       )
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
