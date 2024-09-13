@@ -1,17 +1,21 @@
 from discord.ext import commands
 from discord import app_commands
 import discord
+
 import os
 import json
 import aiofiles
 import datetime
+
 import error
+import cooldown
 
 
 
 class ReplyToReply(commands.Cog):
   def __init__(self, bot: commands.Bot):
     self.bot = bot
+    self.user_cooldowns = {}
 
   @commands.Cog.listener()
   async def on_message(self, message):
@@ -40,6 +44,12 @@ class ReplyToReply(commands.Cog):
     else:
       if not "------------返信内容------------" in msg.embeds[0].description:
         return
+
+    # cooldown
+    embed, self.user_cooldowns = cooldown.user_cooldown(message.author.id, self.user_cooldowns)
+    if embed:
+      await message.reply(embed=embed)
+      return
 
     # threadを取得
     try:
