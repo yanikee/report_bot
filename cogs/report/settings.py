@@ -12,9 +12,9 @@ class ReportConfig(commands.GroupCog, group_name='report'):
   def __init__(self, bot: commands.Bot):
     self.bot = bot
 
-  @app_commands.command(name="config", description='"report"を送信するチャンネルを設定します。')
-  @app_commands.describe(channel='"report"を送信するチャンネル')
-  async def report_config(self, interaction:discord.Interaction, channel:discord.TextChannel=None):
+  @app_commands.command(name="setting", description='Reportを送信するチャンネルを設定します。')
+  @app_commands.describe(channel='Reportを送信するチャンネル')
+  async def report_setting(self, interaction:discord.Interaction, channel:discord.TextChannel=None):
     if not interaction.channel.permissions_for(interaction.user).manage_channels:
       embed=error.generate(
         code="3-1-01",
