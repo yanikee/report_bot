@@ -3,7 +3,7 @@ import discord
 import datetime
 
 
-def user_cooldown(user_id: int, user_cooldowns: dict):
+def user_cooldown(user_id: int, user_cooldowns: dict, rate:int=30):
   current_time = int(datetime.datetime.now().timestamp())
 
   if str(user_id) in user_cooldowns:
@@ -22,5 +22,5 @@ def user_cooldown(user_id: int, user_cooldowns: dict):
     else:
       user_cooldowns.pop(str(user_id))
 
-  user_cooldowns[str(user_id)] = current_time + 30
+  user_cooldowns[str(user_id)] = current_time + rate
   return None, user_cooldowns
