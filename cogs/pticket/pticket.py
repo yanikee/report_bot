@@ -80,15 +80,25 @@ class PrivateTicketModal(discord.ui.Modal):
       color=0x9AC9FF,
     )
 
-    # pticket_channelの取得
+    # pticket_channel, mention_roleの取得
     path = f"data/pticket/guilds/{interaction.guild.id}.json"
     async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
       contents = await f.read()
     report_dict = json.loads(contents)
     cha = interaction.guild.get_channel(report_dict["report_send_channel"])
+    if "mention_role" in report_dict:
+      mention_role_id = report_dict["mention_role"]
+    else:
+      mention_role_id = None
+
+    # Ticketを送信
+    if mention_role_id:
+      msg = f"<@&{mention_role_id}>\n{self.bot.user.mention}"
+    else:
+      msg = self.bot.user.mention
 
     try:
-      msg = await cha.send(f"<@{1237001692977827920}>", embed=embed)
+      msg = await cha.send(msg, embed=embed)
     except discord.errors.Forbidden:
       embed=error.generate(
         code="2-5-03",

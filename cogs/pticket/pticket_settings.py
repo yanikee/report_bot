@@ -13,8 +13,9 @@ class PrivateTicketConfig(commands.GroupCog, group_name='pticket'):
     self.bot = bot
 
   @app_commands.command(name="setting", description='匿名Ticket開始ボタンを設置するチャンネルで実行してください。')
-  @app_commands.describe(ticket_channel='Ticketが送信されるチャンネルを指定する')
-  async def pticket_setting(self, interaction:discord.Interaction, ticket_channel:discord.TextChannel):
+  @app_commands.describe(ticket_channel='Ticketが送信されるチャンネルを指定します')
+  @app_commands.describe(mention_role="Ticketが送信されたときにメンションするロールを指定します")
+  async def pticket_setting(self, interaction:discord.Interaction, ticket_channel:discord.TextChannel, mention_role:discord.Role=None):
     if not interaction.channel.permissions_for(interaction.user).manage_channels:
       embed=error.generate(
         code="2-1-01",
@@ -71,6 +72,10 @@ class PrivateTicketConfig(commands.GroupCog, group_name='pticket'):
         "report_send_channel": ticket_channel.id,
         "pticket_num": 0
       }
+    if mention_role:
+      pticket_dict["mention_role"] = mention_role.id
+    else:
+      pticket_dict["mention_role"] = None
 
     async with aiofiles.open(path, mode="w") as f:
       contents = json.dumps(pticket_dict, indent=2, ensure_ascii=False)
