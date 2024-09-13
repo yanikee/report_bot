@@ -1,17 +1,20 @@
 from discord.ext import commands
 from discord import app_commands
 import discord
+
 import os
 import json
 import aiofiles
-import error
 import datetime
 
+import error
+import cooldown
 
 
 class PticketReplyToReply(commands.Cog):
   def __init__(self, bot: commands.Bot):
     self.bot = bot
+    self.user_cooldowns = {}
 
   @commands.Cog.listener()
   async def on_message(self, message):
@@ -37,6 +40,12 @@ class PticketReplyToReply(commands.Cog):
     if not msg.embeds[0].footer:
       return
     if not "匿名ticket |" in msg.embeds[0].footer.text:
+      return
+
+    # cooldown
+    embed, self.user_cooldowns = cooldown.user_cooldown(message.author.id, self.user_cooldowns)
+    if embed:
+      await message.reply(embed=embed)
       return
 
     # threadを取得

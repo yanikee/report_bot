@@ -1,17 +1,21 @@
 from discord.ext import commands
 from discord import app_commands
 import discord
+
 import os
 import json
 import aiofiles
 import datetime
+
 import error
+import cooldown
 
 
 
 class Report(commands.Cog):
   def __init__(self, bot: commands.Bot):
     self.bot = bot
+    self.user_cooldowns = {}
     self.ctx_menu = app_commands.ContextMenu(
       name="!【サーバー管理者に報告】",
       callback=self.report,
@@ -41,6 +45,12 @@ class Report(commands.Cog):
         code="3-4-02",
         description="サーバー管理者に`/report config`コマンドを実行するよう伝えてください。",
       )
+      await interaction.response.send_message(embed=embed, ephemeral=True)
+      return
+
+    # cooldown
+    embed, self.user_cooldowns = cooldown.user_cooldown(interaction.user.id, self.user_cooldowns)
+    if embed:
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
