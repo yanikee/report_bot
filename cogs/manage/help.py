@@ -2,7 +2,11 @@ from discord.ext import commands
 from discord import app_commands
 import discord
 
+import cog_list
 
+
+
+dev_cog_list = cog_list.dev_cog_list
 
 class Help(commands.Cog):
   def __init__(self, bot: commands.Bot):
@@ -28,6 +32,10 @@ class Help(commands.Cog):
     view.add_item(button_1)
     view.add_item(button_2)
 
+    if await self.bot.is_owner(interaction.user):
+      button_3 = discord.ui.Button(label="dev_mode", emoji="🥟", custom_id=f"dev_mode", style=discord.ButtonStyle.red, row=2)
+      view.add_item(button_3)
+
     await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
 
 
@@ -35,13 +43,27 @@ class Help(commands.Cog):
   @commands.Cog.listener()
   async def on_interaction(self, interaction):
     try:
-      if not interaction.data["custom_id"] in ["quickstart", "how_to_use", "others"]:
+      if not interaction.data["custom_id"] in ["dev_mode", "quickstart", "how_to_use", "others"]:
         return
     except KeyError:
       return
 
+    if interaction.data["custom_id"] == "dev_mode":
+      for dev_cog in dev_cog_list:
+        if dev_cog in self.bot.extensions:
+          await self.bot.unload_extension(dev_cog)
+          print(f"アンロード完了：{dev_cog}")
+          msg = "アンロード完了"
+        else:
+          await self.bot.load_extension(dev_cog)
+          print(f"ロード完了：{dev_cog}")
+          msg = "ロード完了"
 
-    if interaction.data["custom_id"] == "quickstart":
+      await interaction.response.send_message(msg, ephemeral=True)
+      await self.bot.tree.sync()
+
+
+    elif interaction.data["custom_id"] == "quickstart":
       embed=discord.Embed(
         title="Help! (2/4)",
         description="## まず何をすればいいの？(設定方法)\n"

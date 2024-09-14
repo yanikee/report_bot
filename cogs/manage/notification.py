@@ -21,12 +21,23 @@ class Notification(commands.Cog):
     msg = await interaction.channel.fetch_message(int(msg_id))
     content = msg.content.replace(f"{self.bot.user.mention}","")
 
+
     guild_id_l = os.listdir("data/report/guilds")
+    pticket_guild_id_l = os.listdir('data/pticket/guilds')
+    for x in pticket_guild_id_l:
+      if not x in guild_id_l:
+        guild_id_l.append(x)
 
     await interaction.response.send_message(f"{len(guild_id_l)}サーバーに送信するお")
 
+    await interaction.channel.send(content, embeds=msg.embeds, files=[x.to_file() for x in msg.attachments])
+    await asyncio.sleep(10)
+
     for guild_id in guild_id_l:
       path = f"data/report/guilds/{guild_id}"
+      if not os.path.exists(path):
+        path = f"data/pticket/guilds/{guild_id}"
+
       async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
         contents = await f.read()
       report_dict = json.loads(contents)
