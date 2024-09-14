@@ -81,6 +81,14 @@ class PrivateTicketConfig(commands.GroupCog, group_name='pticket'):
       contents = json.dumps(pticket_dict, indent=2, ensure_ascii=False)
       await f.write(contents)
 
+    # Ticketチャンネルに確認メッセージを送信
+    embed = discord.Embed(
+      title="Ticket",
+      description=f'開始ボタンチャンネル：{interaction.channel.mention}\n送信チャンネル：{ticket_channel.mention}\nメンションロール：{mention_role.mention}',
+      color=0x9AC9FF,
+    )
+    await ticket_channel.send(embed=embed)
+
     # buttonを送信
     embed=discord.Embed(
       title="匿名Ticket",

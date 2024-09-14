@@ -92,7 +92,7 @@ class ReportConfig(commands.GroupCog, group_name='report'):
 
     embed = discord.Embed(
       title="Report",
-      description=f'送信チャンネル：{channel.mention}\nメンションロール：{mention_role}',
+      description=f'送信チャンネル：{channel.mention}\nメンションロール：{mention_role.mention}',
       color=0xF4BD44,
     )
     await interaction.response.send_message(embed=embed)

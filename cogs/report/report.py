@@ -121,7 +121,7 @@ class ReportButton(discord.ui.View):
     else:
       msg = self.bot.user.mention
     try:
-      msg = await cha.send(f"{msg}\n{message.jump_url}", embeds=message.embeds)
+      msg = await cha.send(f"{msg}\n参照元：{message.jump_url}", embeds=message.embeds)
     except discord.errors.Forbidden:
       embed=error.generate(
         code="3-4-03",
