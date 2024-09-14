@@ -90,9 +90,14 @@ class ReportConfig(commands.GroupCog, group_name='report'):
       contents = json.dumps(report_dict, indent=2, ensure_ascii=False)
       await f.write(contents)
 
+    if mention_role:
+      description=f'送信チャンネル：{channel.mention}\nメンションロール：{mention_role.mention}'
+    else:
+      description=f'送信チャンネル：{channel.mention}\nメンションロール：なし'
+
     embed = discord.Embed(
       title="Report",
-      description=f'送信チャンネル：{channel.mention}\nメンションロール：{mention_role.mention}',
+      description=description,
       color=0xF4BD44,
     )
     await interaction.response.send_message(embed=embed)

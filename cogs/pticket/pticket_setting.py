@@ -82,9 +82,14 @@ class PrivateTicketConfig(commands.GroupCog, group_name='pticket'):
       await f.write(contents)
 
     # Ticketチャンネルに確認メッセージを送信
+    if mention_role:
+      description=f'開始ボタンチャンネル：{interaction.channel.mention}\n送信チャンネル：{ticket_channel.mention}\nメンションロール：{mention_role.mention}'
+    else:
+      description=f'開始ボタンチャンネル：{interaction.channel.mention}\n送信チャンネル：{ticket_channel.mention}\nメンションロール：なし'
+
     embed = discord.Embed(
       title="Ticket",
-      description=f'開始ボタンチャンネル：{interaction.channel.mention}\n送信チャンネル：{ticket_channel.mention}\nメンションロール：{mention_role.mention}',
+      description=description,
       color=0x9AC9FF,
     )
     await ticket_channel.send(embed=embed)
