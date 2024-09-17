@@ -157,11 +157,11 @@ class EditPrivateModal(discord.ui.Modal):
 
   async def on_submit(self, interaction: discord.Interaction):
     # embedの定義
-    embed = interaction.message.embeds[0]
-    embed.description = self.private_ticket_msg.value
+    embeds = interaction.message.embeds
+    embeds[0].description = self.private_ticket_msg.value
 
     # 編集パネルの変更
-    await interaction.response.edit_message(embed=embed)
+    await interaction.response.edit_message(embeds=embeds)
 
 
 
