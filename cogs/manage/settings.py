@@ -69,7 +69,7 @@ class Settings(commands.Cog):
     # Embedの定義
     embed = discord.Embed(
       title="settings (2/3)",
-      description="## Report機能の設定\n以下の**2つ**の設定を行ってください\n- Report機能を無効化したい場合は、全ての項目を未選択にしてください\n- リロードボタンを押すと全ての設定が再読込されます",
+      description="## Report機能の設定\n以下の**2つ**の設定を行ってください\n- Report機能を無効化したい場合は、全ての項目を未選択にしてください",
       color=0xF4BD44,
     )
     embed.add_field(
@@ -105,10 +105,10 @@ class Settings(commands.Cog):
     view.add_item(select_1)
 
     button_0 = discord.ui.Button(label="戻る", custom_id=f"settings_page_1", style=discord.ButtonStyle.gray, row=2)
-    button_1 = discord.ui.Button(label="リロード", custom_id=f"settings_page_2", style=discord.ButtonStyle.green, row=2)
+#    button_1 = discord.ui.Button(label="リロード", custom_id=f"settings_page_2", style=discord.ButtonStyle.green, row=2)
     button_2 = discord.ui.Button(label="次へ", custom_id=f"settings_page_3", style=discord.ButtonStyle.primary, row=2)
     view.add_item(button_0)
-    view.add_item(button_1)
+#    view.add_item(button_1)
     view.add_item(button_2)
 
     await interaction.response.edit_message(embed=embed, view=view)
@@ -118,7 +118,7 @@ class Settings(commands.Cog):
     data = await self.get_data(interaction,type="pticket")
     embed = discord.Embed(
       title="settings (3/3)",
-      description="## 匿名Ticket機能の設定\n以下の**3つ**の設定を行ってください\n- 匿名Ticket機能を無効化したい場合は、全ての項目を未選択にしてください\n- リロードボタンを押すと全ての設定が再読込されます",
+      description="## 匿名Ticket機能の設定\n以下の**3つ**の設定を行ってください\n- 匿名Ticket機能を無効化したい場合は、全ての項目を未選択にしてください",
       color=0x9AC9FF,
     )
     embed.add_field(
@@ -169,10 +169,10 @@ class Settings(commands.Cog):
     view.add_item(select_2)
 
     button_0 = discord.ui.Button(label="戻る", custom_id=f"settings_page_2", style=discord.ButtonStyle.gray, row=3)
-    button_1 = discord.ui.Button(label="リロード", custom_id=f"settings_page_3", style=discord.ButtonStyle.green, row=3)
+#    button_1 = discord.ui.Button(label="リロード", custom_id=f"settings_page_3", style=discord.ButtonStyle.green, row=3)
     button_2 = discord.ui.Button(label="保存して終了", custom_id=f"settings_final", style=discord.ButtonStyle.red, row=3)
     view.add_item(button_0)
-    view.add_item(button_1)
+#    view.add_item(button_1)
     view.add_item(button_2)
 
     await interaction.response.edit_message(embed=embed, view=view)
