@@ -110,6 +110,7 @@ class Settings(commands.Cog):
     view.add_item(button_0)
     view.add_item(button_1)
     view.add_item(button_2)
+
     await interaction.response.edit_message(embed=embed, view=view)
 
 
@@ -173,6 +174,7 @@ class Settings(commands.Cog):
     view.add_item(button_0)
     view.add_item(button_1)
     view.add_item(button_2)
+
     await interaction.response.edit_message(embed=embed, view=view)
 
 
@@ -282,7 +284,7 @@ class Settings(commands.Cog):
         await self.save_data(interaction, data, "pticket")
         await self.settings_page_3(interaction)
 
-      await interaction.response.edit_message(embed=embed)
+#      await interaction.response.edit_message(embed=embed)
 
     # 保存して終了ボタン
     elif custom_id == "settings_final":
