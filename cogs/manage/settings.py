@@ -63,6 +63,119 @@ class Settings(commands.Cog):
     return embed, view
 
 
+  async def settings_page_2(self, interaction:discord.Interaction):
+    data = await self.get_data(interaction, type="report")
+
+    # Embedの定義
+    embed = discord.Embed(
+      title="settings (2/3)",
+      description="## Report機能の設定\n以下の**2つ**の設定を行ってください\n- Report機能を無効化したい場合は、全ての項目を未選択にしてください\n- リロードボタンを押すと全ての設定が再読込されます",
+      color=0xF4BD44,
+    )
+    embed.add_field(
+      name="Report送信チャンネル",
+      value=# (interaction.guild.get_channel(data["report_send_channel"]).mention if "report_send_channel" in data and data["report_send_channel"] else "未設定") +
+            "\n- Reportを送信するチャンネルを設定します\n",
+      inline=True
+    )
+    embed.add_field(
+      name="Report送信時メンションロール(任意)",
+      value=# (interaction.guild.get_role(data["mention_role"]).mention if "mention_role" in data and data["mention_role"] else "未設定") +
+            "\n- Reportが送信されたときにメンションするロールを設定します",
+      inline=True
+    )
+
+    view = discord.ui.View()
+    select_0 = discord.ui.ChannelSelect(
+      custom_id="settings_select_report_channel",
+      channel_types=[discord.ChannelType.text],
+      placeholder="Report送信チャンネル(未選択)",
+      min_values=0,
+      default_values=[interaction.guild.get_channel(data["report_send_channel"])] if "report_send_channel" in data and data["report_send_channel"] else None,
+      row=0
+    )
+    select_1 = discord.ui.RoleSelect(
+      custom_id="settings_select_report_mention_role",
+      placeholder="Report送信時メンションロール(未選択)",
+      min_values=0,
+      default_values=[interaction.guild.get_role(data["mention_role"])] if "mention_role" in data and data["mention_role"] else None,
+      row=1
+    )
+    view.add_item(select_0)
+    view.add_item(select_1)
+
+    button_0 = discord.ui.Button(label="戻る", custom_id=f"settings_page_1", style=discord.ButtonStyle.gray, row=2)
+    button_1 = discord.ui.Button(label="リロード", custom_id=f"settings_page_2", style=discord.ButtonStyle.green, row=2)
+    button_2 = discord.ui.Button(label="次へ", custom_id=f"settings_page_3", style=discord.ButtonStyle.primary, row=2)
+    view.add_item(button_0)
+    view.add_item(button_1)
+    view.add_item(button_2)
+    await interaction.response.edit_message(embed=embed, view=view)
+
+
+  async def settings_page_3(self, interaction:discord.Interaction):
+    data = await self.get_data(interaction,type="pticket")
+    embed = discord.Embed(
+      title="settings (3/3)",
+      description="## 匿名Ticket機能の設定\n以下の**3つ**の設定を行ってください\n- 匿名Ticket機能を無効化したい場合は、全ての項目を未選択にしてください\n- リロードボタンを押すと全ての設定が再読込されます",
+      color=0x9AC9FF,
+    )
+    embed.add_field(
+      name="匿名Ticket送信チャンネル",
+      value=# interaction.guild.get_channel(data["report_send_channel"]).mention if "report_send_channel" in data and data["report_send_channel"] else "未設定" +
+            "\n- 匿名Ticketを送信するチャンネルを設定します",
+      inline=True
+    )
+    embed.add_field(
+      name="匿名Ticket作成用ボタン送信チャンネル",
+      value=# interaction.guild.get_channel(data["report_button_channel"]).mention if "report_button_channel" in data and data["report_button_channel"] else "未設定" +
+            "\n- 匿名Ticketを作成するためのボタンを送信するチャンネルを設定します",
+      inline=True
+    )
+    embed.add_field(
+      name="匿名Ticket送信時メンションロール(任意)",
+      value=# interaction.guild.get_role(data["mention_role"]).mention if "mention_role" in data and data["mention_role"] else "未設定" +
+            "\n- 匿名Ticketが送信されたときにメンションするロールを設定します",
+      inline=True
+    )
+
+    view = discord.ui.View()
+    select_0 = discord.ui.ChannelSelect(
+      custom_id="settings_select_pticket_channel",
+      channel_types=[discord.ChannelType.text],
+      placeholder="匿名Ticket送信チャンネル(未選択)",
+      min_values=0,
+      default_values=[interaction.guild.get_channel(data["report_send_channel"])] if "report_send_channel" in data and data["report_send_channel"] else None,
+      row=0
+    )
+    select_1 = discord.ui.ChannelSelect(
+      custom_id="settings_select_pticket_button_channel",
+      channel_types=[discord.ChannelType.text],
+      placeholder="匿名Ticket作成用ボタン送信チャンネル(未選択)",
+      min_values=0,
+      default_values=[interaction.guild.get_channel(data["report_button_channel"])] if "report_button_channel" in data and data["report_button_channel"] else None,
+      row=1
+    )
+    select_2 = discord.ui.RoleSelect(
+      custom_id="settings_select_pticket_mention_role",
+      placeholder="匿名Ticket送信時メンションロール(未選択)",
+      min_values=0,
+      default_values=[interaction.guild.get_role(data["mention_role"])] if "mention_role" in data and data["mention_role"] else None,
+      row=2
+    )
+    view.add_item(select_0)
+    view.add_item(select_1)
+    view.add_item(select_2)
+
+    button_0 = discord.ui.Button(label="戻る", custom_id=f"settings_page_2", style=discord.ButtonStyle.gray, row=3)
+    button_1 = discord.ui.Button(label="リロード", custom_id=f"settings_page_3", style=discord.ButtonStyle.green, row=3)
+    button_2 = discord.ui.Button(label="保存して終了", custom_id=f"settings_final", style=discord.ButtonStyle.red, row=3)
+    view.add_item(button_0)
+    view.add_item(button_1)
+    view.add_item(button_2)
+    await interaction.response.edit_message(embed=embed, view=view)
+
+
   @commands.Cog.listener()
   async def on_interaction(self, interaction):
     try:
@@ -77,117 +190,11 @@ class Settings(commands.Cog):
 
     # settings_2
     elif custom_id == "settings_page_2":
-      data = await self.get_data(interaction, type="report")
-
-      # Embedの定義
-      embed = discord.Embed(
-        title="settings (2/3)",
-        description="## Report機能の設定\n以下の**2つ**の設定を行ってください\n- Report機能を無効化したい場合は、全ての項目を未選択にしてください\n- リロードボタンを押すと全ての設定が再読込されます",
-        color=0xF4BD44,
-      )
-      embed.add_field(
-        name="Report送信チャンネル",
-        value=# (interaction.guild.get_channel(data["report_send_channel"]).mention if "report_send_channel" in data and data["report_send_channel"] else "未設定") +
-              "\n- Reportを送信するチャンネルを設定します\n",
-        inline=True
-      )
-      embed.add_field(
-        name="Report送信時メンションロール(任意)",
-        value=# (interaction.guild.get_role(data["mention_role"]).mention if "mention_role" in data and data["mention_role"] else "未設定") +
-              "\n- Reportが送信されたときにメンションするロールを設定します",
-        inline=True
-      )
-
-      view = discord.ui.View()
-      select_0 = discord.ui.ChannelSelect(
-        custom_id="settings_select_report_channel",
-        channel_types=[discord.ChannelType.text],
-        placeholder="Report送信チャンネル(未選択)",
-        min_values=0,
-        default_values=[interaction.guild.get_channel(data["report_send_channel"])] if "report_send_channel" in data and data["report_send_channel"] else None,
-        row=0
-      )
-      select_1 = discord.ui.RoleSelect(
-        custom_id="settings_select_report_mention_role",
-        placeholder="Report送信時メンションロール(未選択)",
-        min_values=0,
-        default_values=[interaction.guild.get_role(data["mention_role"])] if "mention_role" in data and data["mention_role"] else None,
-        row=1
-      )
-      view.add_item(select_0)
-      view.add_item(select_1)
-
-      button_0 = discord.ui.Button(label="戻る", custom_id=f"settings_page_1", style=discord.ButtonStyle.gray, row=2)
-      button_1 = discord.ui.Button(label="リロード", custom_id=f"settings_page_2", style=discord.ButtonStyle.green, row=2)
-      button_2 = discord.ui.Button(label="次へ", custom_id=f"settings_page_3", style=discord.ButtonStyle.primary, row=2)
-      view.add_item(button_0)
-      view.add_item(button_1)
-      view.add_item(button_2)
-      await interaction.response.edit_message(embed=embed, view=view)
+      await self.settings_page_2(interaction)
 
     # settings_3
     elif custom_id == "settings_page_3":
-      data = await self.get_data(interaction, type="pticket")
-      embed = discord.Embed(
-        title="settings (3/3)",
-        description="## 匿名Ticket機能の設定\n以下の**3つ**の設定を行ってください\n- 匿名Ticket機能を無効化したい場合は、全ての項目を未選択にしてください\n- リロードボタンを押すと全ての設定が再読込されます",
-        color=0x9AC9FF,
-      )
-      embed.add_field(
-        name="匿名Ticket送信チャンネル",
-        value=# interaction.guild.get_channel(data["report_send_channel"]).mention if "report_send_channel" in data and data["report_send_channel"] else "未設定" +
-              "\n- 匿名Ticketを送信するチャンネルを設定します",
-        inline=True
-      )
-      embed.add_field(
-        name="匿名Ticket作成用ボタン送信チャンネル",
-        value=# interaction.guild.get_channel(data["report_button_channel"]).mention if "report_button_channel" in data and data["report_button_channel"] else "未設定" +
-              "\n- 匿名Ticketを作成するためのボタンを送信するチャンネルを設定します",
-        inline=True
-      )
-      embed.add_field(
-        name="匿名Ticket送信時メンションロール(任意)",
-        value=# interaction.guild.get_role(data["mention_role"]).mention if "mention_role" in data and data["mention_role"] else "未設定" +
-              "\n- 匿名Ticketが送信されたときにメンションするロールを設定します",
-        inline=True
-      )
-
-      view = discord.ui.View()
-      select_0 = discord.ui.ChannelSelect(
-        custom_id="settings_select_pticket_channel",
-        channel_types=[discord.ChannelType.text],
-        placeholder="匿名Ticket送信チャンネル(未選択)",
-        min_values=0,
-        default_values=[interaction.guild.get_channel(data["report_send_channel"])] if "report_send_channel" in data and data["report_send_channel"] else None,
-        row=0
-      )
-      select_1 = discord.ui.ChannelSelect(
-        custom_id="settings_select_pticket_button_channel",
-        channel_types=[discord.ChannelType.text],
-        placeholder="匿名Ticket作成用ボタン送信チャンネル(未選択)",
-        min_values=0,
-        default_values=[interaction.guild.get_channel(data["report_button_channel"])] if "report_button_channel" in data and data["report_button_channel"] else None,
-        row=1
-      )
-      select_2 = discord.ui.RoleSelect(
-        custom_id="settings_select_pticket_mention_role",
-        placeholder="匿名Ticket送信時メンションロール(未選択)",
-        min_values=0,
-        default_values=[interaction.guild.get_role(data["mention_role"])] if "mention_role" in data and data["mention_role"] else None,
-        row=2
-      )
-      view.add_item(select_0)
-      view.add_item(select_1)
-      view.add_item(select_2)
-
-      button_0 = discord.ui.Button(label="戻る", custom_id=f"settings_page_2", style=discord.ButtonStyle.gray, row=3)
-      button_1 = discord.ui.Button(label="リロード", custom_id=f"settings_page_3", style=discord.ButtonStyle.green, row=3)
-      button_2 = discord.ui.Button(label="保存して終了", custom_id=f"settings_final", style=discord.ButtonStyle.red, row=3)
-      view.add_item(button_0)
-      view.add_item(button_1)
-      view.add_item(button_2)
-      await interaction.response.edit_message(embed=embed, view=view)
-
+      await self.settings_page_3(interaction)
 
     # チャンネル, ロールが選ばれた（選択解除された）場合
     elif "settings_select_" in custom_id:
@@ -232,6 +239,7 @@ class Settings(commands.Cog):
           data["mention_role"] = int(interaction.data["values"][0]) if interaction.data["values"] else None
 
         await self.save_data(interaction, data, "report")
+        await self.settings_page_2(interaction)
 
       # Ticket設定の場合
       else:
@@ -272,6 +280,7 @@ class Settings(commands.Cog):
           data["mention_role"] = int(interaction.data["values"][0]) if interaction.data["values"] else None
 
         await self.save_data(interaction, data, "pticket")
+        await self.settings_page_3(interaction)
 
       await interaction.response.edit_message(embed=embed)
 
