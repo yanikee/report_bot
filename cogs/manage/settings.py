@@ -76,14 +76,12 @@ class Settings(commands.Cog):
     )
     embed.add_field(
       name=("🔵" if "report_send_channel" in data and data["report_send_channel"] else "⚪") + "Report送信チャンネル",
-      value=# (interaction.guild.get_channel(data["report_send_channel"]).mention if "report_send_channel" in data and data["report_send_channel"] else "未設定") +
-            "\n- Reportを送信するチャンネルを設定します\n",
+      value="\n- Reportを送信するチャンネルを設定します\n",
       inline=False
     )
     embed.add_field(
       name=("🔵" if "mention_role" in data and data["mention_role"] else "⚪") + "Report送信時メンションロール(任意)",
-      value=# (interaction.guild.get_role(data["mention_role"]).mention if "mention_role" in data and data["mention_role"] else "未設定") +
-            "\n- Reportが送信されたときにメンションするロールを設定します",
+      value="- Reportが送信されたときにメンションするロールを設定します",
       inline=False
     )
 
@@ -107,11 +105,9 @@ class Settings(commands.Cog):
     view.add_item(select_1)
 
     button_0 = discord.ui.Button(label="戻る", custom_id=f"settings_page_1", style=discord.ButtonStyle.gray, row=2)
-#    button_1 = discord.ui.Button(label="リロード", custom_id=f"settings_page_2", style=discord.ButtonStyle.green, row=2)
-    button_2 = discord.ui.Button(label="次へ", custom_id=f"settings_page_3", style=discord.ButtonStyle.primary, row=2)
+    button_1 = discord.ui.Button(label="次へ", custom_id=f"settings_page_3", style=discord.ButtonStyle.primary, row=2)
     view.add_item(button_0)
-#    view.add_item(button_1)
-    view.add_item(button_2)
+    view.add_item(button_1)
 
     await interaction.response.edit_message(embed=embed, view=view)
 
@@ -125,20 +121,17 @@ class Settings(commands.Cog):
     )
     embed.add_field(
       name=("🔵" if "report_send_channel" in data and data["report_send_channel"] else "⚪") + "匿名Ticket送信チャンネル",
-      value=# interaction.guild.get_channel(data["report_send_channel"]).mention if "report_send_channel" in data and data["report_send_channel"] else "未設定" +
-            "\n- 匿名Ticketを送信するチャンネルを設定します",
+      value="- 匿名Ticketを送信するチャンネルを設定します",
       inline=False
     )
     embed.add_field(
       name=("🔵" if "report_button_channel" in data and data["report_button_channel"] else "⚪") + "匿名Ticket作成用ボタン送信チャンネル",
-      value=# interaction.guild.get_channel(data["report_button_channel"]).mention if "report_button_channel" in data and data["report_button_channel"] else "未設定" +
-            "\n- 匿名Ticketを作成するためのボタンを送信するチャンネルを設定します",
+      value="- 匿名Ticketを作成するためのボタンを送信するチャンネルを設定します",
       inline=False
     )
     embed.add_field(
       name=("🔵" if "mention_role" in data and data["mention_role"] else "⚪") + "匿名Ticket送信時メンションロール(任意)",
-      value=# interaction.guild.get_role(data["mention_role"]).mention if "mention_role" in data and data["mention_role"] else "未設定" +
-            "\n- 匿名Ticketが送信されたときにメンションするロールを設定します",
+      value="- 匿名Ticketが送信されたときにメンションするロールを設定します",
       inline=False
     )
 
@@ -171,11 +164,9 @@ class Settings(commands.Cog):
     view.add_item(select_2)
 
     button_0 = discord.ui.Button(label="戻る", custom_id=f"settings_page_2", style=discord.ButtonStyle.gray, row=3)
-#    button_1 = discord.ui.Button(label="リロード", custom_id=f"settings_page_3", style=discord.ButtonStyle.green, row=3)
-    button_2 = discord.ui.Button(label="保存して終了", custom_id=f"settings_final", style=discord.ButtonStyle.red, row=3)
+    button_1 = discord.ui.Button(label="保存して終了", custom_id=f"settings_final", style=discord.ButtonStyle.red, row=3)
     view.add_item(button_0)
-#    view.add_item(button_1)
-    view.add_item(button_2)
+    view.add_item(button_1)
 
     await interaction.response.edit_message(embed=embed, view=view)
 
@@ -220,26 +211,14 @@ class Settings(commands.Cog):
       if "report" in custom_id:
         data = await self.get_data(interaction, type="report")
 
-        # Report送信チャンネル設定
+        # Report送信チャンネル設定の場合
         if custom_id == "settings_select_report_channel":
           channel, error_embed = self.check_permission(interaction)
           if error_embed:
             return await interaction.response.send_message(embed=error_embed, ephemeral=True)
-          # embed.set_field_at(
-          #   index=0,
-          #   name="Report送信チャンネル",
-          #   value=# (channel.mention if channel else "未設定") +
-          #         "\n- Reportを送信するチャンネルを設定しますd",
-          # )
           data["report_send_channel"] = channel.id if channel else None
-        # Report送信時メンションロールの設定
+        # Report送信時メンションロール設定の場合
         else:
-          # embed.set_field_at(
-          #   index=1,
-          #   name="Report送信時メンションロール",
-          #   value=# (interaction.guild.get_role(int(interaction.data["values"][0])).mention if interaction.data["values"] else "未設定") +
-          #         "\n- Reportが送信されたときにメンションするロールを設定します",
-          # )
           data["mention_role"] = int(interaction.data["values"][0]) if interaction.data["values"] else None
 
         await self.save_data(interaction, data, "report")
@@ -254,39 +233,20 @@ class Settings(commands.Cog):
           channel, error_embed = self.check_permission(interaction)
           if error_embed:
             return await interaction.response.send_message(embed=error_embed, ephemeral=True)
-          # embed.set_field_at(
-          #   index=0,
-          #   name="匿名Ticket送信チャンネル",
-          #   value=# channel.mention if channel else "未設定" +
-          #         "\n- 匿名Ticketを送信するチャンネルを設定します",
-          # )
           data["report_send_channel"] = channel.id if channel else None
         # Ticket作成用ボタンの場合
         elif custom_id == "settings_select_pticket_button_channel":
           channel, error_embed = self.check_permission(interaction, button_channel=True)
           if error_embed:
             return await interaction.response.send_message(embed=error_embed, ephemeral=True)
-          # embed.set_field_at(
-          #   index=1,
-          #   name="匿名Ticket作成用ボタン送信チャンネル",
-          #   value=# channel.mention if channel else "未設定" +
-          #         "\n- 匿名Ticketを作成するためのボタンを送信するチャンネルを設定します",
-          # )
           data["report_button_channel"] = channel.id if channel else None
         # Ticket作成時メンションロールの場合
         else:
-          # embed.set_field_at(
-          #   index=2,
-          #   name="匿名Ticket送信時メンションロール",
-          #   value=# interaction.guild.get_role(int(interaction.data["values"][0])).mention if interaction.data["values"] else "未設定" +
-          #         "\n- 匿名Ticketが送信されたときにメンションするロールを設定します",
-          # )
           data["mention_role"] = int(interaction.data["values"][0]) if interaction.data["values"] else None
 
         await self.save_data(interaction, data, "pticket")
         await self.settings_page_3(interaction)
 
-#      await interaction.response.edit_message(embed=embed)
 
     # 保存して終了ボタン
     elif custom_id == "settings_final":
@@ -359,11 +319,10 @@ class Settings(commands.Cog):
           icon_url=interaction.user.display_avatar.url,
         )
         # メンションロールを取得
+        mention_role_mention = None
         if "mention_role" in report_data:
-          mention_role = interaction.guild.get_role(report_data["mention_role"])
-          mention_role_mention = mention_role.mention
-        else:
-          mention_role_mention = None
+          if report_data["mention_role"]:
+            mention_role_mention = interaction.guild.get_role(report_data["mention_role"]).mention
         await interaction.guild.get_channel(report_data["report_send_channel"]).send(mention_role_mention, embed=embed_2)
 
       # Ticket送信チャンネルが存在 and Ticket作成用ボタンが存在する場合
@@ -373,11 +332,11 @@ class Settings(commands.Cog):
           icon_url=interaction.user.display_avatar.url,
         )
         # メンションロールを取得
+        mention_role_mention = None
         if "mention_role" in pticket_data:
-          mention_role = interaction.guild.get_role(pticket_data["mention_role"])
-          mention_role_mention = mention_role.mention
-        else:
-          mention_role_mention = None
+          if pticket_data["mention_role"]:
+            mention_role_mention = interaction.guild.get_role(pticket_data["mention_role"]).mention
+
         await interaction.guild.get_channel(pticket_data["report_send_channel"]).send(mention_role_mention, embed=embed_3)
 
         embed = discord.Embed(
