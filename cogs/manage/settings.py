@@ -14,7 +14,7 @@ class Settings(commands.Cog):
   def __init__(self, bot: commands.Bot):
     self.bot = bot
 
-  @app_commands.command(name="settings", description='簡単設定')
+  @app_commands.command(name="settings", description='設定を行います')
   async def settings(self, interaction:discord.Interaction):
     if not interaction.channel.permissions_for(interaction.user).manage_channels:
       embed = error.generate(
