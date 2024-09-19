@@ -69,7 +69,7 @@ class Settings(commands.Cog):
     # Embedの定義
     embed = discord.Embed(
       title="settings (2/3)",
-      description="## Report機能の設定\n以下の**2つ**の設定を行ってください\n- Report機能を無効化したい場合は、全ての項目を未選択にしてください",
+      description="## Report機能の設定\n以下の**2つ**の設定を行ってください\n(Report機能を無効化したい場合は、全ての項目を未選択にしてください)",
       color=0xF4BD44,
     )
     embed.add_field(
@@ -118,7 +118,7 @@ class Settings(commands.Cog):
     data = await self.get_data(interaction,type="pticket")
     embed = discord.Embed(
       title="settings (3/3)",
-      description="## 匿名Ticket機能の設定\n以下の**3つ**の設定を行ってください\n- 匿名Ticket機能を無効化したい場合は、全ての項目を未選択にしてください",
+      description="## 匿名Ticket機能の設定\n以下の**3つ**の設定を行ってください\n(匿名Ticket機能を無効化したい場合は、全ての項目を未選択にしてください)",
       color=0x9AC9FF,
     )
     embed.add_field(
