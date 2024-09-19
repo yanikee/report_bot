@@ -54,7 +54,9 @@ class Settings(commands.Cog):
   def settings_page_1(self):
     embed = discord.Embed(
       title="settings (1/3)",
-      description="全ての機能の設定を行います。",
+      description="1. Report機能\n"
+                  "1. 匿名Ticket機能\n"
+                  "これらの設定を行います",
       color=0xF4BD44,
     )
     view = discord.ui.View()
@@ -73,16 +75,16 @@ class Settings(commands.Cog):
       color=0xF4BD44,
     )
     embed.add_field(
-      name="Report送信チャンネル",
+      name=("🔵" if "report_send_channel" in data and data["report_send_channel"] else "⚪") + "Report送信チャンネル",
       value=# (interaction.guild.get_channel(data["report_send_channel"]).mention if "report_send_channel" in data and data["report_send_channel"] else "未設定") +
             "\n- Reportを送信するチャンネルを設定します\n",
-      inline=True
+      inline=False
     )
     embed.add_field(
-      name="Report送信時メンションロール(任意)",
+      name=("🔵" if "mention_role" in data and data["mention_role"] else "⚪") + "Report送信時メンションロール(任意)",
       value=# (interaction.guild.get_role(data["mention_role"]).mention if "mention_role" in data and data["mention_role"] else "未設定") +
             "\n- Reportが送信されたときにメンションするロールを設定します",
-      inline=True
+      inline=False
     )
 
     view = discord.ui.View()
@@ -122,22 +124,22 @@ class Settings(commands.Cog):
       color=0x9AC9FF,
     )
     embed.add_field(
-      name="匿名Ticket送信チャンネル",
+      name=("🔵" if "report_send_channel" in data and data["report_send_channel"] else "⚪") + "匿名Ticket送信チャンネル",
       value=# interaction.guild.get_channel(data["report_send_channel"]).mention if "report_send_channel" in data and data["report_send_channel"] else "未設定" +
             "\n- 匿名Ticketを送信するチャンネルを設定します",
-      inline=True
+      inline=False
     )
     embed.add_field(
-      name="匿名Ticket作成用ボタン送信チャンネル",
+      name=("🔵" if "report_button_channel" in data and data["report_button_channel"] else "⚪") + "匿名Ticket作成用ボタン送信チャンネル",
       value=# interaction.guild.get_channel(data["report_button_channel"]).mention if "report_button_channel" in data and data["report_button_channel"] else "未設定" +
             "\n- 匿名Ticketを作成するためのボタンを送信するチャンネルを設定します",
-      inline=True
+      inline=False
     )
     embed.add_field(
-      name="匿名Ticket送信時メンションロール(任意)",
+      name=("🔵" if "mention_role" in data and data["mention_role"] else "⚪") + "匿名Ticket送信時メンションロール(任意)",
       value=# interaction.guild.get_role(data["mention_role"]).mention if "mention_role" in data and data["mention_role"] else "未設定" +
             "\n- 匿名Ticketが送信されたときにメンションするロールを設定します",
-      inline=True
+      inline=False
     )
 
     view = discord.ui.View()
