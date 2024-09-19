@@ -24,7 +24,7 @@ class Settings(commands.Cog):
       return await interaction.response.send_message(embed=embed, ephemeral=True)
 
     embed, view = self.settings_page_1()
-    await interaction.response.send_message(self.bot.user.mention, embed=embed, view=view, ephemeral=True)
+    await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
 
 
   async def get_data(self, interaction:discord.Interaction, type:str):

@@ -18,9 +18,9 @@ class Help(commands.Cog):
       title="Help! (1/4)",
       description="このbotには2つの機能があります。\n\n"
                   "1. __Report機能__\n"
-                  " - ルール違反したメッセージ投稿などを、簡単にサーバー管理者に報告できる機能\n"
+                  "  - ルール違反したメッセージ投稿などを、簡単にサーバー管理者に報告できる機能\n"
                   "2. __匿名Ticket機能__\n"
-                  " - 『Ticket Tool』の匿名版の様な機能",
+                  "  - 『Ticket Tool』の匿名版の様な機能",
       color=0xF4BD44,
     )
 
@@ -67,16 +67,8 @@ class Help(commands.Cog):
       embed=discord.Embed(
         title="Help! (2/4)",
         description="## まず何をすればいいの？(設定方法)\n"
-                    "### Report機能\n"
-                    "- __**`/report setting` を実行**__\n"
-                    " - Reportを受け取りたいチャンネルで実行\n"
-                    " - Report開始時にメンションを行うロールを指定できます\n\n"
-                    "### 匿名Ticket機能\n"
-                    "- __**`/pticket setting` を実行**__\n"
-                    " - 匿名Ticket開始用のボタンを設置したいチャンネルで実行\n"
-                    " - Ticket開始時にメンションを行うロールを指定できます\n\n"
-                    "- 詳しくは[こちら](https://yanikee.github.io/report_bot-docs2/docs/quickstart/)\n"
-                    "- 画像付きで解説しています",
+                    "__### `/settings` を実行__"
+                    "Report機能，匿名Ticket機能の設定をします",
         color=0xF4BD44,
       )
       await interaction.response.edit_message(embed=embed)
