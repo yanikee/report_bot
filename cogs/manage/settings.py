@@ -204,7 +204,13 @@ class Settings(commands.Cog):
               code="1-5-05",
               description=f"あなたに{channel.mention}の`チャンネル管理`の権限が必要です。"
             )
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+
+            if "report" in custom_id:
+              await self.settings_page_2(interaction)
+            else:
+              await self.settings_page_3(interaction)
+
+            await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
       # Report設定の場合
@@ -215,7 +221,9 @@ class Settings(commands.Cog):
         if custom_id == "settings_select_report_channel":
           channel, error_embed = self.check_permission(interaction)
           if error_embed:
-            await interaction.response.send_message(embed=error_embed, ephemeral=True)
+            await self.settings_page_2(interaction)
+            await interaction.followup.send(embed=error_embed, ephemeral=True)
+            return
           else:
             data["report_send_channel"] = channel.id if channel else None
         # Report送信時メンションロール設定の場合
@@ -233,14 +241,18 @@ class Settings(commands.Cog):
         if custom_id == "settings_select_pticket_channel":
           channel, error_embed = self.check_permission(interaction)
           if error_embed:
-            await interaction.response.send_message(embed=error_embed, ephemeral=True)
+            await self.settings_page_3(interaction)
+            await interaction.followup.send(embed=error_embed, ephemeral=True)
+            return
           else:
             data["report_send_channel"] = channel.id if channel else None
         # Ticket作成用ボタンの場合
         elif custom_id == "settings_select_pticket_button_channel":
           channel, error_embed = self.check_permission(interaction, button_channel=True)
           if error_embed:
-            await interaction.response.send_message(embed=error_embed, ephemeral=True)
+            await self.settings_page_3(interaction)
+            await interaction.followup.send(embed=error_embed, ephemeral=True)
+            return
           else:
             data["report_button_channel"] = channel.id if channel else None
         # Ticket作成時メンションロールの場合
@@ -419,8 +431,7 @@ class Settings(commands.Cog):
       if cannot:
         embed=error.generate(
           code="1-5-02",
-          description=f"{channel.mention}にて、:x:の付いた権限が不足しています。チャンネル設定から権限を追加するか、別のチャンネルを選択してください。\n"
-                      "全て:x:の場合、**チャンネル権限にreport bot!のロールを追加し、「メッセージを見る」を付与**すれば、解決することが多いです。"
+          description=f"{channel.mention}にて、:x:の付いた権限が不足しています。チャンネル設定から権限を追加するか、別のチャンネルを選択してください。"
                       "\n\n- " + "\n- ".join(permission_l)
         )
         return channel, embed
