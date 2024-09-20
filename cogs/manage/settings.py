@@ -378,6 +378,12 @@ class Settings(commands.Cog):
       await interaction.response.edit_message(embed=embed, view=None)
 
 
+    # 編集ボタンを押したとき
+    elif interaction.data["custom_id"] == "edit_private_ticket":
+      modal = EditPrivateModal(interaction.message)
+      await interaction.response.send_modal(modal)
+
+
   # 閲覧権限確認
   def check_permission(self, interaction:discord.Interaction, button_channel:bool=False):
     if interaction.data["values"]:
@@ -420,6 +426,30 @@ class Settings(commands.Cog):
 
     else:
       return None, None
+
+
+# パネル編集
+class EditPrivateModal(discord.ui.Modal):
+  def __init__(self, msg):
+    super().__init__(title=f'匿名Ticket開始パネル 編集モーダル')
+    self.msg = msg
+
+    self.private_ticket_msg = discord.ui.TextInput(
+      label="パネルに表示する内容を入力してください。",
+      style=discord.TextStyle.long,
+      default=msg.embeds[0].description,
+      required=True,
+      row=0
+    )
+    self.add_item(self.private_ticket_msg)
+
+  async def on_submit(self, interaction: discord.Interaction):
+    # embedの定義
+    embed = interaction.message.embeds[0]
+    embed.description = self.private_ticket_msg.value
+
+    # 編集パネルの変更
+    await interaction.response.edit_message(embed=embed)
 
 
 
