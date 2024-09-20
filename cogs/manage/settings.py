@@ -89,14 +89,14 @@ class Settings(commands.Cog):
     select_0 = discord.ui.ChannelSelect(
       custom_id="settings_select_report_channel",
       channel_types=[discord.ChannelType.text],
-      placeholder="Report送信チャンネル(未選択)",
+      placeholder="Report送信チャンネル",
       min_values=0,
       default_values=[interaction.guild.get_channel(data["report_send_channel"])] if "report_send_channel" in data and data["report_send_channel"] else None,
       row=0
     )
     select_1 = discord.ui.RoleSelect(
       custom_id="settings_select_report_mention_role",
-      placeholder="Report送信時メンションロール(未選択)",
+      placeholder="Report送信時メンションロール",
       min_values=0,
       default_values=[interaction.guild.get_role(data["mention_role"])] if "mention_role" in data and data["mention_role"] else None,
       row=1
@@ -143,7 +143,7 @@ class Settings(commands.Cog):
     select_0 = discord.ui.ChannelSelect(
       custom_id="settings_select_pticket_channel",
       channel_types=[discord.ChannelType.text],
-      placeholder="匿名Ticket送信チャンネル(未選択)",
+      placeholder="匿名Ticket送信チャンネル",
       min_values=0,
       default_values=[interaction.guild.get_channel(data["report_send_channel"])] if "report_send_channel" in data and data["report_send_channel"] else None,
       row=0
@@ -151,14 +151,14 @@ class Settings(commands.Cog):
     select_1 = discord.ui.ChannelSelect(
       custom_id="settings_select_pticket_button_channel",
       channel_types=[discord.ChannelType.text],
-      placeholder="匿名Ticket作成用ボタン送信チャンネル(未選択)",
+      placeholder="匿名Ticket作成用ボタン送信チャンネル",
       min_values=0,
       default_values=[interaction.guild.get_channel(data["report_button_channel"])] if "report_button_channel" in data and data["report_button_channel"] else None,
       row=1
     )
     select_2 = discord.ui.RoleSelect(
       custom_id="settings_select_pticket_mention_role",
-      placeholder="匿名Ticket送信時メンションロール(未選択)",
+      placeholder="匿名Ticket送信時メンションロール",
       min_values=0,
       default_values=[interaction.guild.get_role(data["mention_role"])] if "mention_role" in data and data["mention_role"] else None,
       row=2
@@ -291,11 +291,6 @@ class Settings(commands.Cog):
         )
         return await interaction.response.send_message(embed=embed, ephemeral=True)
 
-      embed_1 = discord.Embed(
-        title="settings",
-        description="設定が完了しました。",
-        color=0xF4BD44,
-      )
 
       embed_2 = discord.Embed(
         description="## Report機能",
@@ -332,7 +327,7 @@ class Settings(commands.Cog):
         inline=True
       )
 
-      await interaction.response.edit_message(embeds=[embed_1, embed_2, embed_3] , view=None)
+      await interaction.response.edit_message(embeds=[embed_2, embed_3] , view=None)
 
 
       # Report送信チャンネルが存在する場合
@@ -362,21 +357,25 @@ class Settings(commands.Cog):
 
         await interaction.guild.get_channel(pticket_data["report_send_channel"]).send(mention_role_mention, embed=embed_3)
 
+        embed_0 = discord.Embed(
+          title="匿名Ticket作成用ボタン設定パネル",
+          description="- 下のボタンから匿名Ticket開始パネルのメッセージを編集することができます。\n"
+                      "- パネルを作成する必要がない場合は、無視して構いません。",
+          color=0x9AC9FF,
+        )
+
         embed = discord.Embed(
           title="匿名Ticket",
           description="匿名Ticketを作成します。\nこのbotのDMを通じて匿名でサーバー管理者と会話することができます。",
           color=0x9AC9FF,
         )
-        embed.set_footer(
-          text="・下のボタンから匿名Ticket開始パネルのメッセージを編集することができます。\n"
-                "・パネルを作成する必要がない場合は、無視して構いません。",
-        )
+
         view = discord.ui.View()
         button_1 = discord.ui.Button(label="内容を編集する", emoji="✍️", custom_id=f"edit_private_ticket", style=discord.ButtonStyle.green, row=1)
         button_2 = discord.ui.Button(label="確定する", emoji="👌", custom_id=f"settings_confirm_private_ticket", style=discord.ButtonStyle.red, row=1)
         view.add_item(button_1)
         view.add_item(button_2)
-        await interaction.followup.send(embed=embed, view=view, ephemeral=True)
+        await interaction.followup.send(embeds=[embed_0, embed], view=view, ephemeral=True)
 
 
     # 確定ボタンを押したとき
@@ -386,7 +385,7 @@ class Settings(commands.Cog):
       view.add_item(button_0)
 
       # フッターを消す
-      embed = interaction.message.embeds[0]
+      embed = interaction.message.embeds[1]
       embed.set_footer(text=None)
 
       # 送信する
@@ -459,7 +458,7 @@ class EditPrivateModal(discord.ui.Modal):
     self.private_ticket_msg = discord.ui.TextInput(
       label="パネルに表示する内容を入力してください。",
       style=discord.TextStyle.long,
-      default=msg.embeds[0].description,
+      default=msg.embeds[1].description,
       required=True,
       row=0
     )
@@ -467,11 +466,10 @@ class EditPrivateModal(discord.ui.Modal):
 
   async def on_submit(self, interaction: discord.Interaction):
     # embedの定義
-    embed = interaction.message.embeds[0]
-    embed.description = self.private_ticket_msg.value
+    interaction.message.embeds[1].description = self.private_ticket_msg.value
 
     # 編集パネルの変更
-    await interaction.response.edit_message(embed=embed)
+    await interaction.response.edit_message(embeds=interaction.message.embeds)
 
 
 
