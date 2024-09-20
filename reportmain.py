@@ -54,7 +54,7 @@ async def on_ready():
   await channel.send(f"{bot.user.mention} がオンラインになったよう。")
 
   path = "data/bot_version"
-  async with aiofiles.open(path, mode="r") as f:
+  async with aiofiles.open(path, mode="r", encoding="UTF-8") as f:
     version = await f.read()
   custom_activity = discord.Game(f"/help | ver{version}")
   await bot.change_presence(status=discord.Status.online,activity=custom_activity)
