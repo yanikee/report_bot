@@ -215,8 +215,9 @@ class Settings(commands.Cog):
         if custom_id == "settings_select_report_channel":
           channel, error_embed = self.check_permission(interaction)
           if error_embed:
-            return await interaction.response.send_message(embed=error_embed, ephemeral=True)
-          data["report_send_channel"] = channel.id if channel else None
+            await interaction.response.send_message(embed=error_embed, ephemeral=True)
+          else:
+            data["report_send_channel"] = channel.id if channel else None
         # Report送信時メンションロール設定の場合
         else:
           data["mention_role"] = int(interaction.data["values"][0]) if interaction.data["values"] else None
@@ -232,14 +233,16 @@ class Settings(commands.Cog):
         if custom_id == "settings_select_pticket_channel":
           channel, error_embed = self.check_permission(interaction)
           if error_embed:
-            return await interaction.response.send_message(embed=error_embed, ephemeral=True)
-          data["report_send_channel"] = channel.id if channel else None
+            await interaction.response.send_message(embed=error_embed, ephemeral=True)
+          else:
+            data["report_send_channel"] = channel.id if channel else None
         # Ticket作成用ボタンの場合
         elif custom_id == "settings_select_pticket_button_channel":
           channel, error_embed = self.check_permission(interaction, button_channel=True)
           if error_embed:
-            return await interaction.response.send_message(embed=error_embed, ephemeral=True)
-          data["report_button_channel"] = channel.id if channel else None
+            await interaction.response.send_message(embed=error_embed, ephemeral=True)
+          else:
+            data["report_button_channel"] = channel.id if channel else None
         # Ticket作成時メンションロールの場合
         else:
           data["mention_role"] = int(interaction.data["values"][0]) if interaction.data["values"] else None
