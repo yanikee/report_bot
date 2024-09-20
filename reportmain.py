@@ -11,14 +11,19 @@ import argparse
 
 parser = argparse.ArgumentParser(description="report_bot!を起動する")
 parser.add_argument("-dev", action="store_true", help="開発モードで実行")
+parser.add_argument("-reset", action="store_true", help="何も読み込まない")
 args = parser.parse_args()
 
 if args.dev:
+  cog_list = cog_list.cog_list
   dev_cog_list = cog_list.dev_cog_list
+elif args.reset:
+  cog_list = []
+  dev_cog_list = None
 else:
+  cog_list = cog_list.cog_list
   dev_cog_list = None
 
-cog_list = cog_list.cog_list
 
 intents = discord.Intents.none()
 intents.messages = True
