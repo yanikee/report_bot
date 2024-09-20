@@ -5,8 +5,18 @@ import logging
 import cog_list
 import aiofiles
 import json
+import argparse
 
 
+
+parser = argparse.ArgumentParser(description="report_bot!を起動する")
+parser.add_argument("-dev", action="store_true", help="開発モードで実行")
+args = parser.parse_args()
+
+if args.dev:
+  dev_cog_list = cog_list.dev_cog_list
+else:
+  dev_cog_list = None
 
 cog_list = cog_list.cog_list
 
@@ -32,13 +42,19 @@ async def on_ready():
   for x in cog_list:
     await bot.load_extension(x)
     print(f"ロード完了：{x}")
+
+  if dev_cog_list:
+    for x in dev_cog_list:
+      await bot.load_extension(x)
+      print(f"ロード完了：{x}")
+
   await bot.tree.sync()
   print("全ロード完了")
   channel = bot.get_channel(report_bot_service_cha)
   await channel.send(f"{bot.user.mention} がオンラインになったよう。")
 
   path = "data/bot_version"
-  async with aiofiles.open(path, mode="r") as f:
+  async with aiofiles.open(path, mode="r", encoding="UTF-8") as f:
     version = await f.read()
   custom_activity = discord.Game(f"/help | ver{version}")
   await bot.change_presence(status=discord.Status.online,activity=custom_activity)
