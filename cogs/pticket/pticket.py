@@ -30,7 +30,7 @@ class PrivateTicket(commands.Cog):
     if not os.path.exists(path):
       embed=error.generate(
         code="2-5-01",
-        description="サーバー管理者に`/pticket setting`コマンドを実行するよう伝えてください。",
+        description="サーバー管理者に`/settings`コマンドを実行するよう伝えてください。",
       )
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
@@ -102,7 +102,7 @@ class PrivateTicketModal(discord.ui.Modal):
     except discord.errors.Forbidden:
       embed=error.generate(
         code="2-5-03",
-        description=f"匿名ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/pticket setting`コマンドをもう一度実行するように伝えてください。**\n\n### ------------匿名ticket------------\n{self.first_pticket.value}",
+        description=f"匿名ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/settings`コマンドをもう一度実行するように伝えてください。**\n\n### ------------匿名ticket------------\n{self.first_pticket.value}",
         support=False,
       )
       await interaction.followup.send(embed=embed, ephemeral=True)

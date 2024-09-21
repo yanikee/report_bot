@@ -31,7 +31,7 @@ class Report(commands.Cog):
     if not os.path.exists(path):
       embed=error.generate(
         code="3-4-01",
-        description="サーバー管理者に`/report setting`コマンドを実行するよう伝えてください。",
+        description="サーバー管理者に`/settings`コマンドを実行するよう伝えてください。",
       )
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
@@ -43,7 +43,7 @@ class Report(commands.Cog):
     if not "report_send_channel" in report_dict:
       embed=error.generate(
         code="3-4-02",
-        description="サーバー管理者に`/report setting`コマンドを実行するよう伝えてください。",
+        description="サーバー管理者に`/settings`コマンドを実行するよう伝えてください。",
       )
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
@@ -125,7 +125,7 @@ class ReportButton(discord.ui.View):
     except discord.errors.Forbidden:
       embed=error.generate(
         code="3-4-03",
-        description=f"匿名Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/report setting`コマンドをもう一度実行するように伝えてください。",
+        description=f"匿名Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/settings`コマンドをもう一度実行するように伝えてください。",
       )
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
