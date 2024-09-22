@@ -24,7 +24,6 @@ else:
   cog_list = cog_list.cog_list
   dev_cog_list = None
 
-
 intents = discord.Intents.none()
 intents.messages = True
 intents.guilds = True
