@@ -75,12 +75,12 @@ class Settings(commands.Cog):
       color=0xF4BD44,
     )
     embed.add_field(
-      name=("🔵" if "report_send_channel" in data and data["report_send_channel"] else "⚪") + "Report送信チャンネル",
+      name=("🔵" if data.get("report_send_channel") else "⚪") + "Report送信チャンネル",
       value="\n- Reportを送信するチャンネルを設定します\n",
       inline=False
     )
     embed.add_field(
-      name=("🔵" if "mention_role" in data and data["mention_role"] else "⚪") + "Report送信時メンションロール(任意)",
+      name=("🔵" if data.get("mention_role") else "⚪") + "Report送信時メンションロール(任意)",
       value="- Reportが送信されたときにメンションするロールを設定します",
       inline=False
     )
@@ -91,14 +91,14 @@ class Settings(commands.Cog):
       channel_types=[discord.ChannelType.text],
       placeholder="Report送信チャンネル",
       min_values=0,
-      default_values=[interaction.guild.get_channel(data["report_send_channel"])] if "report_send_channel" in data and data["report_send_channel"] else None,
+      default_values=[interaction.guild.get_channel(data["report_send_channel"])] if data.get("report_send_channel") else None,
       row=0
     )
     select_1 = discord.ui.RoleSelect(
       custom_id="settings_select_report_mention_role",
       placeholder="Report送信時メンションロール",
       min_values=0,
-      default_values=[interaction.guild.get_role(data["mention_role"])] if "mention_role" in data and data["mention_role"] else None,
+      default_values=[interaction.guild.get_role(data["mention_role"])] if data.get("mention_role") else None,
       row=1
     )
     view.add_item(select_0)
@@ -124,12 +124,12 @@ class Settings(commands.Cog):
       color=0x9AC9FF,
     )
     embed.add_field(
-      name=("🔵" if "report_send_channel" in data and data["report_send_channel"] else "⚪") + "匿名Ticket送信チャンネル",
+      name=("🔵" if data.get("report_send_channel") else "⚪") + "匿名Ticket送信チャンネル",
       value="- 匿名Ticketを送信するチャンネルを設定します",
       inline=False
     )
     embed.add_field(
-      name=("🔵" if "mention_role" in data and data["mention_role"] else "⚪") + "匿名Ticket送信時メンションロール(任意)",
+      name=("🔵" if data.get("mention_role") else "⚪") + "匿名Ticket送信時メンションロール(任意)",
       value="- 匿名Ticketが送信されたときにメンションするロールを設定します",
       inline=False
     )
@@ -140,14 +140,14 @@ class Settings(commands.Cog):
       channel_types=[discord.ChannelType.text],
       placeholder="匿名Ticket送信チャンネル",
       min_values=0,
-      default_values=[interaction.guild.get_channel(data["report_send_channel"])] if "report_send_channel" in data and data["report_send_channel"] else None,
+      default_values=[interaction.guild.get_channel(data["report_send_channel"])] if data.get("report_send_channel") else None,
       row=0
     )
     select_2 = discord.ui.RoleSelect(
       custom_id="settings_select_pticket_mention_role",
       placeholder="匿名Ticket送信時メンションロール",
       min_values=0,
-      default_values=[interaction.guild.get_role(data["mention_role"])] if "mention_role" in data and data["mention_role"] else None,
+      default_values=[interaction.guild.get_role(data["mention_role"])] if data.get("mention_role") else None,
       row=2
     )
     view.add_item(select_0)
@@ -197,7 +197,7 @@ class Settings(commands.Cog):
       channel_types=[discord.ChannelType.text],
       placeholder="匿名Ticket作成用ボタン送信チャンネル",
       min_values=0,
-      default_values=[interaction.guild.get_channel(data["report_button_channel"])] if "report_button_channel" in data and data["report_button_channel"] else None,
+      default_values=[interaction.guild.get_channel(data["report_button_channel"])] if data.get("report_button_channel") else None,
       row=0
     )
     view.add_item(select_1)
@@ -226,12 +226,12 @@ class Settings(commands.Cog):
     )
     embed_2.add_field(
       name="Report送信チャンネル",
-      value=interaction.guild.get_channel(report_data["report_send_channel"]).mention if "report_send_channel" in report_data and report_data["report_send_channel"] else "未設定",
+      value=interaction.guild.get_channel(report_data["report_send_channel"]).mention if report_data.get("report_send_channel") else "未設定",
       inline=True
     )
     embed_2.add_field(
       name="Report送信時メンションロール",
-      value=interaction.guild.get_role(report_data["mention_role"]).mention if "mention_role" in report_data and report_data["mention_role"] else "未設定",
+      value=interaction.guild.get_role(report_data["mention_role"]).mention if report_data.get("mention_role") else "未設定",
       inline=True
     )
 
@@ -241,47 +241,47 @@ class Settings(commands.Cog):
     )
     embed_3.add_field(
       name="匿名Ticket送信チャンネル",
-      value=interaction.guild.get_channel(pticket_data["report_send_channel"]).mention if "report_send_channel" in pticket_data and pticket_data["report_send_channel"] else "未設定",
+      value=interaction.guild.get_channel(pticket_data["report_send_channel"]).mention if pticket_data.get("report_send_channel") else "未設定",
       inline=True
     )
     if pticket_data.get("report_send_channel"):
       embed_3.add_field(
         name="匿名Ticket作成用ボタン送信チャンネル",
-        value=interaction.guild.get_channel(pticket_data["report_button_channel"]).mention if "report_button_channel" in pticket_data and pticket_data["report_button_channel"] else "未設定",
+        value=interaction.guild.get_channel(pticket_data["report_button_channel"]).mention if pticket_data.get("report_button_channel") else "未設定",
         inline=True
       )
     embed_3.add_field(
       name="匿名Ticket送信時メンションロール",
-      value=interaction.guild.get_role(pticket_data["mention_role"]).mention if "mention_role" in pticket_data and pticket_data["mention_role"] else "未設定",
+      value=interaction.guild.get_role(pticket_data["mention_role"]).mention if pticket_data.get("mention_role") else "未設定",
       inline=True
     )
 
     await interaction.response.edit_message(embeds=[embed_2, embed_3] , view=None)
 
     # Report送信チャンネルが存在する場合
-    if report_data["report_send_channel"]:
+    if report_data.get("report_send_channel"):
       embed_2.set_author(
         name=f"実行者:{interaction.user.display_name}",
         icon_url=interaction.user.display_avatar.url,
       )
       # メンションロールを取得
-      mention_role_mention = None
-      if "mention_role" in report_data:
-        if report_data["mention_role"]:
-          mention_role_mention = interaction.guild.get_role(report_data["mention_role"]).mention
+      if report_data.get("mention_role"):
+        mention_role_mention = interaction.guild.get_role(report_data["mention_role"]).mention
+      else:
+        mention_role_mention = None
       await interaction.guild.get_channel(report_data["report_send_channel"]).send(mention_role_mention, embed=embed_2)
 
     # Ticket送信チャンネルが存在 and Ticket作成用ボタンが存在する場合
-    if pticket_data["report_send_channel"]:
+    if pticket_data.get("report_send_channel"):
       embed_3.set_author(
         name=f"実行者:{interaction.user.display_name}",
         icon_url=interaction.user.display_avatar.url,
       )
       # メンションロールを取得
-      mention_role_mention = None
-      if "mention_role" in pticket_data:
-        if pticket_data["mention_role"]:
-          mention_role_mention = interaction.guild.get_role(pticket_data["mention_role"]).mention
+      if pticket_data.get("mention_role"):
+        mention_role_mention = interaction.guild.get_role(pticket_data["mention_role"]).mention
+      else:
+        mention_role_mention = None
 
       await interaction.guild.get_channel(pticket_data["report_send_channel"]).send(mention_role_mention, embed=embed_3)
 
