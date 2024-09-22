@@ -391,7 +391,9 @@ class Settings(commands.Cog):
         await self.settings_button_panel(interaction, error=True)
         return
       else:
+        data = await self.get_data(interaction, type="pticket")
         data["report_button_channel"] = channel.id if channel else None
+        await self.save_data(interaction, data, "pticket")
         await self.settings_button_panel(interaction)
 
     # 確定ボタンを押したとき
