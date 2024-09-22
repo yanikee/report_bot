@@ -174,7 +174,7 @@ class Settings(commands.Cog):
     data = await self.get_data(interaction,type="pticket")
     embed_0 = discord.Embed(
       title="匿名Ticket作成用ボタン設定パネル",
-      description="下のボタンから匿名Ticket開始パネルのメッセージを編集することができます。",
+      description="下のボタンから匿名Ticket開始パネルのメッセージを編集することができます",
       color=0x9AC9FF,
     )
 
@@ -318,6 +318,15 @@ class Settings(commands.Cog):
         await self.settings_panel_config(interaction, error=True, value=interaction.message.embeds[1].description)
         return
       else:
+        if not channel.permissions_for(interaction.user).manage_channels:
+          embed=error.generate(
+            code="1-5-05",
+            description=f"あなたに{channel.mention}の`チャンネル管理`の権限が必要です。"
+          )
+          await interaction.response.send_message(embed=embed, ephemeral=True)
+          await self.settings_panel_config(interaction, error=True, value=interaction.message.embeds[1].description)
+          return
+
         data = await self.get_data(interaction, type="pticket")
         data["report_button_channel"] = channel.id if channel else None
         await self.save_data(interaction, data, "pticket")
