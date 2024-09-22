@@ -417,7 +417,7 @@ class Settings(commands.Cog):
 
     # パネル設置しないを押した場合
     elif interaction.data["custom_id"] == "settings_delete_private_ticket":
-      await interaction.response.edit_message(content="設定完了", embed=None, view=None)
+      await self.settings_final(interaction)
 
 
   # 閲覧権限確認
