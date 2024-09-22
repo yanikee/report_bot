@@ -2,7 +2,7 @@ from discord.ext import commands
 import discord
 import os
 import logging
-import cog_list
+import cog_list as cogs
 import aiofiles
 import json
 import argparse
@@ -15,15 +15,14 @@ parser.add_argument("-reset", action="store_true", help="何も読み込まな�
 args = parser.parse_args()
 
 if args.dev:
-  cog_list = cog_list.cog_list
-  dev_cog_list = cog_list.dev_cog_list
+  cog_list = cogs.cog_list
+  dev_cog_list = cogs.dev_cog_list
 elif args.reset:
   cog_list = []
   dev_cog_list = None
 else:
-  cog_list = cog_list.cog_list
+  cog_list = cogs.cog_list
   dev_cog_list = None
-
 
 intents = discord.Intents.none()
 intents.messages = True
