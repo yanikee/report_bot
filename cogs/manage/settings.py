@@ -32,7 +32,7 @@ class Settings(commands.Cog):
         role = interaction.guild.get_role(id_int)
         # 両方Falseの場合 -> "reply_num"以外は削除
         if not any([channel, role]):
-          datas = {k: v for k, v in datas.items() if (k == "reply_num" or v != id_int)}
+          datas = {k: v for k, v in datas.items() if (k == "reply_num" or k == "pticket_num" or v != id_int)}
 
       await self.save_data(interaction, data=datas, type=type)
 
