@@ -35,6 +35,12 @@ class PrivateTicket(commands.Cog):
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
+    # cooldown
+    embed, self.user_cooldowns = cooldown.user_cooldown(interaction.user.id, self.user_cooldowns)
+    if embed:
+      await interaction.response.send_message(embed=embed, ephemeral=True)
+      return
+
     try:
       msg = await interaction.user.send("テストメッセージ", silent=True)
       await msg.delete()
@@ -43,12 +49,6 @@ class PrivateTicket(commands.Cog):
           code="2-5-02",
           description="DMが送信できませんでした。\n**このbotからDMを受け取れるように設定してください！**\n（テストメッセージをbotに送信するなど）",
         )
-      await interaction.response.send_message(embed=embed, ephemeral=True)
-      return
-
-    # cooldown
-    embed, self.user_cooldowns = cooldown.user_cooldown(interaction.user.id, self.user_cooldowns)
-    if embed:
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
