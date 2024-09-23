@@ -23,6 +23,20 @@ class Settings(commands.Cog):
       )
       return await interaction.response.send_message(embed=embed, ephemeral=True)
 
+
+    # 正しくないidを削除
+    for type in ["report", "pticket"]:
+      datas = await self.get_data(interaction, type=type)
+      for id_int in datas.values():
+        channel = interaction.guild.get_channel(id_int)
+        role = interaction.guild.get_role(id_int)
+        # 両方Falseの場合 -> "reply_num"以外は削除
+        if not any([channel, role]):
+          datas = {k: v for k, v in datas.items() if (k == "reply_num" or k == "pticket_num" or v != id_int)}
+
+      await self.save_data(interaction, data=datas, type=type)
+
+
     embed, view = self.settings_page_1()
     await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
 

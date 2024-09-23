@@ -42,7 +42,11 @@ class Reply(commands.Cog):
       async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
         contents = await f.read()
       report_dict = json.loads(contents)
+      # 存在しなかった場合は作る
+      if not report_dict.get("reply_num"):
+        report_dict["reply_num"] = 0
       report_dict["reply_num"] += 1
+      # 保存
       async with aiofiles.open(path, mode="w") as f:
         contents = json.dumps(report_dict, indent=2, ensure_ascii=False)
         await f.write(contents)
