@@ -139,10 +139,15 @@ class PrivateTicketModal(discord.ui.Modal):
     async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
       contents = await f.read()
     ticket_dict = json.loads(contents)
+    # 存在しない場合は作る
+    if not ticket_dict.get("pticket_num"):
+      ticket_dict["pticket_num"] = 0
     ticket_dict["pticket_num"] += 1
+    # 保存
     async with aiofiles.open(path, mode="w") as f:
       contents = json.dumps(ticket_dict, indent=2, ensure_ascii=False)
       await f.write(contents)
+
 
     # thread作成, button送信
     thread = await msg.create_thread(name=f"private_ticket-{str(ticket_dict['pticket_num']).zfill(4)}")
