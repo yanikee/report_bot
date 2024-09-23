@@ -173,20 +173,25 @@ class Settings(commands.Cog):
   async def settings_panel_config(self, interaction:discord.Interaction, error:bool=None, value:str="匿名Ticketを作成します。\nこのbotのDMを通じて匿名でサーバー管理者と会話することができます。"):
     data = await self.get_data(interaction,type="pticket")
     embed_0 = discord.Embed(
-      title="匿名Ticket作成用ボタン設定パネル",
-      description="下のボタンから匿名Ticket開始パネルのメッセージを編集することができます",
+      title="settings",
+      description="以下の**2つ**の設定を行ってください",
       color=0x9AC9FF,
+    )
+    embed_0.add_field(
+      name=("🔵" if data.get("report_button_channel") else "⚪") + "匿名Ticket作成ボタン設置チャンネル",
+      value="- 匿名Ticketを作成するためのボタンを設置するチャンネルを設定します",
+      inline=False
+    )
+    embed_0.add_field(
+      name="🔵匿名Ticket作成パネルのメッセージ編集",
+      value="- ボタンから匿名Ticket作成パネルのメッセージを編集することができます",
+      inline=False
     )
 
     embed = discord.Embed(
       title="匿名Ticket",
       description=value,
       color=0x9AC9FF,
-    )
-    embed.add_field(
-      name=("🔵" if data.get("report_button_channel") else "⚪") + "匿名Ticket作成用ボタン送信チャンネル",
-      value="- 匿名Ticketを作成するためのボタンを送信するチャンネルを設定します",
-      inline=False
     )
 
     embeds = [embed_0, embed]
@@ -195,7 +200,7 @@ class Settings(commands.Cog):
     select_1 = discord.ui.ChannelSelect(
       custom_id="settings_select_pticket_button_channel",
       channel_types=[discord.ChannelType.text],
-      placeholder="匿名Ticket作成用ボタン送信チャンネル",
+      placeholder="匿名Ticket作成ボタン設置チャンネル",
       min_values=0,
       default_values=[interaction.guild.get_channel(data["report_button_channel"])] if data.get("report_button_channel") else None,
       row=0
