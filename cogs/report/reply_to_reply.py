@@ -8,7 +8,7 @@ import aiofiles
 import datetime
 
 import error
-import cooldown
+import check
 
 
 
@@ -45,8 +45,14 @@ class ReplyToReply(commands.Cog):
       if not "------------返信内容------------" in msg.embeds[0].description:
         return
 
+    # guild_block
+    embed = await check.is_guild_block(bot=self.bot, guild=None, user_id=None, message=message, referenced_message=msg)
+    if embed:
+      await message.reply(embed=embed)
+      return
+
     # cooldown
-    embed, self.user_cooldowns = cooldown.user_cooldown(message.author.id, self.user_cooldowns)
+    embed, self.user_cooldowns = check.user_cooldown(message.author.id, self.user_cooldowns)
     if embed:
       await message.reply(embed=embed)
       return

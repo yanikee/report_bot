@@ -8,7 +8,7 @@ import aiofiles
 import datetime
 
 import error
-import cooldown
+import check
 
 
 
@@ -48,8 +48,14 @@ class Report(commands.Cog):
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
+    # guild_block
+    embed = await check.is_guild_block(bot=self.bot, guild=interaction.guild, user_id=interaction.user.id)
+    if embed:
+      await interaction.response.send_message(embed=embed, ephemeral=True)
+      return
+
     # cooldown
-    embed, self.user_cooldowns = cooldown.user_cooldown(interaction.user.id, self.user_cooldowns)
+    embed, self.user_cooldowns = check.user_cooldown(interaction.user.id, self.user_cooldowns)
     if embed:
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
