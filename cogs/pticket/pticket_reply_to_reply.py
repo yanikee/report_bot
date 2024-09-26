@@ -42,6 +42,12 @@ class PticketReplyToReply(commands.Cog):
     if not "匿名ticket |" in msg.embeds[0].footer.text:
       return
 
+    # guild_block
+    embed = await check.is_guild_block(bot=self.bot, guild=None, user_id=None, message=message, referenced_message=msg)
+    if embed:
+      await message.reply(embed=embed)
+      return
+
     # cooldown
     embed, self.user_cooldowns = check.user_cooldown(message.author.id, self.user_cooldowns)
     if embed:

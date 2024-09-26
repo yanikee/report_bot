@@ -30,8 +30,13 @@ def user_cooldown(user_id: int, user_cooldowns: dict, rate:int=30):
   return None, user_cooldowns
 
 
-async def is_server_block(guild:discord.guild, user_id):
-  path = f"data/server_block/{guild.id}.json"
+async def is_guild_block(bot, guild:discord.Guild, user_id, message:discord.Message=None, referenced_message:discord.Message=None):
+  if message:
+    guild_id = referenced_message.embeds[0].url.split("/")[4]
+    guild = bot.get_guild(int(guild_id))
+    user_id = message.author.id
+
+  path = f"data/guild_block/{guild.id}.json"
   if os.path.exists(path):
     async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
       contents = await f.read()
@@ -40,6 +45,11 @@ async def is_server_block(guild:discord.guild, user_id):
     server_block_data = {}
 
   if server_block_data.get(str(user_id)):
-    return True
+    embed = discord.Embed(
+      title="サーバーブロック",
+      description=f"あなたは『{guild.name}』の管理者によってサーバーブロックされています。\nこのサーバー内では本botの全ての機能をご利用いただけません。",
+      color=0xFF0000,
+    )
+    return embed
   else:
-    return False
+    return None

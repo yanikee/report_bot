@@ -8,7 +8,7 @@ import error
 
 
 
-class ServerBlock(commands.GroupCog, group_name='server'):
+class GuildBlock(commands.GroupCog, group_name='server'):
   def __init__(self, bot: commands.Bot):
     self.bot = bot
 
@@ -68,29 +68,29 @@ class ServerBlock(commands.GroupCog, group_name='server'):
     user_id = data_dict.get(str(interaction.channel.id))
     user = await interaction.guild.fetch_member(int(user_id))
 
-    # server_blockを取得
-    path = f"data/server_block/{interaction.guild.id}.json"
+    # guild_blockを取得
+    path = f"data/guild_block/{interaction.guild.id}.json"
     if os.path.exists(path):
       async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
         contents = await f.read()
-      server_block_data = json.loads(contents)
+      guild_block_data = json.loads(contents)
     else:
-      server_block_data = {}
+      guild_block_data = {}
 
     # blockedのbool
-    block_bool = server_block_data.get(str(user_id))
+    block_bool = guild_block_data.get(str(user_id))
     if block_bool:
-      server_block_data[str(user_id)] = False
+      guild_block_data[str(user_id)] = False
     else:
-      server_block_data[str(user_id)] = True
+      guild_block_data[str(user_id)] = True
 
     # 保存
-    contents = json.dumps(server_block_data, indent=2, ensure_ascii=False)
+    contents = json.dumps(guild_block_data, indent=2, ensure_ascii=False)
     async with aiofiles.open(path, encoding='utf-8', mode="w") as f:
       await f.write(contents)
 
     # 最後に送信, blockされた人にも送信
-    if server_block_data[str(user_id)]:
+    if guild_block_data[str(user_id)]:
       embed = discord.Embed(
         description="ユーザをサーバーブロックしています。\nこのユーザーはこのサーバー内で本botの全ての機能を利用できません。\nサーバーブロックを解除する -> `/block server`",
         color=0xff0000,
@@ -135,4 +135,4 @@ class ServerBlock(commands.GroupCog, group_name='server'):
 
 
 async def setup(bot):
-  await bot.add_cog(ServerBlock(bot))
+  await bot.add_cog(GuildBlock(bot))
