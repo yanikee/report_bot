@@ -8,7 +8,7 @@ import aiofiles
 import datetime
 
 import error
-import cooldown
+import check
 
 
 
@@ -36,7 +36,7 @@ class PrivateTicket(commands.Cog):
       return
 
     # cooldown
-    embed, self.user_cooldowns = cooldown.user_cooldown(interaction.user.id, self.user_cooldowns)
+    embed, self.user_cooldowns = check.user_cooldown(interaction.user.id, self.user_cooldowns)
     if embed:
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return

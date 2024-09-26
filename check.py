@@ -1,6 +1,10 @@
 import discord
 
+import os
+import json
+import aiofiles
 import datetime
+
 
 
 def user_cooldown(user_id: int, user_cooldowns: dict, rate:int=30):
@@ -24,3 +28,18 @@ def user_cooldown(user_id: int, user_cooldowns: dict, rate:int=30):
 
   user_cooldowns[str(user_id)] = current_time + rate
   return None, user_cooldowns
+
+
+async def is_server_block(guild:discord.guild, user_id):
+  path = f"data/server_block/{guild.id}.json"
+  if os.path.exists(path):
+    async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
+      contents = await f.read()
+    server_block_data = json.loads(contents)
+  else:
+    server_block_data = {}
+
+  if server_block_data.get(str(user_id)):
+    return True
+  else:
+    return False
