@@ -47,7 +47,7 @@ class GuildBlock(commands.GroupCog, group_name='server'):
         code="1-2-02",
         description="このスレッドは匿名Report, 匿名Ticketのスレッドではありません。",
       )
-      await interaction.followup.send(embed=embed, ephemeral=True)
+      await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
     # reportの場合
@@ -61,7 +61,7 @@ class GuildBlock(commands.GroupCog, group_name='server'):
         code="1-2-03",
         description="このスレッドは匿名Report, 匿名Ticketのスレッドではありません。",
       )
-      await interaction.followup.send(embed=embed, ephemeral=True)
+      await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
     # user_id, userを取得
@@ -128,9 +128,8 @@ class GuildBlock(commands.GroupCog, group_name='server'):
         icon_url=interaction.guild.icon.url,
       )
 
-    await interaction.channel.send(embed=embed)
     await user.send(embed=user_embed)
-    await interaction.response.send_message("ブロック完了", ephemeral=True)
+    await interaction.response.send_message(embed=embed)
 
 
 
