@@ -102,7 +102,7 @@ class ReportButton(discord.ui.View):
     embed.set_image(url=message.attachments[0].url if message.attachments else None)
     embed.set_author(
       name=f"投稿者：{message.author.display_name}",
-      icon_url=message.author.display_avatar.url
+      icon_url=message.author.display_avatar.url if message.author.display_avatar else None
     )
     embed.set_footer(
       text=reporter.display_name if reporter else "報告者：匿名",

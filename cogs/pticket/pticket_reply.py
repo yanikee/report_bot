@@ -107,7 +107,7 @@ class PticketReply(commands.Cog):
       embed = interaction.message.embeds[0]
       embed.set_author(
         name=f"返信：{interaction.user.display_name}",
-        icon_url=interaction.user.display_avatar.url,
+        icon_url=interaction.user.display_avatar.url if interaction.user.display_avatar else None,
       )
       await interaction.response.edit_message(embed=embed, view=None)
 
