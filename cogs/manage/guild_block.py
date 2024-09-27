@@ -99,7 +99,7 @@ class GuildBlock(commands.GroupCog, group_name='server'):
       )
       embed.set_footer(
         text=f"実行者:{interaction.user.display_name}",
-        icon_url=interaction.user.display_avatar.url,
+        icon_url=interaction.user.display_avatar.url if interaction.user.display_avatar else None,
       )
 
       user_embed = discord.Embed(
@@ -108,7 +108,7 @@ class GuildBlock(commands.GroupCog, group_name='server'):
       )
       user_embed.set_footer(
         text=interaction.guild.name,
-        icon_url=interaction.guild.icon.url,
+        icon_url=interaction.guild.icon.url if interaction.guild.icon else None,
       )
 
     else:
@@ -118,7 +118,7 @@ class GuildBlock(commands.GroupCog, group_name='server'):
       )
       embed.set_footer(
         text=f"実行者:{interaction.user.display_name}",
-        icon_url=interaction.user.display_avatar.url,
+        icon_url=interaction.user.display_avatar.url if interaction.user.display_avatar else None,
       )
 
       user_embed = discord.Embed(
@@ -127,7 +127,7 @@ class GuildBlock(commands.GroupCog, group_name='server'):
       )
       user_embed.set_footer(
         text=interaction.guild.name,
-        icon_url=interaction.guild.icon.url,
+        icon_url=interaction.guild.icon.url if interaction.guild.icon else None,
       )
 
     await user.send(embed=user_embed)

@@ -97,7 +97,7 @@ class Block(commands.Cog):
       )
       embed.set_footer(
         text=f"実行者:{interaction.user.display_name}",
-        icon_url=interaction.user.display_avatar.url,
+        icon_url=interaction.user.display_avatar.url if interaction.user.display_avatar else None,
       )
 
     else:
@@ -107,7 +107,7 @@ class Block(commands.Cog):
       )
       embed.set_footer(
         text=f"実行者:{interaction.user.display_name}",
-        icon_url=interaction.user.display_avatar.url,
+        icon_url=interaction.user.display_avatar.url if interaction.user.display_avatar else None,
       )
 
     await interaction.response.send_message(embed=embed)
