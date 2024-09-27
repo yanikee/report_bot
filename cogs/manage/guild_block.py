@@ -33,14 +33,14 @@ class GuildBlock(commands.GroupCog, group_name='server'):
         contents = await f.read()
       report_dict = json.loads(contents)
     else:
-      report_dict = None
+      report_dict = ""
 
     if os.path.exists(pticket_path):
       async with aiofiles.open(pticket_path, encoding='utf-8', mode="r") as f:
         contents = await f.read()
       pticket_dict = json.loads(contents)
     else:
-      pticket_dict = None
+      pticket_dict = ""
 
     if not report_dict and not pticket_dict:
       embed = error.generate(
