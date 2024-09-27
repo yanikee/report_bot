@@ -22,8 +22,6 @@ class Block(commands.Cog):
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
-    await interaction.response.defer(ephemeral=True)
-
     # report_dict, pticket_dictを取得する
     # 取得できなかった場合->return
     report_path = f"data/report/private_report/{interaction.guild.id}.json"
@@ -49,7 +47,7 @@ class Block(commands.Cog):
         code="1-1-02",
         description="このスレッドは匿名Report, 匿名Ticketのスレッドではありません。",
       )
-      await interaction.followup.send(embed=embed, ephemeral=True)
+      await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
 
@@ -64,7 +62,7 @@ class Block(commands.Cog):
         code="1-1-03",
         description="このスレッドは匿名Report, 匿名Ticketのスレッドではありません。",
       )
-      await interaction.followup.send(embed=embed, ephemeral=True)
+      await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
     # blocked_dictを定義
@@ -92,27 +90,25 @@ class Block(commands.Cog):
     # 最後に送信
     if blocked_dict[str(interaction.channel.id)] == True:
       embed = discord.Embed(
-        description="ユーザーからの返信をブロックしています。\nブロックを解除する -> `/block`",
-        color=0xff0000,
+        description="ユーザーからの返信をブロックしています。\nこのユーザーはこの匿名Report/匿名Ticketのみに返信できません。\nブロックを解除する -> `/block`",
+        color=0xffcc00,
       )
       embed.set_footer(
         text=f"実行者:{interaction.user.display_name}",
         icon_url=interaction.user.display_avatar.url,
       )
-      await interaction.followup.send("ユーザーのブロックが完了しました。\nブロックを解除するには、もう一度`/block`コマンドを実行してください。", ephemeral=True)
 
     else:
       embed = discord.Embed(
-        description="ブロックを解除しました。",
-        color=0xff0000,
+        description="このユーザーのブロックを解除しました。",
+        color=0xffcc00,
       )
       embed.set_footer(
         text=f"実行者:{interaction.user.display_name}",
         icon_url=interaction.user.display_avatar.url,
       )
-      await interaction.followup.send("ユーザーのブロックを解除しました。", ephemeral=True)
 
-    await interaction.channel.send(embed=embed)
+    await interaction.response.send_message(embed=embed)
 
 
 
