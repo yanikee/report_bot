@@ -52,9 +52,11 @@ class GuildBlock(commands.GroupCog, group_name='server'):
 
     # reportの場合
     if str(interaction.channel.id) in report_dict:
+      case_type = "Report"
       data_dict = report_dict
     # pticketの場合
     elif str(interaction.channel.id) in pticket_dict:
+      case_type = "Ticket"
       data_dict = pticket_dict
     else:
       embed = error.generate(
@@ -92,7 +94,7 @@ class GuildBlock(commands.GroupCog, group_name='server'):
     # 最後に送信, blockされた人にも送信
     if guild_block_data[str(user_id)]:
       embed = discord.Embed(
-        description="ユーザをサーバーブロックしています。\nこのユーザーはこのサーバー内で本botの全ての機能を利用できません。\nサーバーブロックを解除する -> `/block server`",
+        description=f"この匿名{case_type}の報告者をサーバーブロックしています。\nこの報告者はこのサーバー内で本botの全ての機能を利用できません。\nサーバーブロックを解除する -> `/block server`",
         color=0xff0000,
       )
       embed.set_footer(
@@ -111,7 +113,7 @@ class GuildBlock(commands.GroupCog, group_name='server'):
 
     else:
       embed = discord.Embed(
-        description="このユーザーのサーバーブロックを解除しました。",
+        description=f"この匿名{case_type}報告者のサーバーブロックを解除しました。",
         color=0xff0000,
       )
       embed.set_footer(

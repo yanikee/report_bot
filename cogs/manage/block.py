@@ -54,9 +54,11 @@ class Block(commands.Cog):
     # reportの場合
     if str(interaction.channel.id) in report_dict:
       blocked_path = f"data/report/blocked/{interaction.guild.id}.json"
+      case_type = "Report"
     # pticketの場合
     elif str(interaction.channel.id) in pticket_dict:
       blocked_path = f"data/pticket/blocked/{interaction.guild.id}.json"
+      case_type = "Ticket"
     else:
       embed = error.generate(
         code="1-1-03",
@@ -90,7 +92,7 @@ class Block(commands.Cog):
     # 最後に送信
     if blocked_dict[str(interaction.channel.id)] == True:
       embed = discord.Embed(
-        description="ユーザーからの返信をブロックしています。\nこのユーザーはこの匿名Report/匿名Ticketのみに返信できません。\nブロックを解除する -> `/block`",
+        description=f"この匿名{case_type}報告者からの返信をブロックしています。\nこの報告者はこの匿名{case_type}のみに返信できません。\nブロックを解除する -> `/block`",
         color=0xffcc00,
       )
       embed.set_footer(
@@ -100,7 +102,7 @@ class Block(commands.Cog):
 
     else:
       embed = discord.Embed(
-        description="このユーザーのブロックを解除しました。",
+        description=f"この匿名{case_type}報告者のブロックを解除しました。",
         color=0xffcc00,
       )
       embed.set_footer(
