@@ -5,6 +5,7 @@ import aiofiles
 import json
 import os
 import error
+from typing import List
 
 
 
@@ -12,9 +13,13 @@ class Block(commands.Cog):
   def __init__(self, bot: commands.Bot):
     self.bot = bot
 
+  async def block_type(self, interaction: discord.Interaction, _):
+    return [app_commands.Choice(name=case_type, value=case_type) for case_type in ["通常block", "サーバーblock"]]
+
   @app_commands.command(name="block", description='匿名Report, 匿名Ticketをブロック/ブロック解除します。')
-  @app_commands.describe(server_block="サーバーブロックにするかどうかを選択します。サーバーブロックされたユーザーはこのサーバー内にて本botの全ての機能を利用できなくなります。")
-  async def block(self, interaction:discord.Interaction, server_block:bool=None):
+  @app_commands.autocomplete(block_type=block_type)
+  @app_commands.describe(block_type="通常block：報告者はこのスレッドにのみ返信できなくなる / サーバーブロック：報告者はこのサーバー内の全ての機能が利用できなくなる")
+  async def block(self, interaction:discord.Interaction, block_type:str):
     if interaction.channel.type != discord.ChannelType.public_thread:
       embed = error.generate(
         code="1-1-01",
@@ -23,7 +28,7 @@ class Block(commands.Cog):
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
-    if server_block:
+    if block_type == "サーバーblock":
       await self.guild_block(interaction=interaction)
     else:
       await self.nomal_block(interaction=interaction)
@@ -102,7 +107,7 @@ class Block(commands.Cog):
     # 最後に送信, blockされた人にも送信
     if guild_block_data[str(user_id)]:
       embed = discord.Embed(
-        description=f"この匿名{case_type}の報告者をサーバーブロックしています。\nこの報告者はこのサーバー内で本botの全ての機能を利用できません。\nサーバーブロックを解除する -> `/block server`",
+        description=f"この匿名{case_type}の報告者をサーバーブロックしています。\nこの報告者はこのサーバー内で本botの全ての機能を利用できません。\nサーバーブロックを解除する -> `/block`",
         color=0xff0000,
       )
       embed.set_footer(

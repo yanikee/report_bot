@@ -73,8 +73,8 @@ class PticketReply(commands.Cog):
       embed = discord.Embed(
         url = interaction.channel.jump_url,
         description="## 匿名ticket\n"
-                    f"あなたの匿名ticketに、 {interaction.guild.name} の管理者から返信が届きました。\n"
-                    f"- __**このメッセージに返信**__(右クリック→返信)すると、{interaction.guild.name}の管理者に届きます。\n\n"
+                    f"あなたの匿名ticketに、 『{interaction.guild.name}』 の管理者から返信が届きました。\n"
+                    f"- __**このメッセージに返信**__(右クリック→返信)すると、このサーバーの管理者に届きます。\n\n"
                     f"## 返信内容\n{interaction.message.embeds[0].description}",
         color=0x9AC9FF,
       )
