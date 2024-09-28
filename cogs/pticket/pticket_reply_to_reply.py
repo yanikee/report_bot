@@ -89,7 +89,7 @@ class PticketReplyToReply(commands.Cog):
       blocked_dict = json.loads(contents)
       try:
         if blocked_dict[str(cha.id)] == True:
-          await message.channel.send("サーバー管理者にブロックされているため、返信できません。")
+          await message.reply("サーバー管理者にブロックされているため、返信できません。")
           return
       except KeyError:
         pass
