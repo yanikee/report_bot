@@ -83,8 +83,8 @@ class Help(commands.Cog):
                     "3. 【サーバー管理者に報告】\n"
                     "### 匿名Ticket機能\n"
                     "1. 匿名Ticketボタンをクリック\n"
-                    " - サーバー管理者が設置します\n"
-                    " - 存在しない場合は、サーバー管理者さんに聞いてみてください",
+                    "  - サーバー管理者が設置します\n"
+                    "  - ボタンが存在しない場合は、サーバー管理者さんに聞いてみてください",
         color=0xF4BD44,
       )
       await interaction.response.edit_message(embed=embed)
@@ -93,17 +93,20 @@ class Help(commands.Cog):
       embed=discord.Embed(
         title="Help! (4/4)",
         description="## その他\n"
-                    "## `/block`\n"
-                    "- 匿名Report, Ticketのユーザーによる返信をブロックできる機能\n"
-                    "- 本botを悪用した荒らしなどが行われた場合にご活用ください。\n"
-                    "[使い方]\n"
-                    "- ブロックしたいスレッド内で実行\n\n"
-                    "### クールダウンについて\n"
+                    "## `/block <block_type: [選択]>`\n"
+                    "- 報告者による返信をブロックしたい場合に使用します\n"
+                    "- 匿名Report/Ticketのスレッド内で実行してください\n"
+                    "### block_typeについて\n"
+                    "- normal_block\n"
+                    "  - 報告者は**ブロックされたスレッドにのみ**、返信ができなくなります\n"
+                    "- server_block\n"
+                    "  - 報告者は**このサーバー内では**、本botの全ての機能が利用できなくなります\n\n"
+                    "## クールダウンについて\n"
                     "- botの負荷軽減, 悪用を防ぐためにクールダウンを導入しています。\n"
                     "- 以下の機能は30秒に1度までしか、利用できません。\n"
-                    " - 【！サーバー管理者に報告】\n"
-                    " - Ticket開始ボタン\n"
-                    " - DMからサーバー管理者への返信",
+                    "  - 【！サーバー管理者に報告】\n"
+                    "  - Ticket開始ボタン\n"
+                    "  - DMからサーバー管理者への返信",
         color=0xF4BD44,
       )
       await interaction.response.edit_message(embed=embed)
