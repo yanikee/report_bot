@@ -15,12 +15,12 @@ class Block(commands.Cog):
     self.bot = bot
 
   async def block_type(self, interaction: discord.Interaction, _):
-    return [app_commands.Choice(name=case_type, value=case_type) for case_type in ["通常block", "サーバーblock"]]
+    return [app_commands.Choice(name=case_type, value=case_type) for case_type in ["normal", "server"]]
 
   @app_commands.command(name="block", description='匿名Report, 匿名Ticketをブロック/ブロック解除します。')
   @discord.app_commands.guild_only()
   @app_commands.autocomplete(block_type=block_type)
-  @app_commands.describe(block_type="通常block：報告者はこのスレッドにのみ返信できなくなる / サーバーblock：報告者はこのサーバー内の全ての機能が利用できなくなる")
+  @app_commands.describe(block_type="normal: 報告者はこのスレッドにのみ返信できなくなる / server: 報告者はこのサーバー内の全ての機能が利用できなくなる")
   async def block(self, interaction:discord.Interaction, block_type:str):
     if interaction.channel.type != discord.ChannelType.public_thread:
       embed = error.generate(
@@ -30,7 +30,7 @@ class Block(commands.Cog):
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
-    if block_type == "サーバーblock":
+    if block_type == "server":
       await self.guild_block(interaction=interaction)
     else:
       await self.nomal_block(interaction=interaction)
