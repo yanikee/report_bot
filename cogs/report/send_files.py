@@ -122,8 +122,8 @@ class ReportSendFiles(commands.Cog):
       embed = discord.Embed(
         url = interaction.channel.jump_url,
         description="## 匿名報告\n"
-                    f"あなたの報告に、 {interaction.guild.name} の管理者からファイルが届きました。\n"
-                    f"- __**このメッセージに返信**__(右クリック→返信)すると、{interaction.guild.name}の管理者に届きます。",
+                    f"あなたの報告に、『{interaction.guild.name}』の管理者からファイルが届きました。\n"
+                    f"- __**このメッセージに返信**__(右クリック→返信)すると、このサーバーの管理者に届きます。",
         color=0xF4BD44,
       )
       embed.set_footer(

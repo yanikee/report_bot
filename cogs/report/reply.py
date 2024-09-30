@@ -110,8 +110,8 @@ class Reply(commands.Cog):
       embed = discord.Embed(
         url=interaction.channel.jump_url,
         description="## 匿名報告\n"
-                    f"あなたの報告に、 {interaction.guild.name} の管理者から返信が届きました。\n"
-                    f"- __**このメッセージに返信**__(右クリック→返信)すると、{interaction.guild.name}の管理者に届きます。\n\n"
+                    f"あなたの報告に、『{interaction.guild.name}』の管理者から返信が届きました。\n"
+                    f"- __**このメッセージに返信**__(右クリック→返信)すると、このサーバーの管理者に届きます。\n\n"
                     f"## 返信内容\n{interaction.message.embeds[0].description}",
         color=0xF4BD44,
       )
@@ -144,7 +144,7 @@ class Reply(commands.Cog):
       embed = interaction.message.embeds[0]
       embed.set_author(
         name=f"返信：{interaction.user.display_name}",
-        icon_url=interaction.user.display_avatar.url,
+        icon_url=interaction.user.display_avatar.url if interaction.user.display_avatar else None,
       )
       await interaction.response.edit_message(embed=embed, view=None)
 

@@ -122,8 +122,8 @@ class PticketSendFiles(commands.Cog):
       embed = discord.Embed(
         url = interaction.channel.jump_url,
         description="## 匿名ticket\n"
-                    f"あなたの匿名ticketに、 {interaction.guild.name} の管理者からファイルが届きました。\n"
-                    f"- __**このメッセージに返信**__(右クリック→返信)すると、{interaction.guild.name}の管理者に届きます。",
+                    f"あなたの匿名ticketに、『{interaction.guild.name}』の管理者からファイルが届きました。\n"
+                    f"- __**このメッセージに返信**__(右クリック→返信)すると、このサーバーの管理者に届きます。",
         color=0x9AC9FF,
       )
       embed.set_footer(

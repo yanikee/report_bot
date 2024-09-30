@@ -15,6 +15,7 @@ class Settings(commands.Cog):
     self.bot = bot
 
   @app_commands.command(name="settings", description='設定を行います')
+  @discord.app_commands.guild_only()
   async def settings(self, interaction:discord.Interaction):
     if not interaction.channel.permissions_for(interaction.user).manage_channels:
       embed = error.generate(
@@ -281,7 +282,7 @@ class Settings(commands.Cog):
     if report_data.get("report_send_channel"):
       embed_2.set_author(
         name=f"実行者:{interaction.user.display_name}",
-        icon_url=interaction.user.display_avatar.url,
+        icon_url=interaction.user.display_avatar.url if interaction.user.display_avatar else None,
       )
       # メンションロールを取得
       if report_data.get("mention_role"):
@@ -294,7 +295,7 @@ class Settings(commands.Cog):
     if pticket_data.get("report_send_channel"):
       embed_3.set_author(
         name=f"実行者:{interaction.user.display_name}",
-        icon_url=interaction.user.display_avatar.url,
+        icon_url=interaction.user.display_avatar.url if interaction.user.display_avatar else None,
       )
       # メンションロールを取得
       if pticket_data.get("mention_role"):

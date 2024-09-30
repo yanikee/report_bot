@@ -8,7 +8,7 @@ import aiofiles
 import datetime
 
 import error
-import cooldown
+import check
 
 
 
@@ -48,8 +48,14 @@ class Report(commands.Cog):
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
+    # guild_block
+    embed = await check.is_guild_block(bot=self.bot, guild=interaction.guild, user_id=interaction.user.id)
+    if embed:
+      await interaction.response.send_message(embed=embed, ephemeral=True)
+      return
+
     # cooldown
-    embed, self.user_cooldowns = cooldown.user_cooldown(interaction.user.id, self.user_cooldowns)
+    embed, self.user_cooldowns = check.user_cooldown(interaction.user.id, self.user_cooldowns)
     if embed:
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
@@ -96,7 +102,7 @@ class ReportButton(discord.ui.View):
     embed.set_image(url=message.attachments[0].url if message.attachments else None)
     embed.set_author(
       name=f"投稿者：{message.author.display_name}",
-      icon_url=message.author.display_avatar.url
+      icon_url=message.author.display_avatar.url if message.author.display_avatar else None
     )
     embed.set_footer(
       text=reporter.display_name if reporter else "報告者：匿名",
