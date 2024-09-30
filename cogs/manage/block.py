@@ -1,11 +1,12 @@
 from discord.ext import commands
 from discord import app_commands
 import discord
+
 import aiofiles
 import json
 import os
+
 import error
-from typing import List
 
 
 
@@ -18,7 +19,7 @@ class Block(commands.Cog):
 
   @app_commands.command(name="block", description='匿名Report, 匿名Ticketをブロック/ブロック解除します。')
   @app_commands.autocomplete(block_type=block_type)
-  @app_commands.describe(block_type="通常block：報告者はこのスレッドにのみ返信できなくなる / サーバーブロック：報告者はこのサーバー内の全ての機能が利用できなくなる")
+  @app_commands.describe(block_type="通常block：報告者はこのスレッドにのみ返信できなくなる / サーバーblock：報告者はこのサーバー内の全ての機能が利用できなくなる")
   async def block(self, interaction:discord.Interaction, block_type:str):
     if interaction.channel.type != discord.ChannelType.public_thread:
       embed = error.generate(
