@@ -43,13 +43,12 @@ class PrivateTicket(commands.Cog):
 
     # cooldown
     embed, self.user_cooldowns = check.user_cooldown(interaction.user.id, self.user_cooldowns)
-    if embed:
-      await interaction.response.send_message(embed=embed, ephemeral=True)
-      return
+    #if embed:
+      #await interaction.response.send_message(embed=embed, ephemeral=True)
+      #return
 
     try:
       msg = await interaction.user.send("テストメッセージ", silent=True)
-      await msg.delete()
     except Exception:
       embed=error.generate(
           code="2-5-02",
@@ -60,6 +59,7 @@ class PrivateTicket(commands.Cog):
 
     modal = PrivateTicketModal(self.bot)
     await interaction.response.send_modal(modal)
+    await msg.delete()
 
 
 class PrivateTicketModal(discord.ui.Modal):
