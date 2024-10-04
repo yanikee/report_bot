@@ -89,6 +89,16 @@ class ReportButton(discord.ui.View):
     if interaction.data['custom_id'] == "public_report":
       await self.do_report(interaction, self.message, interaction.user)
     elif interaction.data['custom_id'] == "private_report":
+      # DMにテストメッセージを送信する
+      try:
+        await interaction.user.send("テストメッセージ", silent=True, delete_after=0.1)
+      except Exception:
+        embed=error.generate(
+            code="2-5-02",
+            description="DMが送信できませんでした。\n**このbotからDMを受け取れるように設定してください！**\n（テストメッセージをbotに送信するなど）",
+          )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        return
       await self.do_report(interaction, self.message, None)
 
 
@@ -145,6 +155,11 @@ class ReportButton(discord.ui.View):
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
+    # report理由記入modal
+    modal = ReportReasonModal(reporter, msg)
+    await interaction.response.send_modal(modal)
+
+
 
     # 匿名reportの場合 -> 報告者idを保存{msg.id: user.id}
     if not reporter:
@@ -169,10 +184,6 @@ class ReportButton(discord.ui.View):
 
       await msg.edit(view=view)
 
-
-    # report理由記入modal
-    modal = ReportReasonModal(reporter, msg)
-    await interaction.response.send_modal(modal)
 
     await interaction.followup.edit_message(interaction.message.id, view=self)
 
