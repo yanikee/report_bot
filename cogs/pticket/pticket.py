@@ -64,7 +64,7 @@ class PrivateTicket(commands.Cog):
 
 class PrivateTicketModal(discord.ui.Modal):
   def __init__(self, bot):
-    super().__init__(title=f'匿名ticketモーダル')
+    super().__init__(title=f'匿名Ticketモーダル')
     self.bot = bot
 
     self.first_pticket = discord.ui.TextInput(
@@ -81,7 +81,7 @@ class PrivateTicketModal(discord.ui.Modal):
     await interaction.response.defer()
     # embedの定義
     embed=discord.Embed(
-      title="匿名ticket",
+      title="匿名Ticket",
       description=self.first_pticket.value,
       color=0x9AC9FF,
     )
@@ -108,7 +108,7 @@ class PrivateTicketModal(discord.ui.Modal):
     except discord.errors.Forbidden:
       embed=error.generate(
         code="2-5-03",
-        description=f"匿名ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/settings`コマンドをもう一度実行するように伝えてください。**\n\n### ------------匿名ticket------------\n{self.first_pticket.value}",
+        description=f"匿名Ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/settings`コマンドをもう一度実行するように伝えてください。**\n\n### ------------匿名Ticket------------\n{self.first_pticket.value}",
         support=False,
       )
       await interaction.followup.send(embed=embed, ephemeral=True)
@@ -118,7 +118,7 @@ class PrivateTicketModal(discord.ui.Modal):
       print(e)
       embed=error.generate(
         code="2-5-04",
-        description=f"不明なエラーが発生しました。\nサポートサーバーにお問い合わせください。\n\n### ------------匿名ticket------------\n{self.first_pticket.value}",
+        description=f"不明なエラーが発生しました。\nサポートサーバーにお問い合わせください。\n\n### ------------匿名Ticket------------\n{self.first_pticket.value}",
         support=False
       )
       await interaction.followup.send(embed=embed, ephemeral=True)
@@ -176,11 +176,11 @@ class PrivateTicketModal(discord.ui.Modal):
     # Pticket完了確認membedを定義
     embed_1=discord.Embed(
       url=thread.jump_url,
-      description=f"## 匿名ticket\n{self.first_pticket.value}",
+      description=f"## 匿名Ticket\n{self.first_pticket.value}",
       color=0x9AC9FF,
     )
     embed_1.set_footer(
-        text=f"匿名ticket | {interaction.guild.name}",
+        text=f"匿名Ticket | {interaction.guild.name}",
         icon_url=interaction.guild.icon.replace(format='png').url if interaction.guild.icon else None,
       )
 

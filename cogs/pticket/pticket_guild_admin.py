@@ -72,14 +72,14 @@ class PticketReply(commands.Cog):
       # embed_2: 返信内容
       embed = discord.Embed(
         url = interaction.channel.jump_url,
-        description="## 匿名ticket\n"
-                    f"あなたの匿名ticketに、 『{interaction.guild.name}』 の管理者から返信が届きました。\n"
+        description="## 匿名Ticket\n"
+                    f"あなたの匿名Ticketに、 『{interaction.guild.name}』 の管理者から返信が届きました。\n"
                     f"- __**このメッセージに返信**__(右クリック→返信)すると、このサーバーの管理者に届きます。\n\n"
                     f"## 返信内容\n{interaction.message.embeds[0].description}",
         color=0x9AC9FF,
       )
       embed.set_footer(
-        text=f"匿名ticket | {interaction.guild.name}",
+        text=f"匿名Ticket | {interaction.guild.name}",
         icon_url=interaction.guild.icon.replace(format='png').url if interaction.guild.icon else None,
       )
 
@@ -149,7 +149,7 @@ class PticketReply(commands.Cog):
 
 class EditReplyModal(discord.ui.Modal):
   def __init__(self, msg):
-    super().__init__(title=f'匿名ticketへの返信用modal')
+    super().__init__(title=f'匿名Ticketへの返信用modal')
     self.msg = msg
 
     # modalのdefaultを定義

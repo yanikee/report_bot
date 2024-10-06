@@ -109,14 +109,14 @@ class ReportGuildAdmin(commands.Cog):
       # embedを定義
       embed = discord.Embed(
         url=interaction.channel.jump_url,
-        description="## 匿名報告\n"
+        description="## 匿名Report\n"
                     f"あなたの報告に、『{interaction.guild.name}』の管理者から返信が届きました。\n"
                     f"- __**このメッセージに返信**__(右クリック→返信)すると、このサーバーの管理者に届きます。\n\n"
                     f"## 返信内容\n{interaction.message.embeds[0].description}",
         color=0xF4BD44,
       )
       embed.set_footer(
-        text=f"匿名報告 | {interaction.guild.name}",
+        text=f"匿名Report | {interaction.guild.name}",
         icon_url=interaction.guild.icon.replace(format='png').url if interaction.guild.icon else None,
       )
 

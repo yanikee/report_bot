@@ -37,9 +37,14 @@ class PticketReplyToReply(commands.Cog):
       return
 
     # 匿名ticketじゃなかった場合 -> return
-    if not msg.embeds[0].footer:
-      return
-    if not "匿名ticket |" in msg.embeds[0].footer.text:
+    if msg.embeds[0].footer:
+      if "匿名ticket |" in msg.embeds[0].footer.text:
+        pass
+      elif "匿名Ticket |" in msg.embeds[0].footer.text:
+        pass
+      else:
+        return
+    else:
       return
 
     # guild_block
