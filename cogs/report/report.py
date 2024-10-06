@@ -156,7 +156,7 @@ class ReportButton(discord.ui.View):
       return
 
     # report理由記入modal
-    modal = ReportReasonModal(reporter, msg)
+    modal = ReportReasonModal(reporter, msg, message)
     await interaction.response.send_modal(modal)
 
 
@@ -179,7 +179,7 @@ class ReportButton(discord.ui.View):
 
       # 返信ボタンを設置
       view = discord.ui.View()
-      button_0 = discord.ui.Button(label="報告に返信", custom_id=f"report_reply", style=discord.ButtonStyle.primary)
+      button_0 = discord.ui.Button(label="報告に返信", custom_id=f"report_create_thread", style=discord.ButtonStyle.primary)
       view.add_item(button_0)
 
       await msg.edit(view=view)
@@ -189,10 +189,11 @@ class ReportButton(discord.ui.View):
 
 
 class ReportReasonModal(discord.ui.Modal):
-  def __init__(self, reporter, msg):
+  def __init__(self, reporter, msg, reported_msg):
     super().__init__(title=f'報告理由記入用modal')
     self.reporter = reporter
     self.msg = msg
+    self.reported_msg = reported_msg
 
     self.report_reason = discord.ui.TextInput(
       label="報告の理由(不快に思った点など)を記入してください",
@@ -219,7 +220,28 @@ class ReportReasonModal(discord.ui.Modal):
     if self.reporter:
       await interaction.response.send_message("報告が完了しました。\nありがとうございました。\n\nサーバー管理者から直接話を伺うことがあります。", ephemeral=True)
     else:
-      await interaction.response.send_message("報告が完了しました。\nありがとうございました。\n\nサーバー管理者からこのbotを通じて返信が届くことがあります。\n### このbotからDMを受け取れるように設定しておいてください。", ephemeral=True)
+      await interaction.response.send_message("送信されました。\nこのbotのDMをご確認ください。", ephemeral=True)
+
+      # 匿名Report完了確認membedを定義
+
+      embed_1=discord.Embed(
+        url=self.msg.jump_url,
+        description=f"## 匿名Report\n### Reportしたメッセージ\n　{self.reported_msg.jump_url}\n### Report内容\n{self.report_reason.value}",
+        color=0xF4BD44,
+      )
+      embed_1.set_footer(
+          text=f"匿名Report | {interaction.guild.name}",
+          icon_url=interaction.guild.icon.replace(format='png').url if interaction.guild.icon else None,
+        )
+
+      embed_2=discord.Embed(
+        description="- ファイルを添付する場合や追加で何か送信する場合は、**このメッセージに返信**する形で送信してください。\n"
+                    "- あなたの情報(ユーザー名, idなど)が外部に漏れることは一切ありません。",
+        color=0xF4BD44,
+      )
+      await interaction.user.send(embeds=[embed_1, embed_2])
+
+
 
 async def setup(bot):
   await bot.add_cog(Report(bot))

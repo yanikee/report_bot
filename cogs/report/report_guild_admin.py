@@ -9,7 +9,7 @@ import datetime
 
 
 
-class Reply(commands.Cog):
+class ReportGuildAdmin(commands.Cog):
   def __init__(self, bot: commands.Bot):
     self.bot = bot
 
@@ -21,7 +21,7 @@ class Reply(commands.Cog):
       return
 
     # privateのやつがなかった場合 -> return
-    if custom_id in ["report_reply", "report_edit_reply", "report_send"]:
+    if custom_id in ["report_create_thread", "report_edit_reply", "report_send"]:
       path = f"data/report/private_report/{interaction.guild.id}.json"
       if not os.path.exists(path):
         e = f"[ERROR[3-3-01]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\nJson file was not found"
@@ -33,7 +33,7 @@ class Reply(commands.Cog):
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 
-    if custom_id == "report_reply":
+    if custom_id == "report_create_thread":
       # buttonの削除
       await interaction.message.edit(view=None)
 
@@ -52,7 +52,7 @@ class Reply(commands.Cog):
         await f.write(contents)
 
       # thread作成, 送信
-      thread = await interaction.message.create_thread(name=f"report_reply-{str(report_dict['reply_num']).zfill(4)}")
+      thread = await interaction.message.create_thread(name=f"private_report-{str(report_dict['reply_num']).zfill(4)}")
 
       embed=discord.Embed(
         title="返信内容",
@@ -226,4 +226,4 @@ class EditReplyModal(discord.ui.Modal):
 
 
 async def setup(bot):
-  await bot.add_cog(Reply(bot))
+  await bot.add_cog(ReportGuildAdmin(bot))
