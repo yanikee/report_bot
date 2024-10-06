@@ -39,10 +39,16 @@ class ReplyToReply(commands.Cog):
 
     # 匿名報告のembedじゃなかった場合 -> return
     if msg.embeds[0].footer:
-      if not "匿名報告 |" in msg.embeds[0].footer.text:
+      if "匿名報告 |" in msg.embeds[0].footer.text:
+        pass
+      elif "匿名Report |" in msg.embeds[0].footer.text:
+        pass
+      else:
         return
     else:
-      if not "------------返信内容------------" in msg.embeds[0].description:
+      if "------------返信内容------------" in msg.embeds[0].description:
+        pass
+      else:
         return
 
     # guild_block
@@ -58,8 +64,9 @@ class ReplyToReply(commands.Cog):
       return
 
     # threadを取得
+    url_splited = msg.embeds[0].url.split('/')
     try:
-      cha = await self.bot.fetch_channel(int(msg.embeds[0].url.split('/')[-1]))
+      cha = await self.bot.fetch_channel(int(url_splited[-1]))
     except discord.errors.Forbidden:
       embed = error.generate(
         code="3-2-01",
@@ -67,13 +74,37 @@ class ReplyToReply(commands.Cog):
       )
       await message.channel.send(embed=embed)
       return
+    # threadがなかったら作成
     except discord.errors.NotFound:
-      embed = error.generate(
-        code="3-2-02",
-        description="匿名Report送信チャンネルが削除されています。\n**サーバー管理者さんに、`/settings`コマンドをもう一度実行するように伝えてください。**",
-      )
-      await message.channel.send(embed=embed)
-      return
+      try:
+        report_cha = await self.bot.fetch_channel(int(url_splited[-2]))
+      except discord.errors.NotFound:
+        embed = error.generate(
+          code="3-2-02",
+          description="匿名Report送信チャンネルが削除されています。\n**サーバー管理者さんに、`/settings`コマンドをもう一度実行するように伝えてください。**",
+        )
+        await message.channel.send(embed=embed)
+        return
+      else:
+        msg = await report_cha.fetch_message(int(url_splited[-1]))
+        # reply_numを定義
+        path = f"data/report/guilds/{msg.guild.id}.json"
+        async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
+          contents = await f.read()
+        report_dict = json.loads(contents)
+        # 存在しなかった場合は作る
+        if not report_dict.get("reply_num"):
+          report_dict["reply_num"] = 0
+        report_dict["reply_num"] += 1
+        # 保存
+        async with aiofiles.open(path, mode="w") as f:
+          contents = json.dumps(report_dict, indent=2, ensure_ascii=False)
+          await f.write(contents)
+
+        # thread作成, 送信
+        await msg.edit(view=None)
+        cha = await msg.create_thread(name=f"private_report-{str(report_dict['reply_num']).zfill(4)}")
+
     except Exception as e:
       e = f"\n[ERROR[3-2-03]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n{e}\n"
       print(e)
