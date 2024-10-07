@@ -62,7 +62,7 @@ class PrivateTicketModal(discord.ui.Modal):
     self.bot = bot
 
     self.first_pticket = discord.ui.TextInput(
-      label="ticket内容を入力",
+      label="Ticket内容を入力",
       style=discord.TextStyle.long,
       default=None,
       placeholder="（ちなみに）\n後ほどbotのDMに、添付ファイルなどを送信できます。",
@@ -190,7 +190,7 @@ class PrivateTicketModal(discord.ui.Modal):
       return
 
     # 完了msgを送信
-    await interaction.followup.send("送信されました。\nこのbotのDMをご確認ください。", ephemeral=True)
+    await interaction.followup.send("サーバー管理者に匿名Ticketが送信されました。\nDMにてサーバー管理者からの返信をお待ちください。", ephemeral=True)
 
 
 

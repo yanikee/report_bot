@@ -209,7 +209,7 @@ class ReportReasonModal(discord.ui.Modal):
     if self.reporter:
       await interaction.response.send_message("報告が完了しました。\nありがとうございました。\n\nサーバー管理者から直接話を伺うことがあります。", ephemeral=True)
     else:
-      await interaction.response.send_message("送信されました。\nこのbotのDMをご確認ください。", ephemeral=True)
+      await interaction.response.send_message("サーバー管理者に匿名Reportが送信されました。\nDMにてサーバー管理者からの返信をお待ちください。", ephemeral=True)
 
       # 匿名Report完了確認membedを定義
 
