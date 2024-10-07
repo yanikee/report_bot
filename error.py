@@ -4,16 +4,16 @@ import json
 
 
 
-async def generate(cog_type:str, code:str, description:str, la:str="ja"):
+async def generate(code:str, la:str="ja"):
   async with aiofiles.open("error.json", encoding='utf-8', mode="r") as f:
     contents = await f.read()
   error = json.loads(contents)
 
-  if cog_type == "manage":
+  if code[0] == "1":
     error_dict = error["manage"]
-  elif cog_type == "ticket":
+  elif code[1] == "2":
     error_dict = error["ticket"]
-  elif cog_type == "report":
+  elif code[2] == "3":
     error_dict = error["report"]
   else:
     return 0
