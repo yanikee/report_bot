@@ -24,7 +24,7 @@ class PticketReply(commands.Cog):
     if custom_id in ["pticket_edit_reply", "pticket_send", "pticket_add_reply"]:
       path = f"data/pticket/pticket/{interaction.guild.id}.json"
       if not os.path.exists(path):
-        e = f"[ERROR[2-3-01]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\nJson file was not found"
+        e = f"[ERROR[2-1-01]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\nJson file was not found"
         print(e)
         embed=await error.generate(code="2-1-01")
         await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -45,7 +45,7 @@ class PticketReply(commands.Cog):
       try:
         user_id = pticket_dict[str(interaction.channel.id)]
       except KeyError:
-        e = f"\n[ERROR[2-3-02]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{interaction.channel.id}\nPticket user was not found\n"
+        e = f"\n[ERROR[2-1-02]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{interaction.channel.id}\nPticket user was not found\n"
         print(e)
         embed=await error.generate(code="2-1-02")
         await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -82,7 +82,7 @@ class PticketReply(commands.Cog):
         await interaction.response.send_message(embed=embed)
         return
       except Exception as e:
-        e = f"\n[ERROR[2-3-05]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
+        e = f"\n[ERROR[2-1-05]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
         print(e)
         embed=await error.generate(code="2-1-05")
         await interaction.response.send_message(embed=embed)

@@ -95,7 +95,7 @@ class PticketReplyToReply(commands.Cog):
       await message.channel.send(embed=embed)
       return
     except Exception as e:
-      e = f"\n[ERROR[2-2-05]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n- GUILD_ID:{cha.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
+      e = f"\n[ERROR[2-3-03]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n- GUILD_ID:{cha.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
       print(e)
       embed = await error.generate(code="2-3-03")
       await message.channel.send(embed=embed)
@@ -134,7 +134,7 @@ class PticketReplyToReply(commands.Cog):
     try:
       await cha.send(embed=embed, view=view)
     except Exception as e:
-      e = f"\n[ERROR[2-2-06]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n- GUILD_ID:{cha.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
+      e = f"\n[ERROR[2-3-04]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n- GUILD_ID:{cha.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
       print(e)
       embed = await error.generate(code="2-3-04")
       await message.channel.send(embed=embed)

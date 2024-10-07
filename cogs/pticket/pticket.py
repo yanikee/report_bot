@@ -85,7 +85,14 @@ class PrivateTicketModal(discord.ui.Modal):
     async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
       contents = await f.read()
     ticket_dict = json.loads(contents)
-    cha = interaction.guild.get_channel(ticket_dict["report_send_channel"])
+    cha = interaction.guild.get_channel(ticket_dict.get("report_send_channel"))
+
+    # 匿名TicketチャンネルがNoneだった場合->return
+    if not cha:
+      embed=await error.generate(code="2-4-03")
+      await interaction.followup.send(f"### あなたの匿名Ticket内容\n　{self.first_pticket.value}", embed=embed, ephemeral=True)
+      return
+
     if "mention_role" in ticket_dict:
       mention_role_id = ticket_dict["mention_role"]
     else:
@@ -99,15 +106,11 @@ class PrivateTicketModal(discord.ui.Modal):
 
     try:
       msg = await cha.send(msg, embed=embed)
-    except discord.errors.Forbidden:
-      embed=await error.generate(code="2-4-03", additional_desc=f"**### ------------匿名Ticket------------\n{self.first_pticket.value}")
-      await interaction.followup.send(embed=embed, ephemeral=True)
-      return
     except Exception as e:
-      e = f"\n[ERROR[2-5-04]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
+      e = f"\n[ERROR[2-4-04]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
       print(e)
-      embed=await error.generate(code="2-4-04", additional_desc=f"**### ------------匿名Ticket------------\n{self.first_pticket.value}")
-      await interaction.followup.send(embed=embed, ephemeral=True)
+      embed=await error.generate(code="2-4-04")
+      await interaction.followup.send(f"### あなたの匿名Ticket内容\n　{self.first_pticket.value}", embed=embed, ephemeral=True)
       return
 
     # pticket送信者idを保存{msg.id: user.id}
@@ -180,7 +183,7 @@ class PrivateTicketModal(discord.ui.Modal):
     try:
       await interaction.user.send(embeds=[embed_1, embed_2])
     except Exception as e:
-      e = f"\n[ERROR[2-5-05]]{datetime.datetime.now()}\n- USER_ID:{interaction.user.id}\n- GUILD_ID:{interaction.guild.id}\- CHANNEL_ID:{interaction.channel.id}\n{e}\n"
+      e = f"\n[ERROR[2-4-05]]{datetime.datetime.now()}\n- USER_ID:{interaction.user.id}\n- GUILD_ID:{interaction.guild.id}\- CHANNEL_ID:{interaction.channel.id}\n{e}\n"
       print(e)
       embed=await error.generate(code="2-4-05")
       await interaction.followup.send(embed=embed, ephemeral=True)

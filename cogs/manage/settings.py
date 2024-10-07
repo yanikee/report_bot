@@ -18,10 +18,7 @@ class Settings(commands.Cog):
   @discord.app_commands.guild_only()
   async def settings(self, interaction:discord.Interaction):
     if not interaction.channel.permissions_for(interaction.user).manage_channels:
-      embed = await error.generate(
-        code="1-4-01",
-        description=f"権限不足です。\n`チャンネル管理`の権限が必要です。",
-      )
+      embed = await error.generate(code="1-4-01")
       return await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
@@ -359,7 +356,7 @@ class Settings(commands.Cog):
         if interaction.data["values"]:
           channel = interaction.guild.get_channel(int(interaction.data["values"][0]))
           if not channel.permissions_for(interaction.user).manage_channels:
-            embed=await error.generate(code="1-2-03", additional_desc=channel.mention)
+            embed=await error.generate(code="1-4-03", additional_desc=channel.mention)
 
             await interaction.response.send_message(embed=embed, ephemeral=True)
             if "report" in custom_id:
@@ -474,7 +471,7 @@ class Settings(commands.Cog):
           cannot = True
 
       if cannot:
-        embed=await error.generate(code="1-2-04", additional_desc=f"{channel.mention}\n\n- " + "\n- ".join(permission_l))
+        embed=await error.generate(code="1-4-04", additional_desc=f"{channel.mention}\n\n- " + "\n- ".join(permission_l))
         return channel, embed
       else:
         return channel, None

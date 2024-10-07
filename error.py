@@ -5,7 +5,7 @@ import json
 
 
 async def generate(code:str, additional_desc:str=None, la:str="ja"):
-  async with aiofiles.open("error.json", encoding='utf-8', mode="r") as f:
+  async with aiofiles.open("messages/error.json", encoding='utf-8', mode="r") as f:
     contents = await f.read()
   error = json.loads(contents)
 
