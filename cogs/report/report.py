@@ -94,7 +94,7 @@ class ReportButton(discord.ui.View):
         await interaction.user.send("テストメッセージ", silent=True, delete_after=0.1)
       except Exception:
         embed=error.generate(
-            code="2-5-02",
+            code="3-3-03",
             description="DMが送信できませんでした。\n**このbotからDMを受け取れるように設定してください！**\n（テストメッセージをbotに送信するなど）",
           )
         await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -140,7 +140,7 @@ class ReportButton(discord.ui.View):
       msg = await cha.send(f"{msg}\n参照元：{message.jump_url}", embeds=message.embeds)
     except discord.errors.Forbidden:
       embed=error.generate(
-        code="3-4-03",
+        code="3-4-04",
         description=f"匿名Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/settings`コマンドをもう一度実行するように伝えてください。",
       )
       await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -149,7 +149,7 @@ class ReportButton(discord.ui.View):
       e = f"\n[ERROR[3-4-04]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
       print(e)
       embed=error.generate(
-        code="3-4-04",
+        code="3-4-05",
         description=f"不明なエラーが発生しました。\nサポートサーバーにお問い合わせください。",
       )
       await interaction.response.send_message(embed=embed, ephemeral=True)

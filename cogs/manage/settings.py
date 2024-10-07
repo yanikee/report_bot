@@ -19,7 +19,7 @@ class Settings(commands.Cog):
   async def settings(self, interaction:discord.Interaction):
     if not interaction.channel.permissions_for(interaction.user).manage_channels:
       embed = error.generate(
-        code="1-5-01",
+        code="1-4-01",
         description=f"権限不足です。\n`チャンネル管理`の権限が必要です。",
       )
       return await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -341,7 +341,7 @@ class Settings(commands.Cog):
         if channel:
           if not channel.permissions_for(interaction.user).manage_channels:
             embed=error.generate(
-              code="1-5-05",
+              code="1-4-02",
               description=f"あなたに{channel.mention}の`チャンネル管理`の権限が必要です。"
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -363,7 +363,7 @@ class Settings(commands.Cog):
           channel = interaction.guild.get_channel(int(interaction.data["values"][0]))
           if not channel.permissions_for(interaction.user).manage_channels:
             embed=error.generate(
-              code="1-5-05",
+              code="1-2-03",
               description=f"あなたに{channel.mention}の`チャンネル管理`の権限が必要です。"
             )
 
@@ -481,7 +481,7 @@ class Settings(commands.Cog):
 
       if cannot:
         embed=error.generate(
-          code="1-5-02",
+          code="1-2-04",
           description=f"{channel.mention}にて、:x:の付いた権限が不足しています。チャンネル設定から権限を追加するか、別のチャンネルを選択してください。"
                       "\n\n- " + "\n- ".join(permission_l)
         )

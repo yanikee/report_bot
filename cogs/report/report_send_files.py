@@ -29,7 +29,7 @@ class ReportSendFiles(commands.Cog):
         e = f"[ERROR[3-5-01]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\nJson file was not found"
         print(e)
         embed=error.generate(
-          code="3-5-01",
+          code="3-2-01",
           description="サーバーデータが存在しませんでした。\nサポートサーバーまでお問い合わせください。"
         )
         await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -98,7 +98,7 @@ class ReportSendFiles(commands.Cog):
         e = f"\n[ERROR[3-5-02]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{interaction.channel.id}\nReporter_id was not found\n"
         print(e)
         embed=error.generate(
-          code="3-5-02",
+          code="3-2-02",
           description="ユーザーデータが存在しませんでした。\nサポートサーバーまでお問い合わせください。"
         )
         await interaction.followup.send(embed=embed)
@@ -151,7 +151,7 @@ class ReportSendFiles(commands.Cog):
         await user.send(embed=embed, files=files)
       except discord.errors.Forbidden:
         embed=error.generate(
-          code="3-5-05",
+          code="3-2-05",
           description="匿名Report送信者がDMを受け付けてないため、送信されませんでした。",
         )
         await interaction.followup.send(embed=embed)

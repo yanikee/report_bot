@@ -172,7 +172,7 @@ class Block(commands.Cog):
 
     if not report_dict and not pticket_dict:
       embed = error.generate(
-        code="1-1-02",
+        code="1-1-04",
         description="このスレッドは匿名Report, 匿名Ticketのスレッドではありません。",
       )
       await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -189,7 +189,7 @@ class Block(commands.Cog):
       case_type = "Ticket"
     else:
       embed = error.generate(
-        code="1-1-03",
+        code="1-1-05",
         description="このスレッドは匿名Report, 匿名Ticketのスレッドではありません。",
       )
       await interaction.response.send_message(embed=embed, ephemeral=True)

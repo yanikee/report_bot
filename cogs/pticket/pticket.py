@@ -29,7 +29,7 @@ class PrivateTicket(commands.Cog):
     path = f"data/pticket/guilds/{interaction.guild.id}.json"
     if not os.path.exists(path):
       embed=error.generate(
-        code="2-5-01",
+        code="2-4-01",
         description="サーバー管理者に`/settings`コマンドを実行するよう伝えてください。",
       )
       await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -52,7 +52,7 @@ class PrivateTicket(commands.Cog):
       await interaction.user.send("テストメッセージ", silent=True, delete_after=0.1)
     except Exception:
       embed=error.generate(
-          code="2-5-02",
+          code="2-4-02",
           description="DMが送信できませんでした。\n**このbotからDMを受け取れるように設定してください！**\n（テストメッセージをbotに送信するなど）",
         )
       await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -107,7 +107,7 @@ class PrivateTicketModal(discord.ui.Modal):
       msg = await cha.send(msg, embed=embed)
     except discord.errors.Forbidden:
       embed=error.generate(
-        code="2-5-03",
+        code="2-4-03",
         description=f"匿名Ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/settings`コマンドをもう一度実行するように伝えてください。**\n\n### ------------匿名Ticket------------\n{self.first_pticket.value}",
         support=False,
       )
@@ -117,7 +117,7 @@ class PrivateTicketModal(discord.ui.Modal):
       e = f"\n[ERROR[2-5-04]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
       print(e)
       embed=error.generate(
-        code="2-5-04",
+        code="2-4-04",
         description=f"不明なエラーが発生しました。\nサポートサーバーにお問い合わせください。\n\n### ------------匿名Ticket------------\n{self.first_pticket.value}",
         support=False
       )
@@ -197,7 +197,7 @@ class PrivateTicketModal(discord.ui.Modal):
       e = f"\n[ERROR[2-5-05]]{datetime.datetime.now()}\n- USER_ID:{interaction.user.id}\n- GUILD_ID:{interaction.guild.id}\- CHANNEL_ID:{interaction.channel.id}\n{e}\n"
       print(e)
       embed=error.generate(
-        code="2-5-05",
+        code="2-4-05",
         description="不明なエラーが発生しました。サポートサーバーまでお問い合わせください。"
       )
       await interaction.followup.send(embed=embed, ephemeral=True)

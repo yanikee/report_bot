@@ -29,7 +29,7 @@ class PticketSendFiles(commands.Cog):
         e = f"[ERROR[2-4-01]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\nJson file was not found"
         print(e)
         embed=error.generate(
-          code="2-4-01",
+          code="2-2-01",
           description="サーバーデータが存在しませんでした。\nサポートサーバーまでお問い合わせください。"
         )
         await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -98,7 +98,7 @@ class PticketSendFiles(commands.Cog):
         e = f"\n[ERROR[2-4-02]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{interaction.channel.id}\nPticket user_id was not found\n"
         print(e)
         embed=error.generate(
-          code="2-4-02",
+          code="2-2-02",
           description="ユーザーデータが存在しませんでした。\nサポートサーバーまでお問い合わせください。"
         )
         await interaction.followup.send(embed=embed, ephemeral=True)
@@ -110,7 +110,7 @@ class PticketSendFiles(commands.Cog):
         user = await interaction.guild.fetch_member(user_id)
       except Exception:
         embed=error.generate(
-          code="2-4-03",
+          code="2-2-03",
           description="匿名Ticketのユーザーを取得することができませんでした。\nユーザーは既にサーバーを抜けているかも...？"
         )
         await interaction.followup.send(embed=embed, ephemeral=True)
@@ -138,7 +138,7 @@ class PticketSendFiles(commands.Cog):
         e = f"\n[ERROR[2-4-04]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
         print(e)
         embed=error.generate(
-          code="2-4-04",
+          code="2-2-04",
           description="ファイル変換時に、不明なエラーが発生しました。\nサポートサーバーまでお問い合わせください。",
         )
         await interaction.followup.send(embed=embed, ephemeral=True)
@@ -151,7 +151,7 @@ class PticketSendFiles(commands.Cog):
         await user.send(embed=embed, files=files)
       except discord.errors.Forbidden:
         embed=error.generate(
-          code="2-4-05",
+          code="2-2-05",
           description="匿名Ticket送信者がDMを受け付けてないため、送信されませんでした。",
         )
         await interaction.followup.send(embed=embed)
@@ -161,7 +161,7 @@ class PticketSendFiles(commands.Cog):
         e = f"\n[ERROR[2-4-06]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
         print(e)
         embed=error.generate(
-          code="2-4-06",
+          code="2-2-06",
           description="不明なエラーが発生しました。サポートサーバーまでお問い合わせください。",
         )
         await interaction.followup.send(embed=embed)
