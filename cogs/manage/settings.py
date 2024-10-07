@@ -18,7 +18,7 @@ class Settings(commands.Cog):
   @discord.app_commands.guild_only()
   async def settings(self, interaction:discord.Interaction):
     if not interaction.channel.permissions_for(interaction.user).manage_channels:
-      embed = error.generate(
+      embed = await error.generate(
         code="1-4-01",
         description=f"権限不足です。\n`チャンネル管理`の権限が必要です。",
       )
@@ -332,7 +332,7 @@ class Settings(commands.Cog):
 
     # Ticket作成用ボタンの場合
     elif custom_id == "settings_select_pticket_button_channel":
-      channel, error_embed = self.check_permission(interaction, button_channel=True)
+      channel, error_embed = await self.check_permission(interaction, button_channel=True)
       if error_embed:
         await interaction.response.send_message(embed=error_embed, ephemeral=True)
         await self.settings_panel_config(interaction, error=True, value=interaction.message.embeds[1].description)
@@ -340,10 +340,7 @@ class Settings(commands.Cog):
       else:
         if channel:
           if not channel.permissions_for(interaction.user).manage_channels:
-            embed=error.generate(
-              code="1-4-02",
-              description=f"あなたに{channel.mention}の`チャンネル管理`の権限が必要です。"
-            )
+            embed=await error.generate(code="1-4-02", additional_desc=channel.mention)
             await interaction.response.send_message(embed=embed, ephemeral=True)
             await self.settings_panel_config(interaction, error=True, value=interaction.message.embeds[1].description)
             return
@@ -362,10 +359,7 @@ class Settings(commands.Cog):
         if interaction.data["values"]:
           channel = interaction.guild.get_channel(int(interaction.data["values"][0]))
           if not channel.permissions_for(interaction.user).manage_channels:
-            embed=error.generate(
-              code="1-2-03",
-              description=f"あなたに{channel.mention}の`チャンネル管理`の権限が必要です。"
-            )
+            embed=await error.generate(code="1-2-03", additional_desc=channel.mention)
 
             await interaction.response.send_message(embed=embed, ephemeral=True)
             if "report" in custom_id:
@@ -381,7 +375,7 @@ class Settings(commands.Cog):
 
         # Report送信チャンネル設定の場合
         if custom_id == "settings_select_report_channel":
-          channel, error_embed = self.check_permission(interaction)
+          channel, error_embed = await self.check_permission(interaction)
           if error_embed:
             await interaction.response.send_message(embed=error_embed, ephemeral=True)
             await self.settings_page_2(interaction, error=True)
@@ -401,7 +395,7 @@ class Settings(commands.Cog):
 
         # Ticket送信チャンネル設定の場合
         if custom_id == "settings_select_pticket_channel":
-          channel, error_embed = self.check_permission(interaction)
+          channel, error_embed = await self.check_permission(interaction)
           if error_embed:
             await interaction.response.send_message(embed=error_embed, ephemeral=True)
             await self.settings_page_3(interaction, error=True)
@@ -451,7 +445,7 @@ class Settings(commands.Cog):
 
 
   # 閲覧権限確認
-  def check_permission(self, interaction:discord.Interaction, button_channel:bool=False):
+  async def check_permission(self, interaction:discord.Interaction, button_channel:bool=False):
     if interaction.data["values"]:
       channel = interaction.guild.get_channel(int(interaction.data["values"][0]))
 
@@ -480,11 +474,7 @@ class Settings(commands.Cog):
           cannot = True
 
       if cannot:
-        embed=error.generate(
-          code="1-2-04",
-          description=f"{channel.mention}にて、:x:の付いた権限が不足しています。チャンネル設定から権限を追加するか、別のチャンネルを選択してください。"
-                      "\n\n- " + "\n- ".join(permission_l)
-        )
+        embed=await error.generate(code="1-2-04", additional_desc=f"{channel.mention}\n\n- " + "\n- ".join(permission_l))
         return channel, embed
       else:
         return channel, None

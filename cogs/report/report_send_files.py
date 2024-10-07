@@ -28,10 +28,7 @@ class ReportSendFiles(commands.Cog):
       if not os.path.exists(path):
         e = f"[ERROR[3-5-01]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\nJson file was not found"
         print(e)
-        embed=error.generate(
-          code="3-2-01",
-          description="サーバーデータが存在しませんでした。\nサポートサーバーまでお問い合わせください。"
-        )
+        embed=await error.generate(code="3-2-01")
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 
@@ -97,10 +94,7 @@ class ReportSendFiles(commands.Cog):
       except KeyError:
         e = f"\n[ERROR[3-5-02]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{interaction.channel.id}\nReporter_id was not found\n"
         print(e)
-        embed=error.generate(
-          code="3-2-02",
-          description="ユーザーデータが存在しませんでした。\nサポートサーバーまでお問い合わせください。"
-        )
+        embed=await error.generate(code="3-2-02")
         await interaction.followup.send(embed=embed)
         await interaction.message.delete()
         await self.add_reply(interaction)
@@ -109,10 +103,7 @@ class ReportSendFiles(commands.Cog):
       try:
         user = await interaction.guild.fetch_member(user_id)
       except Exception:
-        embed=error.generate(
-          code="3-5-03",
-          description="匿名Reportのユーザーを取得することができませんでした。\nユーザーは既にサーバーを抜けているかも...？"
-        )
+        embed=await error.generate(code="3-5-03")
         await interaction.followup.send(embed=embed, ephemeral=True)
         await interaction.message.delete()
         await self.add_reply(interaction)
@@ -137,10 +128,7 @@ class ReportSendFiles(commands.Cog):
       except Exception as e:
         e = f"\n[ERROR[3-5-04]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
         print(e)
-        embed=error.generate(
-          code="3-5-04",
-          description="ファイル変換時に、不明なエラーが発生しました。\nサポートサーバーまでお問い合わせください。",
-        )
+        embed=await error.generate(code="3-5-04")
         await interaction.followup.send(embed=embed, ephemeral=True)
         await interaction.message.delete()
         await self.add_reply(interaction)
@@ -150,20 +138,14 @@ class ReportSendFiles(commands.Cog):
       try:
         await user.send(embed=embed, files=files)
       except discord.errors.Forbidden:
-        embed=error.generate(
-          code="3-2-05",
-          description="匿名Report送信者がDMを受け付けてないため、送信されませんでした。",
-        )
+        embed=await error.generate(code="3-2-05")
         await interaction.followup.send(embed=embed)
         await interaction.message.delete()
         return
       except Exception as e:
         e = f"\n[ERROR[3-5-06]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
         print(e)
-        embed=error.generate(
-          code="3-5-06",
-          description="不明なエラーが発生しました。サポートサーバーまでお問い合わせください。",
-        )
+        embed=await error.generate(code="3-5-06")
         await interaction.followup.send(embed=embed)
         await interaction.message.delete()
         await self.add_reply(interaction)

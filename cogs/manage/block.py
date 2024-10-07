@@ -23,10 +23,7 @@ class Block(commands.Cog):
   @app_commands.describe(block_type="normal: 報告者はこのスレッドにのみ返信できなくなる / server: 報告者はこのサーバー内の全ての機能が利用できなくなる")
   async def block(self, interaction:discord.Interaction, block_type:str):
     if interaction.channel.type != discord.ChannelType.public_thread:
-      embed = error.generate(
-        code="1-1-01",
-        description="匿名Report, 匿名Ticketのスレッド内で実行してください。",
-      )
+      embed = await error.generate(code="1-1-01")
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
@@ -58,10 +55,7 @@ class Block(commands.Cog):
       pticket_dict = ""
 
     if not report_dict and not pticket_dict:
-      embed = error.generate(
-        code="1-2-02",
-        description="このスレッドは匿名Report, 匿名Ticketのスレッドではありません。",
-      )
+      embed = await error.generate(code="1-2-02")
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
@@ -74,10 +68,7 @@ class Block(commands.Cog):
       case_type = "Ticket"
       data_dict = pticket_dict
     else:
-      embed = error.generate(
-        code="1-2-03",
-        description="このスレッドは匿名Report, 匿名Ticketのスレッドではありません。",
-      )
+      embed = await error.generate(code="1-2-03")
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
@@ -171,10 +162,7 @@ class Block(commands.Cog):
       pticket_dict = ""
 
     if not report_dict and not pticket_dict:
-      embed = error.generate(
-        code="1-1-04",
-        description="このスレッドは匿名Report, 匿名Ticketのスレッドではありません。",
-      )
+      embed = await error.generate(code="1-1-04")
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
@@ -188,10 +176,7 @@ class Block(commands.Cog):
       blocked_path = f"data/pticket/blocked/{interaction.guild.id}.json"
       case_type = "Ticket"
     else:
-      embed = error.generate(
-        code="1-1-05",
-        description="このスレッドは匿名Report, 匿名Ticketのスレッドではありません。",
-      )
+      embed = await error.generate(code="1-1-05")
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 

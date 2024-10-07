@@ -28,10 +28,7 @@ class PrivateTicket(commands.Cog):
 
     path = f"data/pticket/guilds/{interaction.guild.id}.json"
     if not os.path.exists(path):
-      embed=error.generate(
-        code="2-4-01",
-        description="サーバー管理者に`/settings`コマンドを実行するよう伝えてください。",
-      )
+      embed=await error.generate(code="2-4-01")
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
@@ -51,10 +48,7 @@ class PrivateTicket(commands.Cog):
     try:
       await interaction.user.send("テストメッセージ", silent=True, delete_after=0.1)
     except Exception:
-      embed=error.generate(
-          code="2-4-02",
-          description="DMが送信できませんでした。\n**このbotからDMを受け取れるように設定してください！**\n（テストメッセージをbotに送信するなど）",
-        )
+      embed=await error.generate(code="2-4-02")
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
@@ -106,21 +100,13 @@ class PrivateTicketModal(discord.ui.Modal):
     try:
       msg = await cha.send(msg, embed=embed)
     except discord.errors.Forbidden:
-      embed=error.generate(
-        code="2-4-03",
-        description=f"匿名Ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/settings`コマンドをもう一度実行するように伝えてください。**\n\n### ------------匿名Ticket------------\n{self.first_pticket.value}",
-        support=False,
-      )
+      embed=await error.generate(code="2-4-03", additional_desc=f"**### ------------匿名Ticket------------\n{self.first_pticket.value}")
       await interaction.followup.send(embed=embed, ephemeral=True)
       return
     except Exception as e:
       e = f"\n[ERROR[2-5-04]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
       print(e)
-      embed=error.generate(
-        code="2-4-04",
-        description=f"不明なエラーが発生しました。\nサポートサーバーにお問い合わせください。\n\n### ------------匿名Ticket------------\n{self.first_pticket.value}",
-        support=False
-      )
+      embed=await error.generate(code="2-4-04", additional_desc=f"**### ------------匿名Ticket------------\n{self.first_pticket.value}")
       await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
@@ -196,10 +182,7 @@ class PrivateTicketModal(discord.ui.Modal):
     except Exception as e:
       e = f"\n[ERROR[2-5-05]]{datetime.datetime.now()}\n- USER_ID:{interaction.user.id}\n- GUILD_ID:{interaction.guild.id}\- CHANNEL_ID:{interaction.channel.id}\n{e}\n"
       print(e)
-      embed=error.generate(
-        code="2-4-05",
-        description="不明なエラーが発生しました。サポートサーバーまでお問い合わせください。"
-      )
+      embed=await error.generate(code="2-4-05")
       await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
