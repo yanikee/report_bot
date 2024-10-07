@@ -24,12 +24,9 @@ class ReportGuildAdmin(commands.Cog):
     if custom_id in ["report_create_thread", "report_edit_reply", "report_send"]:
       path = f"data/report/private_report/{interaction.guild.id}.json"
       if not os.path.exists(path):
-        e = f"[ERROR[3-3-01]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\nJson file was not found"
+        e = f"[ERROR[3-1-01]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\nJson file was not found"
         print(e)
-        embed=error.generate(
-          code="3-3-01",
-          description="サーバーデータが存在しませんでした。\nサポートサーバーまでお問い合わせください。"
-        )
+        embed=await error.generate(code="3-1-01")
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 
@@ -83,26 +80,20 @@ class ReportGuildAdmin(commands.Cog):
       async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
         contents = await f.read()
       private_dict = json.loads(contents)
+      reporter_id = private_dict.get(str(interaction.channel.id))
 
-      try:
-        reporter_id = private_dict[str(interaction.channel.id)]
-      except KeyError:
-        e = f"\n[ERROR[3-3-02]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{interaction.channel.id}\nReporter_id was not found\n"
+      # reporter_idがNoneの場合->return
+      if not reporter_id:
+        e = f"\n[ERROR[3-1-02]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{interaction.channel.id}\nReporter_id was not found\n"
         print(e)
-        embed=error.generate(
-          code="3-3-02",
-          description="ユーザーデータが存在しませんでした。\nサポートサーバーまでお問い合わせください。"
-        )
+        embed=await error.generate(code="3-1-02")
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 
       try:
         reporter = await interaction.guild.fetch_member(reporter_id)
       except Exception:
-        embed=error.generate(
-          code="3-3-03",
-          description="匿名Reportのユーザーを取得することができませんでした。\nユーザーは既にサーバーを抜けているかも...？"
-        )
+        embed=await error.generate(code="3-1-03")
         await interaction.response.send_message(embed=embed)
         return
 
@@ -124,19 +115,13 @@ class ReportGuildAdmin(commands.Cog):
       try:
         await reporter.send(embed=embed)
       except discord.errors.Forbidden:
-        embed=error.generate(
-          code="3-3-04",
-          description="匿名Ticket送信者がDMを受け付けてないため、送信されませんでした。"
-        )
+        embed=await error.generate(code="3-1-04")
         await interaction.response.send_message(embed=embed)
         return
       except Exception as e:
-        e = f"\n[ERROR[3-3-05]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
+        e = f"\n[ERROR[3-1-05]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
         print(e)
-        embed=error.generate(
-          code="3-3-05",
-          description="不明なエラーが発生しました。\nサポートサーバーまでお問い合わせください。"
-        )
+        embed=await error.generate(code="3-1-05")
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 

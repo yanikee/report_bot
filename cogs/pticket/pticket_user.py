@@ -62,10 +62,7 @@ class PticketReplyToReply(commands.Cog):
     # threadを取得
     cha = self.bot.get_channel(int(msg.embeds[0].url.split('/')[-1]))
     if not cha:
-      embed = error.generate(
-        code="2-2-01",
-        description="匿名Ticket送信チャンネルでの権限が不足しているか、匿名Ticketチャンネルが削除されています。\n**サーバー管理者さんに、`/settings`コマンドをもう一度実行するように伝えてください。**",
-      )
+      embed = await error.generate(code="2-3-01")
       await message.channel.send(embed=embed)
       return
 
@@ -94,19 +91,13 @@ class PticketReplyToReply(commands.Cog):
     try:
       await cha.send(embed=embed)
     except discord.errors.Forbidden:
-      embed = error.generate(
-        code="2-2-04",
-        description=f"匿名Ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/settings`コマンドをもう一度実行するように伝えてください。**",
-      )
+      embed = await error.generate(code="2-3-02")
       await message.channel.send(embed=embed)
       return
     except Exception as e:
-      e = f"\n[ERROR[2-2-05]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n- GUILD_ID:{cha.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
+      e = f"\n[ERROR[2-3-03]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n- GUILD_ID:{cha.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
       print(e)
-      embed = error.generate(
-        code="2-2-05",
-        description="返信できませんでした。\nサポートサーバーまでお問い合わせください。",
-      )
+      embed = await error.generate(code="2-3-03")
       await message.channel.send(embed=embed)
       return
 
@@ -143,12 +134,9 @@ class PticketReplyToReply(commands.Cog):
     try:
       await cha.send(embed=embed, view=view)
     except Exception as e:
-      e = f"\n[ERROR[2-2-06]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n- GUILD_ID:{cha.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
+      e = f"\n[ERROR[2-3-04]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n- GUILD_ID:{cha.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
       print(e)
-      embed = error.generate(
-        code="3-2-06",
-        description="操作が完了できませんでした。\nサポートサーバーまでお問い合わせください。",
-      )
+      embed = await error.generate(code="2-3-04")
       await message.channel.send(embed=embed)
       return
 

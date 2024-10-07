@@ -29,10 +29,7 @@ class Report(commands.Cog):
     # jsonファイルがなかった場合 -> return
     path = f"data/report/guilds/{interaction.guild.id}.json"
     if not os.path.exists(path):
-      embed=error.generate(
-        code="3-4-01",
-        description="サーバー管理者に`/settings`コマンドを実行するよう伝えてください。",
-      )
+      embed=await error.generate(code="3-4-01")
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
@@ -40,11 +37,9 @@ class Report(commands.Cog):
     async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
       contents = await f.read()
     report_dict = json.loads(contents)
-    if not "report_send_channel" in report_dict:
-      embed=error.generate(
-        code="3-4-02",
-        description="サーバー管理者に`/settings`コマンドを実行するよう伝えてください。",
-      )
+
+    if not report_dict.get("report_send_channel"):
+      embed=await error.generate(code="3-4-02")
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
@@ -82,6 +77,7 @@ class ReportButton(discord.ui.View):
     self.add_item(self.button_0)
     self.add_item(self.button_1)
 
+
   async def interaction_check(self, interaction: discord.Interaction):
     self.button_0.disabled = True
     self.button_1.disabled = True
@@ -93,10 +89,7 @@ class ReportButton(discord.ui.View):
       try:
         await interaction.user.send("テストメッセージ", silent=True, delete_after=0.1)
       except Exception:
-        embed=error.generate(
-            code="2-5-02",
-            description="DMが送信できませんでした。\n**このbotからDMを受け取れるように設定してください！**\n（テストメッセージをbotに送信するなど）",
-          )
+        embed=await error.generate(code="3-4-03")
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
       await self.do_report(interaction, self.message, None)
@@ -126,6 +119,13 @@ class ReportButton(discord.ui.View):
       contents = await f.read()
     report_dict = json.loads(contents)
     cha = interaction.guild.get_channel(report_dict["report_send_channel"])
+
+    # chaが無かった場合->return
+    if not cha:
+      embed=await error.generate(code="3-4-04")
+      await interaction.response.send_message(embed=embed, ephemeral=True)
+      return
+
     if "mention_role" in report_dict:
       mention_role_id = report_dict["mention_role"]
     else:
@@ -138,27 +138,16 @@ class ReportButton(discord.ui.View):
       msg = self.bot.user.mention
     try:
       msg = await cha.send(f"{msg}\n参照元：{message.jump_url}", embeds=message.embeds)
-    except discord.errors.Forbidden:
-      embed=error.generate(
-        code="3-4-03",
-        description=f"匿名Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/settings`コマンドをもう一度実行するように伝えてください。",
-      )
-      await interaction.response.send_message(embed=embed, ephemeral=True)
-      return
     except Exception as e:
-      e = f"\n[ERROR[3-4-04]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
+      e = f"\n[ERROR[3-4-05]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
       print(e)
-      embed=error.generate(
-        code="3-4-04",
-        description=f"不明なエラーが発生しました。\nサポートサーバーにお問い合わせください。",
-      )
+      embed=await error.generate(code="3-4-05")
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
     # report理由記入modal
     modal = ReportReasonModal(reporter, msg, message)
     await interaction.response.send_modal(modal)
-
 
 
     # 匿名reportの場合 -> 報告者idを保存{msg.id: user.id}

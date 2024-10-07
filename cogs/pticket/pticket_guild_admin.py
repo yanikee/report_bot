@@ -24,12 +24,9 @@ class PticketReply(commands.Cog):
     if custom_id in ["pticket_edit_reply", "pticket_send", "pticket_add_reply"]:
       path = f"data/pticket/pticket/{interaction.guild.id}.json"
       if not os.path.exists(path):
-        e = f"[ERROR[2-3-01]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\nJson file was not found"
+        e = f"[ERROR[2-1-01]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\nJson file was not found"
         print(e)
-        embed=error.generate(
-          code="2-3-01",
-          description="サーバーデータが存在しませんでした。\nサポートサーバーまでお問い合わせください。"
-        )
+        embed=await error.generate(code="2-1-01")
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 
@@ -48,22 +45,16 @@ class PticketReply(commands.Cog):
       try:
         user_id = pticket_dict[str(interaction.channel.id)]
       except KeyError:
-        e = f"\n[ERROR[2-3-02]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{interaction.channel.id}\nPticket user was not found\n"
+        e = f"\n[ERROR[2-1-02]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{interaction.channel.id}\nPticket user was not found\n"
         print(e)
-        embed=error.generate(
-          code="2-3-02",
-          description="ユーザーデータが存在しませんでした。\nサポートサーバーまでお問い合わせください。"
-        )
+        embed=await error.generate(code="2-1-02")
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 
       try:
         user = await interaction.guild.fetch_member(user_id)
       except Exception:
-        embed=error.generate(
-          code="2-3-03",
-          description="匿名Ticketのユーザーを取得することができませんでした。\nユーザーは既にサーバーを抜けているかも...？"
-        )
+        embed=await error.generate(code="2-1-03")
         await interaction.response.send_message(embed=embed)
         return
 
@@ -87,19 +78,13 @@ class PticketReply(commands.Cog):
       try:
         await user.send(embed=embed)
       except discord.errors.Forbidden:
-        embed=error.generate(
-          code="2-3-04",
-          description="匿名Ticket送信者がDMを受け付けてないため、送信されませんでした。"
-        )
+        embed=await error.generate(code="2-1-04")
         await interaction.response.send_message(embed=embed)
         return
       except Exception as e:
-        e = f"\n[ERROR[2-3-05]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
+        e = f"\n[ERROR[2-1-05]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
         print(e)
-        embed=error.generate(
-          code="2-3-05",
-          description="不明なエラーが発生しました。サポートサーバーまでお問い合わせください。"
-        )
+        embed=await error.generate(code="2-1-05")
         await interaction.response.send_message(embed=embed)
         return
 
