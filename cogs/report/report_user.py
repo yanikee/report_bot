@@ -39,10 +39,16 @@ class ReplyToReply(commands.Cog):
 
     # 匿名報告のembedじゃなかった場合 -> return
     if msg.embeds[0].footer:
-      if not "匿名報告 |" in msg.embeds[0].footer.text:
+      if "匿名報告 |" in msg.embeds[0].footer.text:
+        pass
+      elif "匿名Report |" in msg.embeds[0].footer.text:
+        pass
+      else:
         return
     else:
-      if not "------------返信内容------------" in msg.embeds[0].description:
+      if "------------返信内容------------" in msg.embeds[0].description:
+        pass
+      else:
         return
 
     # guild_block
@@ -58,31 +64,39 @@ class ReplyToReply(commands.Cog):
       return
 
     # threadを取得
-    try:
-      cha = await self.bot.fetch_channel(int(msg.embeds[0].url.split('/')[-1]))
-    except discord.errors.Forbidden:
-      embed = error.generate(
-        code="3-2-01",
-        description="匿名Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/settings`コマンドをもう一度実行するように伝えてください。**",
-      )
-      await message.channel.send(embed=embed)
-      return
-    except discord.errors.NotFound:
-      embed = error.generate(
-        code="3-2-02",
-        description="匿名Report送信チャンネルが削除されています。\n**サーバー管理者さんに、`/settings`コマンドをもう一度実行するように伝えてください。**",
-      )
-      await message.channel.send(embed=embed)
-      return
-    except Exception as e:
-      e = f"\n[ERROR[3-2-03]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n{e}\n"
-      print(e)
-      embed = error.generate(
-        code="3-2-03",
-        description="送信できませんでした。\nサポートサーバーまでお問い合わせください。",
-      )
-      await message.channel.send(embed=embed)
-      return
+    url_splited = msg.embeds[0].url.split('/')
+    cha = self.bot.get_channel(int(url_splited[-1]))
+    if not cha:
+      report_cha = self.bot.get_channel(int(url_splited[-2]))
+      if not report_cha:
+        embed = await error.generate(code="3-3-01")
+        await message.channel.send(embed=embed)
+        return
+      else:
+        try:
+          msg = await report_cha.fetch_message(int(url_splited[-1]))
+        except discord.errors.NotFound:
+          embed = await error.generate(code="3-3-02")
+          await message.channel.send(embed=embed)
+          return
+        else:
+          # reply_numを定義
+          path = f"data/report/guilds/{msg.guild.id}.json"
+          async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
+            contents = await f.read()
+          report_dict = json.loads(contents)
+          # 存在しなかった場合は作る
+          if not report_dict.get("reply_num"):
+            report_dict["reply_num"] = 0
+          report_dict["reply_num"] += 1
+          # 保存
+          async with aiofiles.open(path, mode="w") as f:
+            contents = json.dumps(report_dict, indent=2, ensure_ascii=False)
+            await f.write(contents)
+
+          # thread作成, 送信
+          await msg.edit(view=None)
+          cha = await msg.create_thread(name=f"private_report-{str(report_dict['reply_num']).zfill(4)}")
 
     # block判定
     path = f"data/report/blocked/{cha.guild.id}.json"
@@ -108,19 +122,13 @@ class ReplyToReply(commands.Cog):
     try:
       await cha.send(embed=embed)
     except discord.errors.Forbidden:
-      embed = error.generate(
-        code="3-2-04",
-        description=f"匿名Report送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/settings`コマンドをもう一度実行するように伝えてください。**",
-      )
+      embed = await error.generate(code="3-3-03")
       await message.channel.send(embed=embed)
       return
     except Exception as e:
-      e = f"\n[ERROR[3-2-05]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n- GUILD_ID:{cha.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
+      e = f"\n[ERROR[3-3-04]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n- GUILD_ID:{cha.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
       print(e)
-      embed = error.generate(
-        code="3-2-05",
-        description="返信できませんでした。\nサポートサーバーまでお問い合わせください。",
-      )
+      embed = await error.generate(code="3-3-04")
       await message.channel.send(embed=embed)
       return
 
@@ -155,12 +163,9 @@ class ReplyToReply(commands.Cog):
     try:
       await cha.send(embed=embed, view=view)
     except Exception as e:
-      e = f"\n[ERROR[3-2-06]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n- GUILD_ID:{cha.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
+      e = f"\n[ERROR[3-3-05]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n- GUILD_ID:{cha.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
       print(e)
-      embed = error.generate(
-        code="3-2-06",
-        description="操作が完了できませんでした。\nサポートサーバーまでお問い合わせください。",
-      )
+      embed = await error.generate(code="3-3-05")
       await message.channel.send(embed=embed)
       return
 

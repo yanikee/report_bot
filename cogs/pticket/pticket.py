@@ -28,10 +28,7 @@ class PrivateTicket(commands.Cog):
 
     path = f"data/pticket/guilds/{interaction.guild.id}.json"
     if not os.path.exists(path):
-      embed=error.generate(
-        code="2-5-01",
-        description="サーバー管理者に`/settings`コマンドを実行するよう伝えてください。",
-      )
+      embed=await error.generate(code="2-4-01")
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
@@ -43,32 +40,29 @@ class PrivateTicket(commands.Cog):
 
     # cooldown
     embed, self.user_cooldowns = check.user_cooldown(interaction.user.id, self.user_cooldowns)
-    #if embed:
-      #await interaction.response.send_message(embed=embed, ephemeral=True)
-      #return
+    if embed:
+      await interaction.response.send_message(embed=embed, ephemeral=True)
+      return
 
+    # DMにテストメッセージを送信
     try:
-      msg = await interaction.user.send("テストメッセージ", silent=True)
+      await interaction.user.send("テストメッセージ", silent=True, delete_after=0.1)
     except Exception:
-      embed=error.generate(
-          code="2-5-02",
-          description="DMが送信できませんでした。\n**このbotからDMを受け取れるように設定してください！**\n（テストメッセージをbotに送信するなど）",
-        )
+      embed=await error.generate(code="2-4-02")
       await interaction.response.send_message(embed=embed, ephemeral=True)
       return
 
     modal = PrivateTicketModal(self.bot)
     await interaction.response.send_modal(modal)
-    await msg.delete()
 
 
 class PrivateTicketModal(discord.ui.Modal):
   def __init__(self, bot):
-    super().__init__(title=f'匿名ticketモーダル')
+    super().__init__(title=f'匿名Ticketモーダル')
     self.bot = bot
 
     self.first_pticket = discord.ui.TextInput(
-      label="ticket内容を入力",
+      label="Ticket内容を入力",
       style=discord.TextStyle.long,
       default=None,
       placeholder="（ちなみに）\n後ほどbotのDMに、添付ファイルなどを送信できます。",
@@ -81,7 +75,7 @@ class PrivateTicketModal(discord.ui.Modal):
     await interaction.response.defer()
     # embedの定義
     embed=discord.Embed(
-      title="匿名ticket",
+      title="匿名Ticket",
       description=self.first_pticket.value,
       color=0x9AC9FF,
     )
@@ -91,7 +85,14 @@ class PrivateTicketModal(discord.ui.Modal):
     async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
       contents = await f.read()
     ticket_dict = json.loads(contents)
-    cha = interaction.guild.get_channel(ticket_dict["report_send_channel"])
+    cha = interaction.guild.get_channel(ticket_dict.get("report_send_channel"))
+
+    # 匿名TicketチャンネルがNoneだった場合->return
+    if not cha:
+      embed=await error.generate(code="2-4-03")
+      await interaction.followup.send(f"### あなたの匿名Ticket内容\n　{self.first_pticket.value}", embed=embed, ephemeral=True)
+      return
+
     if "mention_role" in ticket_dict:
       mention_role_id = ticket_dict["mention_role"]
     else:
@@ -105,23 +106,11 @@ class PrivateTicketModal(discord.ui.Modal):
 
     try:
       msg = await cha.send(msg, embed=embed)
-    except discord.errors.Forbidden:
-      embed=error.generate(
-        code="2-5-03",
-        description=f"匿名ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/settings`コマンドをもう一度実行するように伝えてください。**\n\n### ------------匿名ticket------------\n{self.first_pticket.value}",
-        support=False,
-      )
-      await interaction.followup.send(embed=embed, ephemeral=True)
-      return
     except Exception as e:
-      e = f"\n[ERROR[2-5-04]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
+      e = f"\n[ERROR[2-4-04]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
       print(e)
-      embed=error.generate(
-        code="2-5-04",
-        description=f"不明なエラーが発生しました。\nサポートサーバーにお問い合わせください。\n\n### ------------匿名ticket------------\n{self.first_pticket.value}",
-        support=False
-      )
-      await interaction.followup.send(embed=embed, ephemeral=True)
+      embed=await error.generate(code="2-4-04")
+      await interaction.followup.send(f"### あなたの匿名Ticket内容\n　{self.first_pticket.value}", embed=embed, ephemeral=True)
       return
 
     # pticket送信者idを保存{msg.id: user.id}
@@ -176,11 +165,11 @@ class PrivateTicketModal(discord.ui.Modal):
     # Pticket完了確認membedを定義
     embed_1=discord.Embed(
       url=thread.jump_url,
-      description=f"## 匿名ticket\n{self.first_pticket.value}",
+      description=f"## 匿名Ticket\n{self.first_pticket.value}",
       color=0x9AC9FF,
     )
     embed_1.set_footer(
-        text=f"匿名ticket | {interaction.guild.name}",
+        text=f"匿名Ticket | {interaction.guild.name}",
         icon_url=interaction.guild.icon.replace(format='png').url if interaction.guild.icon else None,
       )
 
@@ -194,17 +183,14 @@ class PrivateTicketModal(discord.ui.Modal):
     try:
       await interaction.user.send(embeds=[embed_1, embed_2])
     except Exception as e:
-      e = f"\n[ERROR[2-5-05]]{datetime.datetime.now()}\n- USER_ID:{interaction.user.id}\n- GUILD_ID:{interaction.guild.id}\- CHANNEL_ID:{interaction.channel.id}\n{e}\n"
+      e = f"\n[ERROR[2-4-05]]{datetime.datetime.now()}\n- USER_ID:{interaction.user.id}\n- GUILD_ID:{interaction.guild.id}\- CHANNEL_ID:{interaction.channel.id}\n{e}\n"
       print(e)
-      embed=error.generate(
-        code="2-5-05",
-        description="不明なエラーが発生しました。サポートサーバーまでお問い合わせください。"
-      )
+      embed=await error.generate(code="2-4-05")
       await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
     # 完了msgを送信
-    await interaction.followup.send("送信されました。\nこのbotのDMをご確認ください。", ephemeral=True)
+    await interaction.followup.send("サーバー管理者に匿名Ticketが送信されました。\nDMにてサーバー管理者からの返信をお待ちください。", ephemeral=True)
 
 
 

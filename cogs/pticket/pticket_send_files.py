@@ -26,12 +26,9 @@ class PticketSendFiles(commands.Cog):
     # スレッド内での返信編集
     if custom_id == "pticket_send_file":
       if not os.path.exists(path):
-        e = f"[ERROR[2-4-01]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\nJson file was not found"
+        e = f"[ERROR[2-2-01]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\nJson file was not found"
         print(e)
-        embed=error.generate(
-          code="2-4-01",
-          description="サーバーデータが存在しませんでした。\nサポートサーバーまでお問い合わせください。"
-        )
+        embed=await error.generate(code="2-2-01")
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 
@@ -95,12 +92,9 @@ class PticketSendFiles(commands.Cog):
       try:
         user_id = pticket_dict[str(interaction.channel.id)]
       except KeyError:
-        e = f"\n[ERROR[2-4-02]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{interaction.channel.id}\nPticket user_id was not found\n"
+        e = f"\n[ERROR[2-2-02]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{interaction.channel.id}\nPticket user_id was not found\n"
         print(e)
-        embed=error.generate(
-          code="2-4-02",
-          description="ユーザーデータが存在しませんでした。\nサポートサーバーまでお問い合わせください。"
-        )
+        embed=await error.generate(code="2-2-02")
         await interaction.followup.send(embed=embed, ephemeral=True)
         await interaction.message.delete()
         await self.add_reply(interaction)
@@ -109,10 +103,7 @@ class PticketSendFiles(commands.Cog):
       try:
         user = await interaction.guild.fetch_member(user_id)
       except Exception:
-        embed=error.generate(
-          code="2-4-03",
-          description="匿名Ticketのユーザーを取得することができませんでした。\nユーザーは既にサーバーを抜けているかも...？"
-        )
+        embed=await error.generate(code="2-2-03")
         await interaction.followup.send(embed=embed, ephemeral=True)
         await interaction.message.delete()
         await self.add_reply(interaction)
@@ -121,13 +112,13 @@ class PticketSendFiles(commands.Cog):
       # embedを定義
       embed = discord.Embed(
         url = interaction.channel.jump_url,
-        description="## 匿名ticket\n"
-                    f"あなたの匿名ticketに、『{interaction.guild.name}』の管理者からファイルが届きました。\n"
+        description="## 匿名Ticket\n"
+                    f"あなたの匿名Ticketに、『{interaction.guild.name}』の管理者からファイルが届きました。\n"
                     f"- __**このメッセージに返信**__(右クリック→返信)すると、このサーバーの管理者に届きます。",
         color=0x9AC9FF,
       )
       embed.set_footer(
-        text=f"匿名ticket | {interaction.guild.name}",
+        text=f"匿名Ticket | {interaction.guild.name}",
         icon_url=interaction.guild.icon.replace(format='png').url if interaction.guild.icon else None,
       )
 
@@ -135,12 +126,9 @@ class PticketSendFiles(commands.Cog):
       try:
         files = [await attachment.to_file() for attachment in message.attachments]
       except Exception as e:
-        e = f"\n[ERROR[2-4-04]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
+        e = f"\n[ERROR[2-2-04]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
         print(e)
-        embed=error.generate(
-          code="2-4-04",
-          description="ファイル変換時に、不明なエラーが発生しました。\nサポートサーバーまでお問い合わせください。",
-        )
+        embed=await error.generate(code="2-2-04")
         await interaction.followup.send(embed=embed, ephemeral=True)
         await interaction.message.delete()
         await self.add_reply(interaction)
@@ -150,20 +138,14 @@ class PticketSendFiles(commands.Cog):
       try:
         await user.send(embed=embed, files=files)
       except discord.errors.Forbidden:
-        embed=error.generate(
-          code="2-4-05",
-          description="匿名Ticket送信者がDMを受け付けてないため、送信されませんでした。",
-        )
+        embed=await error.generate(code="2-2-05")
         await interaction.followup.send(embed=embed)
         await interaction.message.delete()
         return
       except Exception as e:
-        e = f"\n[ERROR[2-4-06]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
+        e = f"\n[ERROR[2-2-06]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
         print(e)
-        embed=error.generate(
-          code="2-4-06",
-          description="不明なエラーが発生しました。サポートサーバーまでお問い合わせください。",
-        )
+        embed=await error.generate(code="2-2-06")
         await interaction.followup.send(embed=embed)
         await interaction.message.delete()
         await self.add_reply(interaction)

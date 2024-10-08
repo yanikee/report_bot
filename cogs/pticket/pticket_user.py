@@ -37,9 +37,14 @@ class PticketReplyToReply(commands.Cog):
       return
 
     # 匿名ticketじゃなかった場合 -> return
-    if not msg.embeds[0].footer:
-      return
-    if not "匿名ticket |" in msg.embeds[0].footer.text:
+    if msg.embeds[0].footer:
+      if "匿名ticket |" in msg.embeds[0].footer.text:
+        pass
+      elif "匿名Ticket |" in msg.embeds[0].footer.text:
+        pass
+      else:
+        return
+    else:
       return
 
     # guild_block
@@ -55,31 +60,12 @@ class PticketReplyToReply(commands.Cog):
       return
 
     # threadを取得
-    try:
-      cha = await self.bot.fetch_channel(int(msg.embeds[0].url.split('/')[-1]))
-    except discord.errors.Forbidden:
-      embed = error.generate(
-        code="2-2-01",
-        description="匿名Ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/settings`コマンドをもう一度実行するように伝えてください。**",
-      )
+    cha = self.bot.get_channel(int(msg.embeds[0].url.split('/')[-1]))
+    if not cha:
+      embed = await error.generate(code="2-3-01")
       await message.channel.send(embed=embed)
       return
-    except discord.errors.NotFound:
-      embed = error.generate(
-        code="2-2-02",
-        description="匿名Ticket送信チャンネルが削除されています。\n**サーバー管理者さんに、`/settings`コマンドをもう一度実行するように伝えてください。**",
-      )
-      await message.channel.send(embed=embed)
-      return
-    except Exception as e:
-      e = f"\n[ERROR[2-2-03]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n{e}\n"
-      print(e)
-      embed = error.generate(
-        code="2-2-03",
-        description="送信できませんでした。\nサポートサーバーまでお問い合わせください。",
-      )
-      await message.channel.send(embed=embed)
-      return
+
 
     # block判定
     path = f"data/pticket/blocked/{cha.guild.id}.json"
@@ -105,19 +91,13 @@ class PticketReplyToReply(commands.Cog):
     try:
       await cha.send(embed=embed)
     except discord.errors.Forbidden:
-      embed = error.generate(
-        code="2-2-04",
-        description=f"匿名Ticket送信チャンネルでの権限が不足しています。\n**サーバー管理者さんに、`/settings`コマンドをもう一度実行するように伝えてください。**",
-      )
+      embed = await error.generate(code="2-3-02")
       await message.channel.send(embed=embed)
       return
     except Exception as e:
-      e = f"\n[ERROR[2-2-05]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n- GUILD_ID:{cha.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
+      e = f"\n[ERROR[2-3-03]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n- GUILD_ID:{cha.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
       print(e)
-      embed = error.generate(
-        code="2-2-05",
-        description="返信できませんでした。\nサポートサーバーまでお問い合わせください。",
-      )
+      embed = await error.generate(code="2-3-03")
       await message.channel.send(embed=embed)
       return
 
@@ -154,12 +134,9 @@ class PticketReplyToReply(commands.Cog):
     try:
       await cha.send(embed=embed, view=view)
     except Exception as e:
-      e = f"\n[ERROR[2-2-06]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n- GUILD_ID:{cha.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
+      e = f"\n[ERROR[2-3-04]]{datetime.datetime.now()}\n- USER_ID:{message.author.id}\n- GUILD_ID:{cha.guild.id}\n- CHANNEL_ID:{cha.id}\n{e}\n"
       print(e)
-      embed = error.generate(
-        code="3-2-06",
-        description="操作が完了できませんでした。\nサポートサーバーまでお問い合わせください。",
-      )
+      embed = await error.generate(code="2-3-04")
       await message.channel.send(embed=embed)
       return
 

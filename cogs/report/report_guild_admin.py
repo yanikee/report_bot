@@ -9,7 +9,7 @@ import datetime
 
 
 
-class Reply(commands.Cog):
+class ReportGuildAdmin(commands.Cog):
   def __init__(self, bot: commands.Bot):
     self.bot = bot
 
@@ -21,19 +21,16 @@ class Reply(commands.Cog):
       return
 
     # privateのやつがなかった場合 -> return
-    if custom_id in ["report_reply", "report_edit_reply", "report_send"]:
+    if custom_id in ["report_create_thread", "report_edit_reply", "report_send"]:
       path = f"data/report/private_report/{interaction.guild.id}.json"
       if not os.path.exists(path):
-        e = f"[ERROR[3-3-01]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\nJson file was not found"
+        e = f"[ERROR[3-1-01]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\nJson file was not found"
         print(e)
-        embed=error.generate(
-          code="3-3-01",
-          description="サーバーデータが存在しませんでした。\nサポートサーバーまでお問い合わせください。"
-        )
+        embed=await error.generate(code="3-1-01")
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 
-    if custom_id == "report_reply":
+    if custom_id == "report_create_thread":
       # buttonの削除
       await interaction.message.edit(view=None)
 
@@ -52,7 +49,7 @@ class Reply(commands.Cog):
         await f.write(contents)
 
       # thread作成, 送信
-      thread = await interaction.message.create_thread(name=f"report_reply-{str(report_dict['reply_num']).zfill(4)}")
+      thread = await interaction.message.create_thread(name=f"private_report-{str(report_dict['reply_num']).zfill(4)}")
 
       embed=discord.Embed(
         title="返信内容",
@@ -83,40 +80,34 @@ class Reply(commands.Cog):
       async with aiofiles.open(path, encoding='utf-8', mode="r") as f:
         contents = await f.read()
       private_dict = json.loads(contents)
+      reporter_id = private_dict.get(str(interaction.channel.id))
 
-      try:
-        reporter_id = private_dict[str(interaction.channel.id)]
-      except KeyError:
-        e = f"\n[ERROR[3-3-02]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{interaction.channel.id}\nReporter_id was not found\n"
+      # reporter_idがNoneの場合->return
+      if not reporter_id:
+        e = f"\n[ERROR[3-1-02]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{interaction.channel.id}\nReporter_id was not found\n"
         print(e)
-        embed=error.generate(
-          code="3-3-02",
-          description="ユーザーデータが存在しませんでした。\nサポートサーバーまでお問い合わせください。"
-        )
+        embed=await error.generate(code="3-1-02")
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 
       try:
         reporter = await interaction.guild.fetch_member(reporter_id)
       except Exception:
-        embed=error.generate(
-          code="3-3-03",
-          description="匿名Reportのユーザーを取得することができませんでした。\nユーザーは既にサーバーを抜けているかも...？"
-        )
+        embed=await error.generate(code="3-1-03")
         await interaction.response.send_message(embed=embed)
         return
 
       # embedを定義
       embed = discord.Embed(
         url=interaction.channel.jump_url,
-        description="## 匿名報告\n"
+        description="## 匿名Report\n"
                     f"あなたの報告に、『{interaction.guild.name}』の管理者から返信が届きました。\n"
                     f"- __**このメッセージに返信**__(右クリック→返信)すると、このサーバーの管理者に届きます。\n\n"
                     f"## 返信内容\n{interaction.message.embeds[0].description}",
         color=0xF4BD44,
       )
       embed.set_footer(
-        text=f"匿名報告 | {interaction.guild.name}",
+        text=f"匿名Report | {interaction.guild.name}",
         icon_url=interaction.guild.icon.replace(format='png').url if interaction.guild.icon else None,
       )
 
@@ -124,19 +115,13 @@ class Reply(commands.Cog):
       try:
         await reporter.send(embed=embed)
       except discord.errors.Forbidden:
-        embed=error.generate(
-          code="3-3-04",
-          description="匿名Ticket送信者がDMを受け付けてないため、送信されませんでした。"
-        )
+        embed=await error.generate(code="3-1-04")
         await interaction.response.send_message(embed=embed)
         return
       except Exception as e:
-        e = f"\n[ERROR[3-3-05]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
+        e = f"\n[ERROR[3-1-05]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
         print(e)
-        embed=error.generate(
-          code="3-3-05",
-          description="不明なエラーが発生しました。\nサポートサーバーまでお問い合わせください。"
-        )
+        embed=await error.generate(code="3-1-05")
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 
@@ -226,4 +211,4 @@ class EditReplyModal(discord.ui.Modal):
 
 
 async def setup(bot):
-  await bot.add_cog(Reply(bot))
+  await bot.add_cog(ReportGuildAdmin(bot))
