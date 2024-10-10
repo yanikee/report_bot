@@ -39,8 +39,6 @@ except KeyError:
   TOKEN = content["ReportBot_TOKEN"]
   report_bot_service_cha = int(content["report_bot_service_cha"])
 
-
-
 @bot.event
 async def on_ready():
   for x in cog_list:
