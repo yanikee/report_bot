@@ -317,10 +317,12 @@ class Settings(commands.Cog):
 
     # settings_2
     elif custom_id == "settings_page_2":
+      await self.on_page_refresh_check_permissions(interaction, "report")
       await self.settings_page_2(interaction)
 
     # settings_3
     elif custom_id == "settings_page_3":
+      await self.on_page_refresh_check_permissions(interaction, "pticket")
       await self.settings_page_3(interaction)
 
     # settings_panel_config
@@ -329,7 +331,7 @@ class Settings(commands.Cog):
 
     # Ticket作成用ボタンの場合
     elif custom_id == "settings_select_pticket_button_channel":
-      channel, error_embed = await self.check_permission(interaction, button_channel=True)
+      channel, error_embed = await self.on_channel_select_check_permissions(interaction, button_channel=True)
       if error_embed:
         await interaction.response.send_message(embed=error_embed, ephemeral=True)
         await self.settings_panel_config(interaction, error=True, value=interaction.message.embeds[1].description)
@@ -372,7 +374,7 @@ class Settings(commands.Cog):
 
         # Report送信チャンネル設定の場合
         if custom_id == "settings_select_report_channel":
-          channel, error_embed = await self.check_permission(interaction)
+          channel, error_embed = await self.on_channel_select_check_permissions(interaction)
           if error_embed:
             await interaction.response.send_message(embed=error_embed, ephemeral=True)
             await self.settings_page_2(interaction, error=True)
@@ -392,7 +394,7 @@ class Settings(commands.Cog):
 
         # Ticket送信チャンネル設定の場合
         if custom_id == "settings_select_pticket_channel":
-          channel, error_embed = await self.check_permission(interaction)
+          channel, error_embed = await self.on_channel_select_check_permissions(interaction)
           if error_embed:
             await interaction.response.send_message(embed=error_embed, ephemeral=True)
             await self.settings_page_3(interaction, error=True)
@@ -441,8 +443,8 @@ class Settings(commands.Cog):
       await self.settings_final(interaction)
 
 
-  # 閲覧権限確認
-  async def check_permission(self, interaction:discord.Interaction, button_channel:bool=False):
+  # チャンネル選択時の閲覧権限確認
+  async def on_channel_select_check_permissions(self, interaction:discord.Interaction, button_channel:bool=False):
     if interaction.data["values"]:
       channel = interaction.guild.get_channel(int(interaction.data["values"][0]))
 
@@ -478,6 +480,31 @@ class Settings(commands.Cog):
 
     else:
       return None, None
+
+  # ページ更新時にチャンネル権限を確認する
+  # 権限が不足していたら、表示前に自動でチャンネル設定を削除する
+  async def on_page_refresh_check_permissions(self, interaction:discord.Interaction, case_type:str):
+    data = await self.get_data(interaction, type=case_type)
+    channel_id = data.get("report_send_channel")
+    if not channel_id:
+      return
+
+    channel = self.bot.get_channel(channel_id)
+    cannot = False
+    bot_member = interaction.guild.me
+
+    if not channel.permissions_for(bot_member).read_messages:
+      cannot = True
+
+    if not channel.permissions_for(bot_member).send_messages:
+      cannot = True
+
+    if not channel.permissions_for(bot_member).create_public_threads:
+      cannot = True
+
+    if cannot:
+      data["report_send_channel"] = None
+      await self.save_data(interaction, data, type=case_type)
 
 
 # パネル編集
