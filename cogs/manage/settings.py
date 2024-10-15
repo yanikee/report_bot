@@ -327,6 +327,7 @@ class Settings(commands.Cog):
 
     # settings_panel_config
     elif custom_id == "settings_panel_config":
+      await self.on_page_refresh_check_permissions(interaction, "pticket", panel_config=True)
       await self.settings_panel_config(interaction)
 
     # Ticket作成用ボタンの場合
@@ -483,27 +484,28 @@ class Settings(commands.Cog):
 
   # ページ更新時にチャンネル権限を確認する
   # 権限が不足していたら、表示前に自動でチャンネル設定を削除する
-  async def on_page_refresh_check_permissions(self, interaction:discord.Interaction, case_type:str):
+  async def on_page_refresh_check_permissions(self, interaction:discord.Interaction, case_type:str, panel_config:bool=None):
     data = await self.get_data(interaction, type=case_type)
-    channel_id = data.get("report_send_channel")
+    key = "report_button_channel" if panel_config else "report_send_channel"
+    channel_id = data.get(key)
+
     if not channel_id:
       return
 
-    channel = self.bot.get_channel(channel_id)
-    cannot = False
     bot_member = interaction.guild.me
+    channel = self.bot.get_channel(channel_id)
+    permissions = channel.permissions_for(bot_member)
 
-    if not channel.permissions_for(bot_member).read_messages:
-      cannot = True
+    # 一つでも権限が不足していた場合
+    # panel_configがNoneのときはcreate_public_threadsがなくてもOK
+    issufficient_permissions = (
+      not permissions.read_messages or
+      not permissions.send_messages or
+      (not permissions.create_public_threads and not panel_config)
+    )
 
-    if not channel.permissions_for(bot_member).send_messages:
-      cannot = True
-
-    if not channel.permissions_for(bot_member).create_public_threads:
-      cannot = True
-
-    if cannot:
-      data["report_send_channel"] = None
+    if issufficient_permissions:
+      data[key] = None
       await self.save_data(interaction, data, type=case_type)
 
 
