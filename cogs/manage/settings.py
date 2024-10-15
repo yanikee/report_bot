@@ -69,7 +69,7 @@ class Settings(commands.Cog):
       description="1. Report機能\n"
                   "1. 匿名Ticket機能\n"
                   "これらの設定を行います",
-      color=0xF4BD44,
+      color=0xffe7ab,
     )
     view = discord.ui.View()
     button = discord.ui.Button(label="次へ", custom_id=f"settings_page_2", style=discord.ButtonStyle.primary, row=0)
@@ -84,7 +84,7 @@ class Settings(commands.Cog):
     embed = discord.Embed(
       title="settings (2/3)",
       description="## Report機能の設定\n以下の**2つ**の設定を行ってください\n(Report機能を無効化したい場合は、全ての項目を未選択にしてください)",
-      color=0xF4BD44,
+      color=0xffe7ab,
     )
     embed.add_field(
       name=("🔵" if data.get("report_send_channel") else "⚪") + "Report送信チャンネル",
@@ -133,7 +133,7 @@ class Settings(commands.Cog):
     embed = discord.Embed(
       title="settings (3/3)",
       description="## 匿名Ticket機能の設定\n以下の**2つ**の設定を行ってください\n(匿名Ticket機能を無効化したい場合は、全ての項目を未選択にしてください)",
-      color=0x9AC9FF,
+      color=0xc8e1ff,
     )
     embed.add_field(
       name=("🔵" if data.get("report_send_channel") else "⚪") + "匿名Ticket送信チャンネル",
@@ -187,7 +187,7 @@ class Settings(commands.Cog):
     embed_0 = discord.Embed(
       title="settings",
       description="以下の**2つ**の設定を行ってください",
-      color=0x9AC9FF,
+      color=0xc8e1ff,
     )
     embed_0.add_field(
       name=("🔵" if data.get("report_button_channel") else "⚪") + "匿名Ticket作成ボタン設置チャンネル",
@@ -203,7 +203,7 @@ class Settings(commands.Cog):
     embed = discord.Embed(
       title="匿名Ticket",
       description=value,
-      color=0x9AC9FF,
+      color=0xc8e1ff,
     )
 
     embeds = [embed_0, embed]
@@ -239,7 +239,7 @@ class Settings(commands.Cog):
 
     embed_2 = discord.Embed(
       description="## Report機能",
-      color=0xF4BD44,
+      color=0xffe7ab,
     )
     embed_2.add_field(
       name="Report送信チャンネル",
@@ -254,7 +254,7 @@ class Settings(commands.Cog):
 
     embed_3 = discord.Embed(
       description="## 匿名Ticket機能",
-      color=0x9AC9FF,
+      color=0xc8e1ff,
     )
     embed_3.add_field(
       name="匿名Ticket送信チャンネル",
