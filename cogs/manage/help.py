@@ -21,7 +21,7 @@ class Help(commands.Cog):
                   "  - ルール違反したメッセージ投稿などを、簡単にサーバー管理者に報告できる機能\n"
                   "2. __匿名Ticket機能__\n"
                   "  - 『Ticket Tool』の匿名版の様な機能",
-      color=0xF4BD44,
+      color=0xffe7ab,
     )
 
     view = discord.ui.View()
@@ -69,7 +69,7 @@ class Help(commands.Cog):
         description="## まず何をすればいいの？(設定方法)\n"
                     "__### `/settings` を実行__"
                     "Report機能，匿名Ticket機能の設定をします",
-        color=0xF4BD44,
+        color=0xffe7ab,
       )
       await interaction.response.edit_message(embed=embed)
 
@@ -85,7 +85,7 @@ class Help(commands.Cog):
                     "1. 匿名Ticketボタンをクリック\n"
                     "  - サーバー管理者が設置します\n"
                     "  - ボタンが存在しない場合は、サーバー管理者さんに聞いてみてください",
-        color=0xF4BD44,
+        color=0xffe7ab,
       )
       await interaction.response.edit_message(embed=embed)
 
@@ -107,7 +107,7 @@ class Help(commands.Cog):
                     "  - 【！サーバー管理者に報告】\n"
                     "  - Ticket開始ボタン\n"
                     "  - DMからサーバー管理者への返信",
-        color=0xF4BD44,
+        color=0xffe7ab,
       )
       await interaction.response.edit_message(embed=embed)
 

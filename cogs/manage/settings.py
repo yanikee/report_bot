@@ -69,7 +69,7 @@ class Settings(commands.Cog):
       description="1. Report機能\n"
                   "1. 匿名Ticket機能\n"
                   "これらの設定を行います",
-      color=0xF4BD44,
+      color=0xffe7ab,
     )
     view = discord.ui.View()
     button = discord.ui.Button(label="次へ", custom_id=f"settings_page_2", style=discord.ButtonStyle.primary, row=0)
@@ -84,7 +84,7 @@ class Settings(commands.Cog):
     embed = discord.Embed(
       title="settings (2/3)",
       description="## Report機能の設定\n以下の**2つ**の設定を行ってください\n(Report機能を無効化したい場合は、全ての項目を未選択にしてください)",
-      color=0xF4BD44,
+      color=0xffe7ab,
     )
     embed.add_field(
       name=("🔵" if data.get("report_send_channel") else "⚪") + "Report送信チャンネル",
@@ -133,7 +133,7 @@ class Settings(commands.Cog):
     embed = discord.Embed(
       title="settings (3/3)",
       description="## 匿名Ticket機能の設定\n以下の**2つ**の設定を行ってください\n(匿名Ticket機能を無効化したい場合は、全ての項目を未選択にしてください)",
-      color=0x9AC9FF,
+      color=0xc8e1ff,
     )
     embed.add_field(
       name=("🔵" if data.get("report_send_channel") else "⚪") + "匿名Ticket送信チャンネル",
@@ -187,7 +187,7 @@ class Settings(commands.Cog):
     embed_0 = discord.Embed(
       title="settings",
       description="以下の**2つ**の設定を行ってください",
-      color=0x9AC9FF,
+      color=0xc8e1ff,
     )
     embed_0.add_field(
       name=("🔵" if data.get("report_button_channel") else "⚪") + "匿名Ticket作成ボタン設置チャンネル",
@@ -203,7 +203,7 @@ class Settings(commands.Cog):
     embed = discord.Embed(
       title="匿名Ticket",
       description=value,
-      color=0x9AC9FF,
+      color=0xc8e1ff,
     )
 
     embeds = [embed_0, embed]
@@ -239,7 +239,7 @@ class Settings(commands.Cog):
 
     embed_2 = discord.Embed(
       description="## Report機能",
-      color=0xF4BD44,
+      color=0xffe7ab,
     )
     embed_2.add_field(
       name="Report送信チャンネル",
@@ -254,7 +254,7 @@ class Settings(commands.Cog):
 
     embed_3 = discord.Embed(
       description="## 匿名Ticket機能",
-      color=0x9AC9FF,
+      color=0xc8e1ff,
     )
     embed_3.add_field(
       name="匿名Ticket送信チャンネル",
@@ -327,6 +327,7 @@ class Settings(commands.Cog):
 
     # settings_panel_config
     elif custom_id == "settings_panel_config":
+      await self.on_page_refresh_check_permissions(interaction, "pticket", panel_config=True)
       await self.settings_panel_config(interaction)
 
     # Ticket作成用ボタンの場合
@@ -483,27 +484,28 @@ class Settings(commands.Cog):
 
   # ページ更新時にチャンネル権限を確認する
   # 権限が不足していたら、表示前に自動でチャンネル設定を削除する
-  async def on_page_refresh_check_permissions(self, interaction:discord.Interaction, case_type:str):
+  async def on_page_refresh_check_permissions(self, interaction:discord.Interaction, case_type:str, panel_config:bool=None):
     data = await self.get_data(interaction, type=case_type)
-    channel_id = data.get("report_send_channel")
+    key = "report_button_channel" if panel_config else "report_send_channel"
+    channel_id = data.get(key)
+
     if not channel_id:
       return
 
-    channel = self.bot.get_channel(channel_id)
-    cannot = False
     bot_member = interaction.guild.me
+    channel = self.bot.get_channel(channel_id)
+    permissions = channel.permissions_for(bot_member)
 
-    if not channel.permissions_for(bot_member).read_messages:
-      cannot = True
+    # 一つでも権限が不足していた場合
+    # panel_configがNoneのときはcreate_public_threadsがなくてもOK
+    issufficient_permissions = (
+      not permissions.read_messages or
+      not permissions.send_messages or
+      (not permissions.create_public_threads and not panel_config)
+    )
 
-    if not channel.permissions_for(bot_member).send_messages:
-      cannot = True
-
-    if not channel.permissions_for(bot_member).create_public_threads:
-      cannot = True
-
-    if cannot:
-      data["report_send_channel"] = None
+    if issufficient_permissions:
+      data[key] = None
       await self.save_data(interaction, data, type=case_type)
 
 

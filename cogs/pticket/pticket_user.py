@@ -84,7 +84,7 @@ class PticketReplyToReply(commands.Cog):
     embed=discord.Embed(
       title="匿名Ticket送信者から",
       description=message.content,
-      color=0x9AC9FF,
+      color=0xc8e1ff,
     )
 
     # ユーザーからの返信を送信

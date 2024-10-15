@@ -27,7 +27,7 @@ class BotUpdate(commands.GroupCog, group_name='update'):
       title = f"__report bot! ver{version}__",
       url = channel.jump_url,
       description = description,
-      color=0xF4BD44,
+      color=0xffe7ab,
       timestamp=datetime.datetime.now(),
     )
     embed.set_footer(

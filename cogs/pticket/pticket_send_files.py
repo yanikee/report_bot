@@ -115,7 +115,7 @@ class PticketSendFiles(commands.Cog):
         description="## 匿名Ticket\n"
                     f"あなたの匿名Ticketに、『{interaction.guild.name}』の管理者からファイルが届きました。\n"
                     f"- __**このメッセージに返信**__(右クリック→返信)すると、このサーバーの管理者に届きます。",
-        color=0x9AC9FF,
+        color=0xc8e1ff,
       )
       embed.set_footer(
         text=f"匿名Ticket | {interaction.guild.name}",
