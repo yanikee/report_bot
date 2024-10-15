@@ -58,7 +58,7 @@ class Report(commands.Cog):
     button = ReportButton(self.bot, interaction, message)
     embed=discord.Embed(
       description="通常報告：報告者名がサーバー管理者に伝わる\n匿名報告：報告者名は誰にも伝わらない",
-      color=0xF4BD44,
+      color=0xffe7ab,
     )
     await interaction.response.send_message(embed=embed, view=button, ephemeral=True)
 
@@ -100,7 +100,7 @@ class ReportButton(discord.ui.View):
     embed=discord.Embed(
       title="報告",
       description=message.content,
-      color=0xF4BD44,
+      color=0xffe7ab,
     )
     embed.set_image(url=message.attachments[0].url if message.attachments else None)
     embed.set_author(
@@ -196,7 +196,7 @@ class ReportReasonModal(discord.ui.Modal):
     embed=discord.Embed(
       title="報告の理由",
       description=self.report_reason.value,
-      color=0xF4BD44,
+      color=0xffe7ab,
     )
     embed.set_footer(
       text=self.reporter.display_name if self.reporter else "報告者：匿名",
@@ -216,7 +216,7 @@ class ReportReasonModal(discord.ui.Modal):
       embed_1=discord.Embed(
         url=self.msg.jump_url,
         description=f"## 匿名Report\n### Reportしたメッセージ\n　{self.reported_msg.jump_url}\n### Report内容\n{self.report_reason.value}",
-        color=0xF4BD44,
+        color=0xffe7ab,
       )
       embed_1.set_footer(
           text=f"匿名Report | {interaction.guild.name}",
@@ -226,7 +226,7 @@ class ReportReasonModal(discord.ui.Modal):
       embed_2=discord.Embed(
         description="- ファイルを添付する場合や追加で何か送信する場合は、**このメッセージに返信**する形で送信してください。\n"
                     "- あなたの情報(ユーザー名, idなど)が外部に漏れることは一切ありません。",
-        color=0xF4BD44,
+        color=0xffe7ab,
       )
       await interaction.user.send(embeds=[embed_1, embed_2])
 

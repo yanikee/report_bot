@@ -115,7 +115,7 @@ class ReplyToReply(commands.Cog):
     embed=discord.Embed(
       title="ユーザーからの返信",
       description=message.content,
-      color=0xF4BD44,
+      color=0xffe7ab,
     )
 
     # ユーザーからの返信を送信

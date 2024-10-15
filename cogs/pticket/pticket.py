@@ -77,7 +77,7 @@ class PrivateTicketModal(discord.ui.Modal):
     embed=discord.Embed(
       title="匿名Ticket",
       description=self.first_pticket.value,
-      color=0x9AC9FF,
+      color=0xc8e1ff,
     )
 
     # pticket_channel, mention_roleの取得
@@ -166,7 +166,7 @@ class PrivateTicketModal(discord.ui.Modal):
     embed_1=discord.Embed(
       url=thread.jump_url,
       description=f"## 匿名Ticket\n{self.first_pticket.value}",
-      color=0x9AC9FF,
+      color=0xc8e1ff,
     )
     embed_1.set_footer(
         text=f"匿名Ticket | {interaction.guild.name}",
@@ -176,7 +176,7 @@ class PrivateTicketModal(discord.ui.Modal):
     embed_2=discord.Embed(
       description="- ファイルを添付する場合や追加で何か送信する場合は、**このメッセージに返信**する形で送信してください。\n"
                   "- あなたの情報(ユーザー名, idなど)が外部に漏れることは一切ありません。",
-      color=0x9AC9FF,
+      color=0xc8e1ff,
     )
 
     # Pticket完了確認embedを送信

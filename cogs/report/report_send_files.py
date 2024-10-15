@@ -115,7 +115,7 @@ class ReportSendFiles(commands.Cog):
         description="## 匿名Report\n"
                     f"あなたの報告に、『{interaction.guild.name}』の管理者からファイルが届きました。\n"
                     f"- __**このメッセージに返信**__(右クリック→返信)すると、このサーバーの管理者に届きます。",
-        color=0xF4BD44,
+        color=0xffe7ab,
       )
       embed.set_footer(
         text=f"匿名Report | {interaction.guild.name}",

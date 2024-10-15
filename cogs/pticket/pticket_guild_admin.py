@@ -67,7 +67,7 @@ class PticketReply(commands.Cog):
                     f"あなたの匿名Ticketに、 『{interaction.guild.name}』 の管理者から返信が届きました。\n"
                     f"- __**このメッセージに返信**__(右クリック→返信)すると、このサーバーの管理者に届きます。\n\n"
                     f"## 返信内容\n{interaction.message.embeds[0].description}",
-        color=0x9AC9FF,
+        color=0xc8e1ff,
       )
       embed.set_footer(
         text=f"匿名Ticket | {interaction.guild.name}",
