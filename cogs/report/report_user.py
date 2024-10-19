@@ -49,11 +49,21 @@ class ReplyToReply(commands.Cog):
       elif "匿名Report |" in msg.embeds[0].footer.text:
         pass
       else:
+        embed = discord.Embed(
+          description="# 返信できていません！\n匿名Report/匿名Ticketのメッセージに返信してください。",
+          color=0xff4b00,
+        )
+        await message.reply(embed=embed)
         return
     else:
       if "------------返信内容------------" in msg.embeds[0].description:
         pass
       else:
+        embed = discord.Embed(
+          description="# 返信できていません！\n匿名Report/匿名Ticketのメッセージに返信してください。",
+          color=0xff4b00,
+        )
+        await message.reply(embed=embed)
         return
 
     # guild_block
