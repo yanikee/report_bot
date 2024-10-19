@@ -17,6 +17,17 @@ class ReplyToReply(commands.Cog):
     self.bot = bot
     self.user_cooldowns = {}
 
+  async def is_not_reply(message, description:str):
+    embed = discord.Embed(
+      description=description + "\n\n- サポートサーバーは[こちら](https://discord.gg/djQHvM6PtE)",
+      color=0xff4b00,
+    )
+    embed.set_footer(text="このメッセージは数秒後に削除されます")
+
+    await message.reply(embed=embed, delete_after=5)
+    await message.add_reaction("❌")
+    return
+
   @commands.Cog.listener()
   async def on_message(self, message):
     # DMじゃなかった場合 -> return
@@ -27,11 +38,8 @@ class ReplyToReply(commands.Cog):
       return
     # 返信メッセージじゃなかった場合 -> 警告後、return
     if message.type != discord.MessageType.reply:
-      embed = discord.Embed(
-        description="# 返信できていません！\nbotのメッセージに対して、「右クリック」→「返信」を行ってください！",
-        color=0xff4b00,
-      )
-      await message.reply(embed=embed)
+      description="# 返信できていません！\nbotのメッセージに対して、「右クリック」→「返信」を行ってください！"
+      await self.is_not_reply(message, description)
       return
 
     # 返信メッセージを取得
@@ -40,6 +48,8 @@ class ReplyToReply(commands.Cog):
 
     # embedがなかった場合 -> return
     if not msg.embeds:
+      description="# 返信できていません！\n匿名Report/匿名Ticketのメッセージに返信してください！"
+      await self.is_not_reply(message, description)
       return
 
     # 匿名報告のembedじゃなかった場合 -> return
@@ -49,31 +59,19 @@ class ReplyToReply(commands.Cog):
       elif "匿名Report |" in msg.embeds[0].footer.text:
         pass
       else:
-        embed = discord.Embed(
-          description="# 返信できていません！\n匿名Report/匿名Ticketのメッセージに返信してください。",
-          color=0xff4b00,
-        )
-        await message.reply(embed=embed)
+        description="# 返信できていません！\n匿名Report/匿名Ticketのメッセージに返信してください！"
+        await self.is_not_reply(message, description)
         return
     else:
       if "------------返信内容------------" in msg.embeds[0].description:
         pass
       else:
-        embed = discord.Embed(
-          description="# 返信できていません！\n匿名Report/匿名Ticketのメッセージに返信してください。",
-          color=0xff4b00,
-        )
-        await message.reply(embed=embed)
+        description="# 返信できていません！\n匿名Report/匿名Ticketのメッセージに返信してください！"
+        await self.is_not_reply(message, description)
         return
 
     # guild_block
     embed = await check.is_guild_block(bot=self.bot, guild=None, user_id=None, message=message, referenced_message=msg)
-    if embed:
-      await message.reply(embed=embed)
-      return
-
-    # cooldown
-    embed, self.user_cooldowns = check.user_cooldown(message.author.id, self.user_cooldowns)
     if embed:
       await message.reply(embed=embed)
       return
