@@ -17,7 +17,7 @@ class ReplyToReply(commands.Cog):
     self.bot = bot
     self.user_cooldowns = {}
 
-  async def is_not_reply(message, description:str):
+  async def is_not_reply(self, message, description:str):
     embed = discord.Embed(
       description=description + "\n\n- サポートサーバーは[こちら](https://discord.gg/djQHvM6PtE)",
       color=0xff4b00,
