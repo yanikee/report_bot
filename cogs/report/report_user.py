@@ -22,8 +22,13 @@ class ReplyToReply(commands.Cog):
     # DMじゃなかった場合 -> return
     if message.channel.type != discord.ChannelType.private:
       return
-    # 返信メッセージじゃなかった場合 -> return
+    # 返信メッセージじゃなかった場合 -> 警告後、return
     if message.type != discord.MessageType.reply:
+      embed = discord.Embed(
+        description="# 返信できていません！\nbotのメッセージに対して、「右クリック」→「返信」を行ってください！",
+        color=0xff4b00,
+      )
+      await message.channel.send(embed=embed)
       return
     # botだった場合 -> return
     if message.author.bot:
