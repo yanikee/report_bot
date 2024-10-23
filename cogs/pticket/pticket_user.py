@@ -21,11 +21,12 @@ class PticketReplyToReply(commands.Cog):
     # DMじゃなかった場合 -> return
     if message.channel.type != discord.ChannelType.private:
       return
-    # 返信メッセージじゃなかった場合 -> return
-    if message.type != discord.MessageType.reply:
-      return
     # botだった場合 -> return
     if message.author.bot:
+      return
+    # 返信メッセージじゃなかった場合 -> return
+    # reportのやつで、返信メッセージじゃなかった場合に警告している
+    if message.type != discord.MessageType.reply:
       return
 
     # 返信メッセージを取得
