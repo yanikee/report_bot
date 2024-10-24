@@ -17,17 +17,6 @@ class ReplyToReply(commands.Cog):
     self.bot = bot
     self.user_cooldowns = {}
 
-  async def is_not_reply(self, message):
-    embed = discord.Embed(
-      description="# 返信できていません！\nbotからの匿名Report/匿名Ticketのメッセージに対して、「右クリック」→「返信」を行ってください！",
-      color=0xff4b00,
-    )
-    embed.set_footer(text="このメッセージは数秒後に削除されます")
-
-    await message.reply(embed=embed, delete_after=7)
-    await message.add_reaction("❌")
-    return
-
   @commands.Cog.listener()
   async def on_message(self, message):
     # DMじゃなかった場合 -> return
@@ -36,9 +25,8 @@ class ReplyToReply(commands.Cog):
     # botだった場合 -> return
     if message.author.bot:
       return
-    # 返信メッセージじゃなかった場合 -> 警告後、return
+    # 返信メッセージじゃなかった場合 -> return
     if message.type != discord.MessageType.reply:
-      await self.is_not_reply(message)
       return
 
     # 返信メッセージを取得
@@ -47,7 +35,6 @@ class ReplyToReply(commands.Cog):
 
     # embedがなかった場合 -> return
     if not msg.embeds:
-      await self.is_not_reply(message)
       return
 
     # 匿名報告のembedじゃなかった場合 -> return
@@ -57,13 +44,11 @@ class ReplyToReply(commands.Cog):
       elif "匿名Report |" in msg.embeds[0].footer.text:
         pass
       else:
-        await self.is_not_reply(message)
         return
     else:
       if "------------返信内容------------" in msg.embeds[0].description:
         pass
       else:
-        await self.is_not_reply(message)
         return
 
     # guild_block
