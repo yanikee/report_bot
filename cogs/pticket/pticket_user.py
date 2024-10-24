@@ -25,7 +25,6 @@ class PticketReplyToReply(commands.Cog):
     if message.author.bot:
       return
     # 返信メッセージじゃなかった場合 -> return
-    # reportのやつで、返信メッセージじゃなかった場合に警告している
     if message.type != discord.MessageType.reply:
       return
 
