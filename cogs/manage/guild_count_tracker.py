@@ -1,7 +1,5 @@
-from discord import app_commands
 from discord.ext import commands
 from discord.ext import tasks
-import discord
 
 import datetime
 import aiofiles

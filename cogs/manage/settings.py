@@ -6,7 +6,7 @@ import aiofiles
 import json
 import os
 
-import error
+from modules import error
 
 
 

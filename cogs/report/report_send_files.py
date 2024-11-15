@@ -1,12 +1,13 @@
 from discord.ext import commands
-from discord import app_commands
 import discord
+
 import os
 import json
 import aiofiles
 import asyncio
 import datetime
-import error
+
+from modules import error
 
 
 
