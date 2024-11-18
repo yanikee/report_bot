@@ -7,8 +7,8 @@ import json
 import aiofiles
 import datetime
 
-import error
-import check
+from modules import error
+from modules import check
 
 
 

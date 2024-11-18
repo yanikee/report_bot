@@ -1,14 +1,13 @@
-import os
 from discord.ext import commands
 from discord import app_commands
 import discord
-import cog_list as cogs
+from modules import cogs
 from typing import List
 
 
 
-cog_list = cogs.cog_list
-dev_cog_list = cogs.dev_cog_list
+cog_list = cogs.get_cogs()
+dev_cog_list = cogs.get_dev_cogs()
 cog_list += dev_cog_list
 
 class Reload(commands.Cog):

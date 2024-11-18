@@ -2,11 +2,11 @@ from discord.ext import commands
 from discord import app_commands
 import discord
 
-import cog_list
+from modules import cogs
 
 
 
-dev_cog_list = cog_list.dev_cog_list
+dev_cog_list = cogs.get_dev_cogs()
 
 class Help(commands.Cog):
   def __init__(self, bot: commands.Bot):
