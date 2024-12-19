@@ -4,3 +4,5 @@ __pycache__/
 .gitpod.yml
 env.json
 .out
+.log
+.vscode/
