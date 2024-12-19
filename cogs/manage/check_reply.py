@@ -12,9 +12,9 @@ class CheckReply(commands.Cog):
       description="# 返信できていません！\nbotからの匿名Report/匿名Ticketのメッセージに対して、「右クリック」→「返信」を行ってください！",
       color=0xff4b00,
     )
-    embed.set_footer(text="このメッセージは数秒後に削除されます")
+    embed.set_footer(text="このメッセージは15秒後に削除されます")
 
-    await message.reply(embed=embed, delete_after=7)
+    await message.reply(embed=embed, delete_after=15)
     await message.add_reaction("❌")
     return
 
