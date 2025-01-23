@@ -12,7 +12,7 @@ class BotUpdate(commands.GroupCog, group_name='update'):
 
   @app_commands.command(
     name="report_bot",
-    description="[開発者専用]report bot! のアップデート"
+    description="[開発者専用]Report bot! のアップデート"
   )
   @app_commands.describe(channel="送信するチャンネルを選択してください。")
   @app_commands.describe(version="バージョンを指定してください。⚪︎.⚪︎.⚪︎の形が好ましいです。")
@@ -24,7 +24,7 @@ class BotUpdate(commands.GroupCog, group_name='update'):
     if not channel:
       channel = interaction.channel
     embed = discord.Embed(
-      title = f"__report bot! ver{version}__",
+      title = f"__Report bot! ver{version}__",
       url = channel.jump_url,
       description = description,
       color=0xffe7ab,

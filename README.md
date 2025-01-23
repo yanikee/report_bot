@@ -1,4 +1,4 @@
-# report bot!
+# Report bot!
 　サーバー管理者のためのDiscord botです。
 
 ## 主な機能
