@@ -55,7 +55,9 @@ class PticketReplyToReply(commands.Cog):
     # cooldown
     embed, self.user_cooldowns = check.user_cooldown(message.author.id, self.user_cooldowns)
     if embed:
-      await message.reply(embed=embed)
+      await message.add_reaction("❌")
+      embed.set_footer(text="このメッセージは15秒後に削除されます。")
+      await message.reply(embed=embed, delete_after=15)
       return
 
     # threadを取得
