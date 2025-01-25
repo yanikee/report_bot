@@ -61,12 +61,12 @@ class PticketReplyToReply(commands.Cog):
       return
 
     # threadを取得
-    cha = self.bot.get_channel(int(msg.embeds[0].url.split('/')[-1]))
-    if not cha:
+    try:
+      cha = await self.bot.fetch_channel(int(msg.embeds[0].url.split('/')[-1]))
+    except Exception as e:
       embed = await error.generate(code="2-3-01")
       await message.channel.send(embed=embed)
       return
-
 
     # block判定
     path = f"data/pticket/blocked/{cha.guild.id}.json"
