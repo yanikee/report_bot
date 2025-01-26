@@ -66,8 +66,9 @@ class ReplyToReply(commands.Cog):
 
     # threadを取得
     url_splited = msg.embeds[0].url.split('/')
-    cha = self.bot.get_channel(int(url_splited[-1]))
-    if not cha:
+    try:
+      cha = await self.bot.fetch_channel(int(url_splited[-1]))
+    except Exception as e:
       report_cha = self.bot.get_channel(int(url_splited[-2]))
       if not report_cha:
         embed = await error.generate(code="3-3-01")
@@ -111,6 +112,16 @@ class ReplyToReply(commands.Cog):
           return
       except KeyError:
         pass
+
+    # アーカイブされていた場合、親チャンネルに通知
+    if cha.archived:
+      embed=discord.Embed(
+        title="お知らせ",
+        description=f"{cha.mention}に、新しい返信が届きました。",
+        color=0xff33ff,
+      )
+      embed.set_footer(text="スレッドがアーカイブされていたため通知されました")
+      await cha.parent.send(embed=embed)
 
     # embedの定義
     embed=discord.Embed(

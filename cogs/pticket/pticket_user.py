@@ -61,12 +61,12 @@ class PticketReplyToReply(commands.Cog):
       return
 
     # threadを取得
-    cha = self.bot.get_channel(int(msg.embeds[0].url.split('/')[-1]))
-    if not cha:
+    try:
+      cha = await self.bot.fetch_channel(int(msg.embeds[0].url.split('/')[-1]))
+    except Exception as e:
       embed = await error.generate(code="2-3-01")
       await message.channel.send(embed=embed)
       return
-
 
     # block判定
     path = f"data/pticket/blocked/{cha.guild.id}.json"
@@ -80,6 +80,16 @@ class PticketReplyToReply(commands.Cog):
           return
       except KeyError:
         pass
+
+    # アーカイブされていた場合、親チャンネルに通知
+    if cha.archived:
+      embed=discord.Embed(
+        title="お知らせ",
+        description=f"{cha.mention}に、新しい返信が届きました。",
+        color=0xff33ff,
+      )
+      embed.set_footer(text="スレッドがアーカイブされていたため通知されました")
+      await cha.parent.send(embed=embed)
 
     # embed定義
     embed=discord.Embed(
