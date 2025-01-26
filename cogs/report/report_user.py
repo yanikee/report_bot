@@ -113,6 +113,16 @@ class ReplyToReply(commands.Cog):
       except KeyError:
         pass
 
+    # アーカイブされていた場合、親チャンネルに通知
+    if cha.archived:
+      embed=discord.Embed(
+        title="お知らせ",
+        description=f"{cha.mention}に、新しい返信が届いています。",
+        color=0xff33ff,
+      )
+      embed.set_footer(text="このメッセージは、スレッドがアーカイブされていたため送信されました。")
+      await cha.parent.send(embed=embed)
+
     # embedの定義
     embed=discord.Embed(
       title="ユーザーからの返信",
