@@ -85,10 +85,10 @@ class PticketReplyToReply(commands.Cog):
     if cha.archived:
       embed=discord.Embed(
         title="お知らせ",
-        description=f"{cha.mention}に、新しい返信が届いています。",
+        description=f"{cha.mention}に、新しい返信が届きました。",
         color=0xff33ff,
       )
-      embed.set_footer(text="このメッセージは、スレッドがアーカイブされていたため送信されました。")
+      embed.set_footer(text="スレッドがアーカイブされていたため通知されました")
       await cha.parent.send(embed=embed)
 
     # embed定義
