@@ -418,7 +418,7 @@ class Settings(commands.Cog):
     # 確定ボタンを押したとき
     elif interaction.data["custom_id"] == "settings_confirm_private_ticket":
       view = discord.ui.View()
-      button_0 = discord.ui.Button(label="匿名Ticket", emoji="🔖", custom_id=f"private_ticket", style=discord.ButtonStyle.primary, disabled=False, row=0)
+      button_0 = discord.ui.Button(label="匿名Ticket", emoji=self.bot.emojis_dict["new_label"], custom_id=f"private_ticket", style=discord.ButtonStyle.primary, disabled=False, row=0)
       view.add_item(button_0)
 
       # フィールド, フッターを消す

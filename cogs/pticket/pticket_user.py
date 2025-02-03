@@ -93,7 +93,7 @@ class PticketReplyToReply(commands.Cog):
 
     # embed定義
     embed=discord.Embed(
-      title="匿名Ticket送信者から",
+      title="ユーザーからの返信",
       description=message.content,
       color=0xc8e1ff,
     )
@@ -131,10 +131,10 @@ class PticketReplyToReply(commands.Cog):
       )
 
     view = discord.ui.View()
-    button_0 = discord.ui.Button(label="返信内容を編集", custom_id=f"pticket_edit_reply", style=discord.ButtonStyle.primary, row=0)
-    button_1 = discord.ui.Button(label="送信する", custom_id=f"pticket_send", style=discord.ButtonStyle.red, row=0, disabled=True)
-    button_2 = discord.ui.Button(label="ファイルを送信する", custom_id=f"pticket_send_file", style=discord.ButtonStyle.green, row=1)
-    button_3 = discord.ui.Button(label="もう返信しない", custom_id=f"pticket_cancel", style=discord.ButtonStyle.gray, row=2)
+    button_0 = discord.ui.Button(emoji=self.bot.emojis_dict["edit"], label="編集", custom_id=f"pticket_edit_reply", style=discord.ButtonStyle.primary, row=0)
+    button_1 = discord.ui.Button(emoji=self.bot.emojis_dict["send"], label="送信", custom_id=f"pticket_send", style=discord.ButtonStyle.red, row=0, disabled=True)
+    button_2 = discord.ui.Button(emoji=self.bot.emojis_dict["upload_file"], label="ファイル送信", custom_id=f"pticket_send_file", style=discord.ButtonStyle.green, row=1)
+    button_3 = discord.ui.Button(emoji=self.bot.emojis_dict["delete"], label="もう返信しない", custom_id=f"pticket_cancel", style=discord.ButtonStyle.gray, row=2)
     view.add_item(button_0)
     view.add_item(button_1)
     view.add_item(button_2)
