@@ -71,8 +71,8 @@ class ReportButton(discord.ui.View):
     self.interaction = interaction
     self.message = message
 
-    self.button_0 = discord.ui.Button(label='通常報告', custom_id='public_report', style=discord.ButtonStyle.primary)
-    self.button_1 = discord.ui.Button(label='匿名報告', custom_id='private_report', style=discord.ButtonStyle.green)
+    self.button_0 = discord.ui.Button(label='通常報告', emoji=self.bot.emojis_dict["person_alert"], custom_id='public_report', style=discord.ButtonStyle.primary)
+    self.button_1 = discord.ui.Button(label='匿名報告', emoji=self.bot.emojis_dict["report"], custom_id='private_report', style=discord.ButtonStyle.green)
 
     self.add_item(self.button_0)
     self.add_item(self.button_1)
@@ -108,7 +108,7 @@ class ReportButton(discord.ui.View):
       icon_url=message.author.display_avatar.url if message.author.display_avatar else None
     )
     embed.set_footer(
-      text=reporter.display_name if reporter else "報告者：匿名",
+      text=f"報告者：{reporter.display_name}" if reporter else "報告者：匿名",
       icon_url=reporter.display_avatar.url if reporter else None,
     )
     message.embeds.insert(0, embed)
@@ -168,7 +168,7 @@ class ReportButton(discord.ui.View):
 
       # 返信ボタンを設置
       view = discord.ui.View()
-      button_0 = discord.ui.Button(label="報告に返信", custom_id=f"report_create_thread", style=discord.ButtonStyle.primary)
+      button_0 = discord.ui.Button(label="返信", emoji=self.bot.emojis_dict["reply"], custom_id=f"report_create_thread", style=discord.ButtonStyle.primary)
       view.add_item(button_0)
 
       await msg.edit(view=view)
@@ -199,7 +199,7 @@ class ReportReasonModal(discord.ui.Modal):
       color=0xffe7ab,
     )
     embed.set_footer(
-      text=self.reporter.display_name if self.reporter else "報告者：匿名",
+      text=f"報告者：{self.reporter.display_name}" if self.reporter else "報告者：匿名",
       icon_url=self.reporter.display_avatar.url if self.reporter else None,
     )
     embeds = self.msg.embeds or []
