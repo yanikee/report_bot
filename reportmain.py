@@ -30,6 +30,20 @@ intents.guilds = True
 
 bot = commands.Bot(command_prefix="!!!!!", intents=intents)
 
+# カスタム絵文字を定義
+bot.emojis_dict = {
+  "add": "<:add:1335909447687733300>",
+  "arrow_back": "<:arrow_back:1335907900920565780>",
+  "new_label": "<:new_label:1335916826114392126>",
+  "person_alert": "<:person_alert:1335916869714055209>",
+  "reply": "<:reply:1335932856899342397>",
+  "report": "<:report:1335916894775021579>",
+  "edit": "<:edit:1335899691983831070>",
+  "send": "<:send:1335899659553738815>",
+  "upload_file": "<:upload_file:1335899677186326559>",
+  "delete": "<:delete:1335899643049017355>",
+}
+
 try:
   TOKEN = os.environ["ReportBot_TOKEN"]
   report_bot_service_cha = int(os.environ["report_bot_service_cha"])

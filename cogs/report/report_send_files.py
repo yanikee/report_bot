@@ -47,16 +47,8 @@ class ReportSendFiles(commands.Cog):
 
         # viewの定義
         view = discord.ui.View()
-        button_1 = discord.ui.Button(
-          label="ファイル送信に進む",
-          style=discord.ButtonStyle.primary,
-          custom_id="report_send_files_process",
-        )
-        button_2 = discord.ui.Button(
-          label="戻る",
-          style=discord.ButtonStyle.gray,
-          custom_id="report_send_files_return",
-        )
+        button_1 = discord.ui.Button(label="戻る", emoji=self.bot.emojis_dict["arrow_back"], custom_id="report_send_files_return", style=discord.ButtonStyle.gray)
+        button_2 = discord.ui.Button(label="ファイル送信に進む", custom_id="report_send_files_process", style=discord.ButtonStyle.primary)
         view.add_item(button_1)
         view.add_item(button_2)
 
@@ -166,9 +158,9 @@ class ReportSendFiles(commands.Cog):
     # 「戻る」を選択した場合
     elif custom_id == "report_send_files_return":
       view = discord.ui.View()
-      button_0 = discord.ui.Button(label="返信内容を編集", custom_id=f"report_edit_reply", style=discord.ButtonStyle.primary, row=0)
-      button_1 = discord.ui.Button(label="送信する", custom_id=f"report_send", style=discord.ButtonStyle.red, row=0)
-      button_2 = discord.ui.Button(label="ファイルを送信する", custom_id=f"report_send_file", style=discord.ButtonStyle.green, row=1)
+      button_0 = discord.ui.Button(emoji=self.bot.emojis_dict["edit"], label="編集", custom_id=f"report_edit_reply", style=discord.ButtonStyle.primary, row=0)
+      button_1 = discord.ui.Button(emoji=self.bot.emojis_dict["send"], label="送信", custom_id=f"report_send", style=discord.ButtonStyle.red, row=0)
+      button_2 = discord.ui.Button(emoji=self.bot.emojis_dict["upload_file"], label="ファイル送信", custom_id=f"report_send_file", style=discord.ButtonStyle.green, row=1)
       view.add_item(button_0)
       view.add_item(button_1)
       view.add_item(button_2)
@@ -179,11 +171,7 @@ class ReportSendFiles(commands.Cog):
   async def add_reply(self, interaction):
     # 追加返信ボタン設置
     view = discord.ui.View()
-    button_1 = discord.ui.Button(
-      label="追加で返信する",
-      style=discord.ButtonStyle.gray,
-      custom_id="report_add_reply",
-    )
+    button_1 = discord.ui.Button(label="追加で返信", emoji=self.bot.emojis_dict["add"], custom_id="report_add_reply", style=discord.ButtonStyle.gray)
     view.add_item(button_1)
     await interaction.channel.send(view=view)
     await interaction.channel.add_user(interaction.user)
