@@ -7,7 +7,7 @@ import datetime
 
 
 
-def user_cooldown(user_id: int, user_cooldowns: dict, rate:int=3):
+def user_cooldown(user_id: int, user_cooldowns: dict, rate:int=30):
   current_time = int(datetime.datetime.now().timestamp())
 
   if str(user_id) in user_cooldowns:
