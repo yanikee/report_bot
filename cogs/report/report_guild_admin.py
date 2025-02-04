@@ -31,6 +31,7 @@ class ReportGuildAdmin(commands.Cog):
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 
+
     if custom_id == "report_create_thread":
       # buttonの削除
       await interaction.message.edit(view=None)
@@ -162,8 +163,7 @@ class ReportGuildAdmin(commands.Cog):
       view.add_item(button_2)
       view.add_item(button_3)
 
-      await interaction.channel.send(embed=embed, view=view)
-      await interaction.message.delete()
+      await interaction.response.edit_message(embed=embed, view=view)
 
 
     # もう返信しないボタンが押されたときの処理
