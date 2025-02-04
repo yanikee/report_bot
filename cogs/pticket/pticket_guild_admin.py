@@ -31,6 +31,7 @@ class PticketReply(commands.Cog):
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 
+
     # スレッド内での返信編集
     if custom_id == "pticket_edit_reply":
       modal = EditReplyModal(self.bot, interaction.message)
@@ -125,8 +126,7 @@ class PticketReply(commands.Cog):
         description="下のボタンから編集してください。",
         color=0x95FFA1,
       )
-      await interaction.channel.send(embed=embed, view=view)
-      await interaction.message.delete()
+      await interaction.response.edit_message(embed=embed, view=view)
 
 
     # もう返信しないボタンが押されたときの処理

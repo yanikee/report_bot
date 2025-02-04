@@ -33,7 +33,6 @@ class PticketSendFiles(commands.Cog):
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 
-
       if interaction.message.embeds[0].description == "下のボタンから編集してください。":
         custom_id = "pticket_send_files_process"
 
@@ -169,12 +168,13 @@ class PticketSendFiles(commands.Cog):
 
 
   async def add_reply(self, interaction):
+    await interaction.channel.add_user(interaction.user)
+
     # 追加返信ボタン設置
     view = discord.ui.View()
     button_1 = discord.ui.Button(label="追加で返信", emoji=self.bot.emojis_dict["add"], custom_id="pticket_add_reply", style=discord.ButtonStyle.gray)
     view.add_item(button_1)
     await interaction.channel.send(view=view)
-    await interaction.channel.add_user(interaction.user)
 
 
 

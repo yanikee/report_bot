@@ -22,7 +22,6 @@ class ReportSendFiles(commands.Cog):
     except KeyError:
       return
 
-
     # スレッド内での返信編集
     if custom_id == "report_send_file":
       path = f"data/report/private_report/{interaction.guild.id}.json"
@@ -32,7 +31,6 @@ class ReportSendFiles(commands.Cog):
         embed=await error.generate("3-2-01")
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
-
 
       if interaction.message.embeds[0].description == "下のボタンから編集してください。":
         custom_id = "report_send_files_process"
@@ -169,12 +167,13 @@ class ReportSendFiles(commands.Cog):
 
 
   async def add_reply(self, interaction):
+    await interaction.channel.add_user(interaction.user)
+
     # 追加返信ボタン設置
     view = discord.ui.View()
     button_1 = discord.ui.Button(label="追加で返信", emoji=self.bot.emojis_dict["add"], custom_id="report_add_reply", style=discord.ButtonStyle.gray)
     view.add_item(button_1)
     await interaction.channel.send(view=view)
-    await interaction.channel.add_user(interaction.user)
 
 
 
