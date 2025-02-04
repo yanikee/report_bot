@@ -54,6 +54,16 @@ class PrivateTicket(commands.Cog):
     modal = PrivateTicketModal(self.bot)
     await interaction.response.send_modal(modal)
 
+    # 匿名Ticket buttonの絵文字を旧から新に
+    if interaction.message.components:
+      for button in interaction.message.components[0].children:
+        if isinstance(button, discord.Button):
+          if button.emoji.name == "🔖": 
+            view=discord.ui.View()
+            button_0 = discord.ui.Button(label="匿名Ticket", emoji=self.bot.emojis_dict["new_label"], custom_id=f"private_ticket", style=discord.ButtonStyle.primary, disabled=False, row=0)
+            view.add_item(button_0)
+            await interaction.message.edit(view=view)
+
 
 class PrivateTicketModal(discord.ui.Modal):
   def __init__(self, bot):
