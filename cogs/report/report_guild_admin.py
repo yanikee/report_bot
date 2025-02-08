@@ -202,6 +202,10 @@ class EditReplyModal(discord.ui.Modal):
     # NOTE: 編集が適用されたことが分かりやすいように、わざとdeferしてる
     await interaction.response.defer()
     self.msg.embeds[0].description = self.reply.value
+    self.msg.embeds[0].set_author(
+      name=f"一時保存：{interaction.user.display_name}",
+      icon_url=interaction.user.display_avatar.url if interaction.user.display_avatar else None,
+    )
 
     if self.reply.value == "下のボタンから編集してください。":
       button_bool = True
