@@ -22,10 +22,10 @@ class PticketSendFiles(commands.Cog):
     except KeyError:
       return
 
-    path = f"data/pticket/pticket/{interaction.guild.id}.json"
 
     # スレッド内での返信編集
     if custom_id == "pticket_send_file":
+      path = f"data/pticket/pticket/{interaction.guild.id}.json"
       if not os.path.exists(path):
         e = f"[ERROR[2-2-01]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\nJson file was not found"
         print(e)
