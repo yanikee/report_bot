@@ -192,7 +192,7 @@ class PrivateTicketModal(discord.ui.Modal):
     try:
       await interaction.user.send(embeds=[embed_1, embed_2])
     except Exception as e:
-      e = f"\n[ERROR[2-4-05]]{datetime.datetime.now()}\n- USER_ID:{interaction.user.id}\n- GUILD_ID:{interaction.guild.id}\- CHANNEL_ID:{interaction.channel.id}\n{e}\n"
+      e = f"\n[ERROR[2-4-05]]{datetime.datetime.now()}\n- USER_ID:{interaction.user.id}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{interaction.channel.id}\n{e}\n"
       print(e)
       embed=await error.generate(code="2-4-05")
       await interaction.followup.send(embed=embed, ephemeral=True)
