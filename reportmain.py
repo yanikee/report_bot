@@ -1,12 +1,13 @@
 from discord.ext import commands
 import discord
+
 import os
 import logging
-from modules import cogs
 import aiofiles
-import json
 import argparse
+from dotenv import load_dotenv
 
+from modules import cogs
 
 
 parser = argparse.ArgumentParser(description="report_bot!を起動する")
@@ -23,6 +24,18 @@ elif args.reset:
 else:
   cog_list = cogs.get_cogs()
   dev_cog_list = None
+
+
+load_dotenv(override=True)
+
+try:
+  TOKEN = os.environ.get("ReportBot_TOKEN")
+  report_bot_service_cha = int(os.environ.get("report_bot_service_cha"))
+except Exception:
+  print("TOKEN, report_bot_service_chaを取得できませんでした")
+  TOKEN = ""
+  report_bot_service_cha = ""
+
 
 intents = discord.Intents.none()
 intents.messages = True
@@ -43,15 +56,6 @@ bot.emojis_dict = {
   "upload_file": "<:upload_file:1335899677186326559>",
   "delete": "<:delete:1335899643049017355>",
 }
-
-try:
-  TOKEN = os.environ["ReportBot_TOKEN"]
-  report_bot_service_cha = int(os.environ["report_bot_service_cha"])
-except KeyError:
-  with open("env.json", mode="r") as f:
-    content = json.load(f)
-  TOKEN = content["ReportBot_TOKEN"]
-  report_bot_service_cha = int(content["report_bot_service_cha"])
 
 @bot.event
 async def on_ready():
