@@ -28,14 +28,8 @@ else:
 
 load_dotenv(override=True)
 
-try:
-  TOKEN = os.environ.get("ReportBot_TOKEN")
-  report_bot_service_cha = int(os.environ.get("report_bot_service_cha"))
-except Exception:
-  print("TOKEN, report_bot_service_chaを取得できませんでした")
-  TOKEN = ""
-  report_bot_service_cha = ""
-
+TOKEN = os.environ.get("ReportBot_TOKEN", "")
+report_bot_service_cha = int(os.environ.get("report_bot_service_cha", "0"))
 
 intents = discord.Intents.none()
 intents.messages = True
