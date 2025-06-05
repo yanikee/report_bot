@@ -64,6 +64,7 @@ async def on_ready():
 
   await bot.tree.sync()
   print("全ロード完了")
+
   channel = bot.get_channel(report_bot_service_cha)
   await channel.send(f"{bot.user.mention} がオンラインになったよう。")
 
