@@ -17,9 +17,11 @@ class Settings(commands.Cog):
   @app_commands.command(name="settings", description='設定を行います')
   @discord.app_commands.guild_only()
   async def settings(self, interaction:discord.Interaction):
+    await interaction.response.defer(ephemeral=True)
+
     if not interaction.channel.permissions_for(interaction.user).manage_channels:
       embed = await error.generate(code="1-4-01")
-      return await interaction.response.send_message(embed=embed, ephemeral=True)
+      return await interaction.followup.send(embed=embed, ephemeral=True)
 
 
     # 正しくないidを削除
@@ -36,7 +38,7 @@ class Settings(commands.Cog):
 
 
     embed, view = self.settings_page_1()
-    await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
+    await interaction.followup.send(embed=embed, view=view, ephemeral=True)
 
 
   async def get_data(self, interaction:discord.Interaction, type:str):
@@ -334,14 +336,14 @@ class Settings(commands.Cog):
     elif custom_id == "settings_select_pticket_button_channel":
       channel, error_embed = await self.on_channel_select_check_permissions(interaction, button_channel=True)
       if error_embed:
-        await interaction.response.send_message(embed=error_embed, ephemeral=True)
+        await interaction.followup.send(embed=error_embed, ephemeral=True)
         await self.settings_panel_config(interaction, error=True, value=interaction.message.embeds[1].description)
         return
       else:
         if channel:
           if not channel.permissions_for(interaction.user).manage_channels:
             embed=await error.generate(code="1-4-02", additional_desc=channel.mention)
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             await self.settings_panel_config(interaction, error=True, value=interaction.message.embeds[1].description)
             return
 
@@ -361,7 +363,7 @@ class Settings(commands.Cog):
           if not channel.permissions_for(interaction.user).manage_channels:
             embed=await error.generate(code="1-4-03", additional_desc=channel.mention)
 
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             if "report" in custom_id:
               await self.settings_page_2(interaction, error=True)
             else:
@@ -377,7 +379,7 @@ class Settings(commands.Cog):
         if custom_id == "settings_select_report_channel":
           channel, error_embed = await self.on_channel_select_check_permissions(interaction)
           if error_embed:
-            await interaction.response.send_message(embed=error_embed, ephemeral=True)
+            await interaction.followup.send(embed=error_embed, ephemeral=True)
             await self.settings_page_2(interaction, error=True)
             return
           else:
@@ -397,7 +399,7 @@ class Settings(commands.Cog):
         if custom_id == "settings_select_pticket_channel":
           channel, error_embed = await self.on_channel_select_check_permissions(interaction)
           if error_embed:
-            await interaction.response.send_message(embed=error_embed, ephemeral=True)
+            await interaction.followup.send(embed=error_embed, ephemeral=True)
             await self.settings_page_3(interaction, error=True)
             return
           else:

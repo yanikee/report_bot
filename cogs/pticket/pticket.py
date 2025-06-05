@@ -28,19 +28,19 @@ class PrivateTicket(commands.Cog):
     path = f"data/pticket/guilds/{interaction.guild.id}.json"
     if not os.path.exists(path):
       embed=await error.generate(code="2-4-01")
-      await interaction.response.send_message(embed=embed, ephemeral=True)
+      await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
     # guild_block
     embed = await check.is_guild_block(bot=self.bot,guild=interaction.guild, user_id=interaction.user.id)
     if embed:
-      await interaction.response.send_message(embed=embed, ephemeral=True)
+      await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
     # cooldown
     embed, self.user_cooldowns = check.user_cooldown(interaction.user.id, self.user_cooldowns)
     if embed:
-      await interaction.response.send_message(embed=embed, ephemeral=True)
+      await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
     # DMにテストメッセージを送信
@@ -48,7 +48,7 @@ class PrivateTicket(commands.Cog):
       await interaction.user.send("テストメッセージ", silent=True, delete_after=0.1)
     except Exception:
       embed=await error.generate(code="2-4-02")
-      await interaction.response.send_message(embed=embed, ephemeral=True)
+      await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
     modal = PrivateTicketModal(self.bot)

@@ -28,7 +28,7 @@ class ReportGuildAdmin(commands.Cog):
         e = f"[ERROR[3-1-01]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\nJson file was not found"
         print(e)
         embed=await error.generate(code="3-1-01")
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.followup.send(embed=embed, ephemeral=True)
         return
 
 
@@ -68,7 +68,7 @@ class ReportGuildAdmin(commands.Cog):
 
       await thread.send(embed=embed, view=view)
 
-      await interaction.response.send_message("こちらのスレッドから返信を行えます。", ephemeral=True)
+      await interaction.followup.send("こちらのスレッドから返信を行えます。", ephemeral=True)
 
 
     # スレッド内での返信編集
@@ -89,14 +89,14 @@ class ReportGuildAdmin(commands.Cog):
         e = f"\n[ERROR[3-1-02]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{interaction.channel.id}\nReporter_id was not found\n"
         print(e)
         embed=await error.generate(code="3-1-02")
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.followup.send(embed=embed, ephemeral=True)
         return
 
       try:
         reporter = await interaction.guild.fetch_member(reporter_id)
       except Exception:
         embed=await error.generate(code="3-1-03")
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
         return
 
       # embedを定義
@@ -118,13 +118,13 @@ class ReportGuildAdmin(commands.Cog):
         await reporter.send(embed=embed)
       except discord.errors.Forbidden:
         embed=await error.generate(code="3-1-04")
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
         return
       except Exception as e:
         e = f"\n[ERROR[3-1-05]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
         print(e)
         embed=await error.generate(code="3-1-05")
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.followup.send(embed=embed, ephemeral=True)
         return
 
       # 返信パネルを編集する

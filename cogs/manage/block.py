@@ -22,9 +22,11 @@ class Block(commands.Cog):
   @app_commands.autocomplete(block_type=block_type)
   @app_commands.describe(block_type="normal: 報告者はこのスレッドにのみ返信できなくなる / server: 報告者はこのサーバー内の全ての機能が利用できなくなる")
   async def block(self, interaction:discord.Interaction, block_type:str):
+    await interaction.response.defer(ephemeral=True)
+
     if interaction.channel.type != discord.ChannelType.public_thread:
       embed = await error.generate(code="1-1-01")
-      await interaction.response.send_message(embed=embed, ephemeral=True)
+      await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
     if block_type == "server":
@@ -56,7 +58,7 @@ class Block(commands.Cog):
 
     if not report_dict and not pticket_dict:
       embed = await error.generate(code="1-2-02")
-      await interaction.response.send_message(embed=embed, ephemeral=True)
+      await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
     # reportの場合
@@ -69,7 +71,7 @@ class Block(commands.Cog):
       data_dict = pticket_dict
     else:
       embed = await error.generate(code="1-2-03")
-      await interaction.response.send_message(embed=embed, ephemeral=True)
+      await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
     # user_id, userを取得
@@ -137,7 +139,7 @@ class Block(commands.Cog):
       )
 
     await user.send(embed=user_embed)
-    await interaction.response.send_message(embed=embed)
+    await interaction.followup.send(embed=embed)
 
 
   async def nomal_block(self, interaction:discord.Interaction):
@@ -163,7 +165,7 @@ class Block(commands.Cog):
 
     if not report_dict and not pticket_dict:
       embed = await error.generate(code="1-1-04")
-      await interaction.response.send_message(embed=embed, ephemeral=True)
+      await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
 
@@ -177,7 +179,7 @@ class Block(commands.Cog):
       case_type = "Ticket"
     else:
       embed = await error.generate(code="1-1-05")
-      await interaction.response.send_message(embed=embed, ephemeral=True)
+      await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
     # blocked_dictを定義
@@ -223,7 +225,7 @@ class Block(commands.Cog):
         icon_url=interaction.user.display_avatar.url if interaction.user.display_avatar else None,
       )
 
-    await interaction.response.send_message(embed=embed)
+    await interaction.followup.send(embed=embed)
 
 
 

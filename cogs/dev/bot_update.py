@@ -1,6 +1,7 @@
 from discord import app_commands
 from discord.ext import commands
 import discord
+
 import datetime
 import aiofiles
 
@@ -10,19 +11,19 @@ class BotUpdate(commands.GroupCog, group_name='update'):
   def __init__(self, bot: commands.Bot):
     self.bot = bot
 
-  @app_commands.command(
-    name="report_bot",
-    description="[開発者専用]Report bot! のアップデート"
-  )
+  @app_commands.command(name="report_bot", description="[開発者専用]Report bot! のアップデート")
   @app_commands.describe(channel="送信するチャンネルを選択してください。")
   @app_commands.describe(version="バージョンを指定してください。⚪︎.⚪︎.⚪︎の形が好ましいです。")
   @app_commands.describe(description="本文を入力してください。")
-  async def update_bot(self, interaction:discord.Interaction, version:str, description:str, channel:discord.TextChannel=None):
+  async def update_bot(self, interaction: discord.Interaction, version: str, description: str, channel: discord.TextChannel | None = None):
+    await interaction.response.defer(ephemeral=True)
+
     if not await self.bot.is_owner(interaction.user):
-      return await interaction.response.send_message("このコマンドは開発者専用です。", ephemeral=True)
+      return await interaction.followup.send("このコマンドは開発者専用です。", ephemeral=True)
 
     if not channel:
       channel = interaction.channel
+
     embed = discord.Embed(
       title = f"__Report bot! ver{version}__",
       url = channel.jump_url,
@@ -32,10 +33,12 @@ class BotUpdate(commands.GroupCog, group_name='update'):
     )
     embed.set_footer(
       text = "\u200b",
-      icon_url = self.bot.user.avatar.url,
+      icon_url = self.bot.user.display_avatar.url if self.bot.user else None
     )
-    await interaction.response.send_message(f"<#{channel.id}>に送ったよう", ephemeral=True)
+
+    await interaction.followup.send(f"<#{channel.id}>に送ったよう", ephemeral=True)
     await channel.send(embed=embed)
+
 
     path = "data/bot_version"
     async with aiofiles.open(path, mode="w") as f:

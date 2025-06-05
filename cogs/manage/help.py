@@ -14,6 +14,8 @@ class Help(commands.Cog):
 
   @app_commands.command(name="help", description='helpコマンドです。')
   async def help(self, interaction:discord.Interaction):
+    await interaction.response.defer(ephemeral=True)
+
     embed = discord.Embed(
       title="Help! (1/4)",
       description="このbotには2つの機能があります。\n\n"
@@ -36,7 +38,7 @@ class Help(commands.Cog):
       button_3 = discord.ui.Button(label="dev_mode", emoji="🥟", custom_id=f"dev_mode", style=discord.ButtonStyle.red, row=2)
       view.add_item(button_3)
 
-    await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
+    await interaction.followup.send(embed=embed, view=view, ephemeral=True)
 
 
 
@@ -59,7 +61,7 @@ class Help(commands.Cog):
           print(f"ロード完了：{dev_cog}")
           msg = "ロード完了"
 
-      await interaction.response.send_message(msg, ephemeral=True)
+      await interaction.followup.send(msg, ephemeral=True)
       await self.bot.tree.sync()
 
 
