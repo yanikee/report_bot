@@ -1,10 +1,13 @@
 import matplotlib.pyplot as plt
 import datetime
 import io
-import json
+import os
 
 import requests
+from dotenv import load_dotenv
 
+
+load_dotenv(override=True)
 
 
 def plot_graph():
@@ -12,7 +15,7 @@ def plot_graph():
   counts = []
 
   # 非同期でCSVファイルからデータを読み込み
-  with open('/home/yanike/report_bot/data/guild_counts.csv', mode='r') as csvfile:
+  with open('data/guild_counts.csv', mode='r') as csvfile:
     for line in csvfile:
       row = line.strip().split(',')
       dates.append(datetime.datetime.strptime(row[0], '%Y-%m-%d'))
@@ -53,5 +56,5 @@ def post(webhook_url):
   #print( json.dumps( json.loads(res.content), indent=4, ensure_ascii=False ) )
 
 
-webhook_url = "https://discord.com/api/webhooks/1293846823177289759/bSnXBZHx1JawRNCKVed7iT7fuN4me3YL8h2x4ku1Lnm2k5l0ipoDsFxoMY4zYdfU4xdJ?wait=true"
+webhook_url = os.environ.get("webhook_url")
 post(webhook_url)
