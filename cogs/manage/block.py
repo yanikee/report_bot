@@ -14,14 +14,13 @@ class Block(commands.Cog):
   def __init__(self, bot: commands.Bot):
     self.bot = bot
 
-  async def block_type(self, interaction: discord.Interaction, _):
-    return [app_commands.Choice(name=case_type, value=case_type) for case_type in ["normal", "server"]]
+  block_type = [app_commands.Choice(name=type, value=type) for type in ["normal", "server"]]
 
   @app_commands.command(name="block", description='匿名Report, 匿名Ticketをブロック/ブロック解除します。')
   @discord.app_commands.guild_only()
-  @app_commands.autocomplete(block_type=block_type)
+  @app_commands.choices(block_type=block_type)
   @app_commands.describe(block_type="normal: 報告者はこのスレッドにのみ返信できなくなる / server: 報告者はこのサーバー内の全ての機能が利用できなくなる")
-  async def block(self, interaction:discord.Interaction, block_type:str):
+  async def block(self, interaction: discord.Interaction, block_type: app_commands.Choice[str]):
     await interaction.response.defer(ephemeral=True)
 
     if interaction.channel.type != discord.ChannelType.public_thread:
@@ -35,12 +34,12 @@ class Block(commands.Cog):
       await self.nomal_block(interaction=interaction)
 
 
+
   async def guild_block(self, interaction:discord.Interaction):
     # report_dict, pticket_dictを取得する
     # 取得できなかった場合->return
     report_path = f"data/report/private_report/{interaction.guild.id}.json"
     pticket_path = f"data/pticket/pticket/{interaction.guild.id}.json"
-    count = 0
 
     if os.path.exists(report_path):
       async with aiofiles.open(report_path, encoding='utf-8', mode="r") as f:
@@ -139,7 +138,7 @@ class Block(commands.Cog):
       )
 
     await user.send(embed=user_embed)
-    await interaction.followup.send(embed=embed)
+    await interaction.followup.send(embed=embed, ephemeral=False)
 
 
   async def nomal_block(self, interaction:discord.Interaction):
@@ -147,7 +146,6 @@ class Block(commands.Cog):
     # 取得できなかった場合->return
     report_path = f"data/report/private_report/{interaction.guild.id}.json"
     pticket_path = f"data/pticket/pticket/{interaction.guild.id}.json"
-    count = 0
 
     if os.path.exists(report_path):
       async with aiofiles.open(report_path, encoding='utf-8', mode="r") as f:
@@ -225,7 +223,7 @@ class Block(commands.Cog):
         icon_url=interaction.user.display_avatar.url if interaction.user.display_avatar else None,
       )
 
-    await interaction.followup.send(embed=embed)
+    await interaction.followup.send(embed=embed, ephemeral=False)
 
 
 

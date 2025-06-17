@@ -43,12 +43,15 @@ class Help(commands.Cog):
 
 
   @commands.Cog.listener()
-  async def on_interaction(self, interaction):
+  async def on_interaction(self, interaction: discord.Interaction):
     try:
       if not interaction.data["custom_id"] in ["dev_mode", "quickstart", "how_to_use", "others"]:
         return
     except KeyError:
       return
+
+    await interaction.response.defer()
+
 
     if interaction.data["custom_id"] == "dev_mode":
       for dev_cog in dev_cog_list:
@@ -63,9 +66,10 @@ class Help(commands.Cog):
 
       await interaction.followup.send(msg, ephemeral=True)
       await self.bot.tree.sync()
+      return
 
 
-    elif interaction.data["custom_id"] == "quickstart":
+    if interaction.data["custom_id"] == "quickstart":
       embed=discord.Embed(
         title="Help! (2/4)",
         description="## まず何をすればいいの？(設定方法)\n"
@@ -73,9 +77,12 @@ class Help(commands.Cog):
                     "Report機能，匿名Ticket機能の設定をします",
         color=0xffe7ab,
       )
-      await interaction.response.edit_message(embed=embed)
 
-    elif interaction.data["custom_id"] == "how_to_use":
+      await interaction.followup.edit(embed=embed)
+      return
+
+
+    if interaction.data["custom_id"] == "how_to_use":
       embed=discord.Embed(
         title="Help! (3/4)",
         description="## 使い方を知りたい！\n"
@@ -89,9 +96,12 @@ class Help(commands.Cog):
                     "  - ボタンが存在しない場合は、サーバー管理者さんに聞いてみてください",
         color=0xffe7ab,
       )
-      await interaction.response.edit_message(embed=embed)
 
-    elif interaction.data["custom_id"] == "others":
+      await interaction.response.edit(embed=embed)
+      return
+
+
+    if interaction.data["custom_id"] == "others":
       embed=discord.Embed(
         title="Help! (4/4)",
         description="## その他\n"
@@ -111,7 +121,9 @@ class Help(commands.Cog):
                     "  - DMからサーバー管理者への返信",
         color=0xffe7ab,
       )
-      await interaction.response.edit_message(embed=embed)
+
+      await interaction.response.edit(embed=embed)
+      return
 
 
 

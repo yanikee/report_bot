@@ -7,6 +7,7 @@ import json
 import os
 
 from modules import error
+from cogs.report.report_send_files import ReportSendFiles
 
 
 
@@ -124,10 +125,9 @@ class Settings(commands.Cog):
     view.add_item(button_1)
 
     if error:
-      await interaction.followup.edit_message(interaction.message.id, view=None)
-      await interaction.followup.edit_message(interaction.message.id, embed=embed, view=view)
-    else:
-      await interaction.response.edit_message(embed=embed, view=view)
+      await interaction.followup.edit(view=None)
+
+    await interaction.followup.edit(embed=embed, view=view)
 
 
   async def settings_page_3(self, interaction:discord.Interaction, error:bool=None):
@@ -178,10 +178,9 @@ class Settings(commands.Cog):
     view.add_item(button_1)
 
     if error:
-      await interaction.followup.edit_message(interaction.message.id, view=None)
-      await interaction.followup.edit_message(interaction.message.id, embed=embed, view=view)
-    else:
-      await interaction.response.edit_message(embed=embed, view=view)
+      await interaction.followup.edit(view=None)
+
+    await interaction.followup.edit(embed=embed, view=view)
 
 
   async def settings_panel_config(self, interaction:discord.Interaction, error:bool=None, value:str="匿名Ticketを作成します。\nこのbotのDMを通じて匿名でサーバー管理者と会話することができます。"):
@@ -229,10 +228,9 @@ class Settings(commands.Cog):
     view.add_item(button_3)
 
     if error:
-      await interaction.followup.edit_message(interaction.message.id, view=None)
-      await interaction.followup.edit_message(interaction.message.id, embeds=embeds, view=view)
-    else:
-      await interaction.response.edit_message(embeds=embeds, view=view)
+      await interaction.followup.edit(view=None)
+
+    await interaction.followup.edit(embeds=embeds, view=view)
 
 
   async def settings_final(self, interaction:discord.Interaction):
@@ -275,7 +273,7 @@ class Settings(commands.Cog):
       inline=True
     )
 
-    await interaction.response.edit_message(embeds=[embed_2, embed_3] , view=None)
+    await interaction.foloowup.edit(embeds=[embed_2, embed_3] , view=None)
 
     # Report送信チャンネルが存在する場合
     if report_data.get("report_send_channel"):
@@ -306,16 +304,18 @@ class Settings(commands.Cog):
 
 
   @commands.Cog.listener()
-  async def on_interaction(self, interaction):
+  async def on_interaction(self, interaction: discord.Interaction):
     try:
       custom_id = interaction.data["custom_id"]
     except KeyError:
       return
 
+    await interaction.response.defer()
+
     # settings_1
     if custom_id == "settings_page_1":
       embed, view = self.settings_page_1()
-      await interaction.response.edit_message(embed=embed, view=view)
+      await interaction.followup.edit(embed=embed, view=view)
 
     # settings_2
     elif custom_id == "settings_page_2":

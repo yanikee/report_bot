@@ -18,6 +18,7 @@ class CheckReply(commands.Cog):
     await message.add_reaction("❌")
     return
 
+
   @commands.Cog.listener()
   async def on_message(self, message):
     # DMではなかった場合 -> return
