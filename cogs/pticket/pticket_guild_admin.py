@@ -28,7 +28,7 @@ class PticketReply(commands.Cog):
         e = f"[ERROR[2-1-01]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\nJson file was not found"
         print(e)
         embed=await error.generate(code="2-1-01")
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.followup.send(embed=embed, ephemeral=True)
         return
 
 
@@ -50,14 +50,14 @@ class PticketReply(commands.Cog):
         e = f"\n[ERROR[2-1-02]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n- CHANNEL_ID:{interaction.channel.id}\nPticket user was not found\n"
         print(e)
         embed=await error.generate(code="2-1-02")
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.followup.send(embed=embed, ephemeral=True)
         return
 
       try:
         user = await interaction.guild.fetch_member(user_id)
       except Exception:
         embed=await error.generate(code="2-1-03")
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
         return
 
       # embedを定義
@@ -81,13 +81,13 @@ class PticketReply(commands.Cog):
         await user.send(embed=embed)
       except discord.errors.Forbidden:
         embed=await error.generate(code="2-1-04")
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
         return
       except Exception as e:
         e = f"\n[ERROR[2-1-05]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
         print(e)
         embed=await error.generate(code="2-1-05")
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
         return
 
       # 返信パネルを編集する
@@ -162,8 +162,8 @@ class EditReplyModal(discord.ui.Modal):
     self.add_item(self.reply)
 
   async def on_submit(self, interaction: discord.Interaction):
-    # NOTE: 編集が適用されたことが分かりやすいように、わざとdeferしてる
     await interaction.response.defer()
+
     self.msg.embeds[0].description = self.reply.value
     self.msg.embeds[0].set_author(
       name=f"一時保存：{interaction.user.display_name}",

@@ -30,7 +30,7 @@ class Report(commands.Cog):
     path = f"data/report/guilds/{interaction.guild.id}.json"
     if not os.path.exists(path):
       embed=await error.generate(code="3-4-01")
-      await interaction.response.send_message(embed=embed, ephemeral=True)
+      await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
     # report送信チャンネルがなかった場合 -> return
@@ -40,19 +40,19 @@ class Report(commands.Cog):
 
     if not report_dict.get("report_send_channel"):
       embed=await error.generate(code="3-4-02")
-      await interaction.response.send_message(embed=embed, ephemeral=True)
+      await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
     # guild_block
     embed = await check.is_guild_block(bot=self.bot, guild=interaction.guild, user_id=interaction.user.id)
     if embed:
-      await interaction.response.send_message(embed=embed, ephemeral=True)
+      await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
     # cooldown
     embed, self.user_cooldowns = check.user_cooldown(interaction.user.id, self.user_cooldowns)
     if embed:
-      await interaction.response.send_message(embed=embed, ephemeral=True)
+      await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
     button = ReportButton(self.bot, interaction, message)
@@ -60,7 +60,7 @@ class Report(commands.Cog):
       description="通常報告：報告者名がサーバー管理者に伝わる\n匿名報告：報告者名は誰にも伝わらない",
       color=0xffe7ab,
     )
-    await interaction.response.send_message(embed=embed, view=button, ephemeral=True)
+    await interaction.followup.send(embed=embed, view=button, ephemeral=True)
 
 
 
@@ -90,7 +90,7 @@ class ReportButton(discord.ui.View):
         await interaction.user.send("テストメッセージ", silent=True, delete_after=0.1)
       except Exception:
         embed=await error.generate(code="3-4-03")
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.followup.send(embed=embed, ephemeral=True)
         return
       await self.do_report(interaction, self.message, None)
 
@@ -123,7 +123,7 @@ class ReportButton(discord.ui.View):
     # chaが無かった場合->return
     if not cha:
       embed=await error.generate(code="3-4-04")
-      await interaction.response.send_message(embed=embed, ephemeral=True)
+      await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
     if "mention_role" in report_dict:
@@ -142,7 +142,7 @@ class ReportButton(discord.ui.View):
       e = f"\n[ERROR[3-4-05]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\n{e}\n"
       print(e)
       embed=await error.generate(code="3-4-05")
-      await interaction.response.send_message(embed=embed, ephemeral=True)
+      await interaction.followup.send(embed=embed, ephemeral=True)
       return
 
     # report理由記入modal
@@ -207,9 +207,9 @@ class ReportReasonModal(discord.ui.Modal):
     await self.msg.edit(embeds=embeds)
 
     if self.reporter:
-      await interaction.response.send_message("報告が完了しました。\nありがとうございました。\n\nサーバー管理者から直接話を伺うことがあります。", ephemeral=True)
+      await interaction.followup.send("報告が完了しました。\nありがとうございました。\n\nサーバー管理者から直接話を伺うことがあります。", ephemeral=True)
     else:
-      await interaction.response.send_message("サーバー管理者に匿名Reportが送信されました。\nDMにてサーバー管理者からの返信をお待ちください。", ephemeral=True)
+      await interaction.followup.send("サーバー管理者に匿名Reportが送信されました。\nDMにてサーバー管理者からの返信をお待ちください。", ephemeral=True)
 
       # 匿名Report完了確認membedを定義
 

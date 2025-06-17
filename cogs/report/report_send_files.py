@@ -29,7 +29,7 @@ class ReportSendFiles(commands.Cog):
         e = f"[ERROR[3-2-01]]{datetime.datetime.now()}\n- GUILD_ID:{interaction.guild.id}\nJson file was not found"
         print(e)
         embed=await error.generate("3-2-01")
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.followup.send(embed=embed, ephemeral=True)
         return
 
       if interaction.message.embeds[0].description == "下のボタンから編集してください。":

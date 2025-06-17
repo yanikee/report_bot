@@ -7,6 +7,7 @@ import json
 import os
 
 from modules import error
+from cogs.report.report_send_files import ReportSendFiles
 
 
 
@@ -17,9 +18,11 @@ class Settings(commands.Cog):
   @app_commands.command(name="settings", description='設定を行います')
   @discord.app_commands.guild_only()
   async def settings(self, interaction:discord.Interaction):
+    await interaction.response.defer(ephemeral=True)
+
     if not interaction.channel.permissions_for(interaction.user).manage_channels:
       embed = await error.generate(code="1-4-01")
-      return await interaction.response.send_message(embed=embed, ephemeral=True)
+      return await interaction.followup.send(embed=embed, ephemeral=True)
 
 
     # 正しくないidを削除
@@ -36,7 +39,7 @@ class Settings(commands.Cog):
 
 
     embed, view = self.settings_page_1()
-    await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
+    await interaction.followup.send(embed=embed, view=view, ephemeral=True)
 
 
   async def get_data(self, interaction:discord.Interaction, type:str):
@@ -122,10 +125,9 @@ class Settings(commands.Cog):
     view.add_item(button_1)
 
     if error:
-      await interaction.followup.edit_message(interaction.message.id, view=None)
-      await interaction.followup.edit_message(interaction.message.id, embed=embed, view=view)
-    else:
-      await interaction.response.edit_message(embed=embed, view=view)
+      await interaction.followup.edit(view=None)
+
+    await interaction.followup.edit(embed=embed, view=view)
 
 
   async def settings_page_3(self, interaction:discord.Interaction, error:bool=None):
@@ -176,10 +178,9 @@ class Settings(commands.Cog):
     view.add_item(button_1)
 
     if error:
-      await interaction.followup.edit_message(interaction.message.id, view=None)
-      await interaction.followup.edit_message(interaction.message.id, embed=embed, view=view)
-    else:
-      await interaction.response.edit_message(embed=embed, view=view)
+      await interaction.followup.edit(view=None)
+
+    await interaction.followup.edit(embed=embed, view=view)
 
 
   async def settings_panel_config(self, interaction:discord.Interaction, error:bool=None, value:str="匿名Ticketを作成します。\nこのbotのDMを通じて匿名でサーバー管理者と会話することができます。"):
@@ -227,10 +228,9 @@ class Settings(commands.Cog):
     view.add_item(button_3)
 
     if error:
-      await interaction.followup.edit_message(interaction.message.id, view=None)
-      await interaction.followup.edit_message(interaction.message.id, embeds=embeds, view=view)
-    else:
-      await interaction.response.edit_message(embeds=embeds, view=view)
+      await interaction.followup.edit(view=None)
+
+    await interaction.followup.edit(embeds=embeds, view=view)
 
 
   async def settings_final(self, interaction:discord.Interaction):
@@ -273,7 +273,7 @@ class Settings(commands.Cog):
       inline=True
     )
 
-    await interaction.response.edit_message(embeds=[embed_2, embed_3] , view=None)
+    await interaction.foloowup.edit(embeds=[embed_2, embed_3] , view=None)
 
     # Report送信チャンネルが存在する場合
     if report_data.get("report_send_channel"):
@@ -304,16 +304,18 @@ class Settings(commands.Cog):
 
 
   @commands.Cog.listener()
-  async def on_interaction(self, interaction):
+  async def on_interaction(self, interaction: discord.Interaction):
     try:
       custom_id = interaction.data["custom_id"]
     except KeyError:
       return
 
+    await interaction.response.defer()
+
     # settings_1
     if custom_id == "settings_page_1":
       embed, view = self.settings_page_1()
-      await interaction.response.edit_message(embed=embed, view=view)
+      await interaction.followup.edit(embed=embed, view=view)
 
     # settings_2
     elif custom_id == "settings_page_2":
@@ -334,14 +336,14 @@ class Settings(commands.Cog):
     elif custom_id == "settings_select_pticket_button_channel":
       channel, error_embed = await self.on_channel_select_check_permissions(interaction, button_channel=True)
       if error_embed:
-        await interaction.response.send_message(embed=error_embed, ephemeral=True)
+        await interaction.followup.send(embed=error_embed, ephemeral=True)
         await self.settings_panel_config(interaction, error=True, value=interaction.message.embeds[1].description)
         return
       else:
         if channel:
           if not channel.permissions_for(interaction.user).manage_channels:
             embed=await error.generate(code="1-4-02", additional_desc=channel.mention)
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             await self.settings_panel_config(interaction, error=True, value=interaction.message.embeds[1].description)
             return
 
@@ -361,7 +363,7 @@ class Settings(commands.Cog):
           if not channel.permissions_for(interaction.user).manage_channels:
             embed=await error.generate(code="1-4-03", additional_desc=channel.mention)
 
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, ephemeral=True)
             if "report" in custom_id:
               await self.settings_page_2(interaction, error=True)
             else:
@@ -377,7 +379,7 @@ class Settings(commands.Cog):
         if custom_id == "settings_select_report_channel":
           channel, error_embed = await self.on_channel_select_check_permissions(interaction)
           if error_embed:
-            await interaction.response.send_message(embed=error_embed, ephemeral=True)
+            await interaction.followup.send(embed=error_embed, ephemeral=True)
             await self.settings_page_2(interaction, error=True)
             return
           else:
@@ -397,7 +399,7 @@ class Settings(commands.Cog):
         if custom_id == "settings_select_pticket_channel":
           channel, error_embed = await self.on_channel_select_check_permissions(interaction)
           if error_embed:
-            await interaction.response.send_message(embed=error_embed, ephemeral=True)
+            await interaction.followup.send(embed=error_embed, ephemeral=True)
             await self.settings_page_3(interaction, error=True)
             return
           else:

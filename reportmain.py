@@ -28,14 +28,8 @@ else:
 
 load_dotenv(override=True)
 
-try:
-  TOKEN = os.environ.get("ReportBot_TOKEN")
-  report_bot_service_cha = int(os.environ.get("report_bot_service_cha"))
-except Exception:
-  print("TOKEN, report_bot_service_chaを取得できませんでした")
-  TOKEN = ""
-  report_bot_service_cha = ""
-
+TOKEN = os.environ.get("ReportBot_TOKEN", "")
+report_bot_service_cha = int(os.environ.get("report_bot_service_cha", "0"))
 
 intents = discord.Intents.none()
 intents.messages = True
@@ -70,6 +64,7 @@ async def on_ready():
 
   await bot.tree.sync()
   print("全ロード完了")
+
   channel = bot.get_channel(report_bot_service_cha)
   await channel.send(f"{bot.user.mention} がオンラインになったよう。")
 
